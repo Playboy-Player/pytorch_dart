@@ -5,7 +5,7 @@ A dart wrapper for Libtorch,provides some fundametal bindings.
 ## Getting Started
 1. Add pytorch_dart to your pubspec.yaml
 2. ```
-    dart run pytorch_dart_setup
+    dart run pytorch_dart:setup
     ```
 3. ```dart
     import 'package:pytorch_dart/pytorch_dart.dart' as torch;
