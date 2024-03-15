@@ -6,7 +6,7 @@ Future<void> runScript() async {
   print('Current working directory: ${Directory.current.path}');
   var result = await Process.run(
     'sh',
-    ['./scripts/init_linux.sh'], // 这里的路径是相对于当前工作目录的
+    ['./scripts/init_linux_and_android.sh'], // 这里的路径是相对于当前工作目录的
     // 你可以设置脚本的工作目录
     workingDirectory: workingDirectory,
   );

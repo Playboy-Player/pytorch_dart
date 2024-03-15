@@ -1,5 +1,5 @@
 name: pytorch_dart
-description: A new Flutter plugin project.
+description: A dart wrapper for Libtorch,provides some fundametal bindings.
 version: 0.0.1
 repository: https://github.com/Playboy-Player/pytorch_dart
 
@@ -44,7 +44,7 @@ flutter:
         pluginClass: NativePytorchPlugin
 
 executables:
-  setup: /bin/setup.dart
+  setup: setup
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
