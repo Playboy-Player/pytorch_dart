@@ -1,6 +1,6 @@
 name: pytorch_dart
 description: A dart wrapper for Libtorch,provides some fundametal bindings.
-version: 0.0.1
+version: 0.0.6
 repository: https://github.com/Playboy-Player/pytorch_dart
 
 environment:
@@ -12,6 +12,9 @@ dependencies:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
   ffi: ^2.1.2
+  package_config: ^2.1.0
+  path: ^1.9.0
+  collection: ^1.15.0
 
 dev_dependencies:
   flutter_test:
