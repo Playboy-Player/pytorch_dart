@@ -44,7 +44,7 @@ flutter:
         pluginClass: NativePytorchPlugin
 
 executables:
-  pytorch_dart_setup: setup
+  setup: /bin/setup.dart
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
