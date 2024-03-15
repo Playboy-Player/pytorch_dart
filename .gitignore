@@ -9,7 +9,9 @@
 .history
 .svn/
 migrate_working_dir/
-
+libtorch-linux/
+libtorch-android/
+linux/native_pytorch.cpp
 # IntelliJ related
 *.iml
 *.ipr
