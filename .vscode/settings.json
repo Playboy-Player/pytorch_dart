@@ -1,3 +1,7 @@
 {
-    "cmake.sourceDirectory": "/home/pc/pytorch_dart/android"
+    "cmake.sourceDirectory": "/home/pc/pytorch_dart/android",
+    "files.associations": {
+        "functional": "cpp",
+        "string": "cpp"
+    }
 }

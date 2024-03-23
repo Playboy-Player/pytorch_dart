@@ -39,34 +39,16 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
   }
 
   void _tensorTest() async {
-    torch.Tensor tensor = torch.createTensorFromList(
-      [[ 1.0028, -0.9893,  0.5809],
-        [-0.1669,  0.7299,  0.4942]]
-    );
-    List<dynamic> listOrig = torch.createListFromTensor(tensor);
-    torch.Tensor t = tensor.transpose( 0, 1);
-    List<dynamic> listTranspose = torch.createListFromTensor(t);
-
-    torch.Tensor t1 = torch.createTensorFromList([
-      [1.1, 2.2],
-      [3.3, 4.4]
-    ]);
-    torch.Tensor t2 = torch.createTensorFromList([
-      [0.1, 0.2],
-      [0.3, 0.4]
-    ]);
-    torch.Tensor t3 = torch.sub(t1, t2);
-    torch.Tensor t4 = torch.add(t1, t2);
-    List<dynamic> list1 = torch.createListFromTensor(t1);
-    List<dynamic> list2 = torch.createListFromTensor(t2);
-    List<dynamic> list3 = torch.createListFromTensor(t3);
-    List<dynamic> list4 = torch.createListFromTensor(t4);
-    customLog("original Tensor=$listOrig");
-    customLog("transposed Tensor=$listTranspose");
-    customLog("Tensor t1=$list1");
-    customLog("Tensor t2=$list2");
-    customLog("Tensor t3=t1-t2=$list3");
-    customLog("Tensor t4=t1+t2=$list4");
+    torch.Tensor a=torch.empty([3,2]);
+    torch.Tensor b=torch.ones([2,2,3]);
+    
+    a.print();
+    b.print();
+   
+    torch.Tensor c=torch.from_blob(torch.TypedNumberList<int>([1, 2, 3,4,5,6]),[3,2]);
+    c.print();
+    torch.Tensor d=torch.eye(5,5);
+    d.print();
     setState(() {
      
     });
