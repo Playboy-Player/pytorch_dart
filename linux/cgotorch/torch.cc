@@ -103,7 +103,7 @@ FUNCTION_ATTRIBUTE const char *Eye(int64_t n, int64_t m, int64_t requires_grad, 
 }
 
 // torch.full, only for float32
-FUNCTION_ATTRIBUTE const char *Full(int64_t *size, int64_t length, float value,
+const char *Full(int64_t *size, int64_t length, float value,
                  int64_t requires_grad, Tensor *result) {
   try {
     at::Tensor t =
