@@ -13,7 +13,7 @@ extern "C" {
 
 const char *Tensor_Detach(Tensor a, Tensor *result);
 const char *Tensor_String(Tensor a);
-void Tensor_Print(Tensor a);
+const char *Tensor_Print(Tensor a);
 void Tensor_Close(Tensor a);
 void FreeString(const char *s);
 const char *Tensor_Save(Tensor tensor, const char *path);

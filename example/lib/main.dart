@@ -42,18 +42,18 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
     torch.Tensor a=torch.empty([3,2]);
     torch.Tensor b=torch.ones([2,2,3]);
     
-    a.print();
-    b.print();
+   
+    print(b);
    
     torch.Tensor c=torch.from_blob(torch.TypedNumberList<double>([1,2,3,4,5,6]),[3,2]);
-    c.print();
+    print(c);
     torch.Tensor d=torch.eye(3,2);
-    d.print();
+    print(d);
      var e=torch.sum(d);
-     e.print();
+     print(e);
      
      var g=torch.div(c,d,inplace: true);
-     g.print();
+     
     setState(() {
      
     });

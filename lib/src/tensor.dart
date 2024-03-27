@@ -1,11 +1,13 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 import 'dart:developer' as dev;
 
 final DynamicLibrary nativeLib = Platform.isAndroid
-    ? DynamicLibrary.open('libnative_pytorch.so')
+    ? DynamicLibrary.open('libpytorch_dart.so')
     : DynamicLibrary.process();
 
 final Pointer<Utf8> Function(Pointer<Int64> size, int length, int requiresGrad,
@@ -37,8 +39,8 @@ final Pointer<Utf8> Function(
                     Pointer<Pointer<Void>> result)>>('Eye')
         .asFunction();
 
-final void Function(Pointer<Void>) _print = nativeLib
-    .lookup<NativeFunction<Void Function(Pointer<Void>)>>('Tensor_Print')
+final Pointer<Utf8> Function(Pointer<Void>) _print = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void>)>>('Tensor_Print')
     .asFunction();
 
 final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>> result)
@@ -282,8 +284,12 @@ class Tensor {
 
   Tensor._internal(this._tensorPtr);
 
-  void print() {
-    _print(_tensorPtr);
+  @override
+  String toString() {
+    
+    var stringPtr=_print(_tensorPtr);
+    final string=stringPtr.cast<Utf8>().toDartString();
+    return string;
   }
 
   Tensor detach() {

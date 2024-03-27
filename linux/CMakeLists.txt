@@ -14,8 +14,8 @@ find_package(Torch REQUIRED)
 # Any new source files that you add to the plugin should be added here.
 list(APPEND PLUGIN_SOURCES
   "native_pytorch_plugin.cc"
-  "cgotorch/torch.cc"
-  "cgotorch/tensor.cc"
+  "../cgotorch/torch.cc"
+  "../cgotorch/tensor.cc"
   
 )
 

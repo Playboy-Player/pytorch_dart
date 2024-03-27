@@ -9,6 +9,8 @@
 #endif
 #include <string>
 #include <vector>
+#include <iostream>
+#include <sstream>
 
 FUNCTION_ATTRIBUTE const char *Tensor_Detach(Tensor a, Tensor *result) {
   try {
@@ -55,28 +57,22 @@ FUNCTION_ATTRIBUTE const char *Mean(Tensor a, Tensor *result) {
   }
 }
 
-FUNCTION_ATTRIBUTE void Tensor_Print(Tensor a) { std::cerr << *a << std::endl; }
+FUNCTION_ATTRIBUTE const char* Tensor_Print(Tensor a) {
+    std::ostringstream oss;
+    oss << *a;
+    std::string str = oss.str();
+
+ 
+    char* cstr = new char[str.length() + 1];
+    std::strcpy(cstr, str.c_str());
+
+    
+    return cstr;
+}
 
 FUNCTION_ATTRIBUTE void Tensor_Close(Tensor a) { delete a; }
 
-FUNCTION_ATTRIBUTE const char *Tensor_Save(Tensor tensor, const char *path) {
-  try {
-    torch::save(*tensor, std::string(path));
-    return nullptr;
-  } catch (const std::exception &e) {
-    return exception_str(e.what());
-  }
-}
 
-FUNCTION_ATTRIBUTE const char *Tensor_Load(const char *path, Tensor *tensor) {
-  try {
-    *tensor = new at::Tensor();
-    torch::load(**tensor, path);
-    return nullptr;
-  } catch (const std::exception &e) {
-    return exception_str(e.what());
-  }
-}
 
 FUNCTION_ATTRIBUTE const char *Tensor_Dim(Tensor tensor, int64_t *dim) {
   try {
