@@ -9,8 +9,8 @@ add_library( pytorch_dart
 SHARED
 
 # Provides a relative path to your source file(s).
-../cgotorch/torch.cc
-../cgotorch/tensor.cc)
+../src/torch.cc
+../src/tensor.cc)
 
 
 set(LIBTORCH_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../libtorch-android")

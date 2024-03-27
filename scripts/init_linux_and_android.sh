@@ -12,5 +12,5 @@ curl "https://drive.usercontent.google.com/download?id=1wnlfDXEKqfOcOPqt--Zxda63
 
 unzip ${filename}
 rm ${filename}
-ln ./ios/Classes/native_pytorch.cpp ./linux/native_pytorch.cpp
+
 echo "Done"
