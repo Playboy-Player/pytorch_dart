@@ -15,19 +15,19 @@ A dart wrapper for Libtorch,provides some fundametal bindings.
 ## Usage
 1. It only include some basic functions about torch.Tensor now
 2. The functions avaliable now:
-`torch.empty()`
-`torch.eye()`
-`torch.ones()`
-`torch.arange(double start, double end, double step,{bool requiresGrad = false})`
-`torch.linspace(double start, double end, int steps,{bool requiresGrad = false})`
-`torch.logspace(double start, double end, int steps, double base,{bool requiresGrad = false})`
-`torch.equal(Tensor a,Tensor b)`
-`torch.add(Tensor a, tensor b,{double alpha=1,inplace=false})`
-`torch.sub(Tensor a, tensor b,{double alpha=1,inplace=false})`
-`torch.mul(Tensor a, tensor b,{double alpha=1,inplace=false})`
-`torch.div(Tensor a, tensor b,{double alpha=1,inplace=false})`
-`torch.sum(Tensor a)`
-`torch.mm(Tensor a, Tensor b)`
+`torch.empty()`  
+`torch.eye()`  
+`torch.ones()`  
+`torch.arange(double start, double end, double step,{bool requiresGrad = false})`  
+`torch.linspace(double start, double end, int steps,{bool requiresGrad = false})`  
+`torch.logspace(double start, double end, int steps, double base,{bool requiresGrad = false})`  
+`torch.equal(Tensor a,Tensor b)`  
+`torch.add(Tensor a, tensor b,{double alpha=1,inplace=false})`  
+`torch.sub(Tensor a, tensor b,{double alpha=1,inplace=false})`  
+`torch.mul(Tensor a, tensor b,{double alpha=1,inplace=false})`  
+`torch.div(Tensor a, tensor b,{double alpha=1,inplace=false})`  
+`torch.sum(Tensor a)`  
+`torch.mm(Tensor a, Tensor b)`  
 3. Example
 ```dart
 torch.Tensor d=torch.eye(3,2);
