@@ -14,7 +14,7 @@ A dart wrapper for Libtorch,provides some fundametal bindings.
     ```
 ## Usage
 1. It only include some basic functions about torch.Tensor now
-2. The functions avaliable now:
+2. The functions avaliable now:  
 `torch.empty()`  
 `torch.eye()`  
 `torch.ones()`  
