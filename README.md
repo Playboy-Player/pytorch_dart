@@ -1,6 +1,7 @@
 # pytorch_dart
 
 A dart wrapper for Libtorch,provides some fundametal bindings.
+You can use it as an alternative to NumPy.
 
 ## Getting Started
 1. Add pytorch_dart to your pubspec.yaml
@@ -8,6 +9,7 @@ A dart wrapper for Libtorch,provides some fundametal bindings.
     dart run pytorch_dart:setup --platform <your_platform>
     ```
     `<your_platform>` only support `linux` and `android` now.
+    Attention:In setup,you need to have access to Google Drive.
 3. ```dart
     import 'package:pytorch_dart/pytorch_dart.dart' as torch;
 
