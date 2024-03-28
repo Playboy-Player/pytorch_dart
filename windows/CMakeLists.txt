@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.14)
 # Project-level configuration.
 set(PROJECT_NAME "pytorch_dart")
 project(${PROJECT_NAME} LANGUAGES CXX)
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
 cmake_policy(VERSION 3.14...3.25)
@@ -15,11 +15,13 @@ cmake_policy(VERSION 3.14...3.25)
 # This value is used when generating builds using this plugin, so it must
 # not be changed
 set(PLUGIN_NAME "pytorch_dart_plugin")
-
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../libtorch/share/cmake")
 # Any new source files that you add to the plugin should be added here.
 list(APPEND PLUGIN_SOURCES
   "pytorch_dart_plugin.cpp"
   "pytorch_dart_plugin.h"
+  "../src/torch.cc"
+  "../src/tensor.cc"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment
