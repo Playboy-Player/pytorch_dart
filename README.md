@@ -8,12 +8,28 @@ You can use it as an alternative to NumPy.
 2. ```
     dart run pytorch_dart:setup --platform <your_platform>
     ```
-    `<your_platform>` only support `linux` and `android` now.
+    `<your_platform>` only support `linux` and `android` now.  
     Attention:In setup,you need to have access to Google Drive.
 3. ```dart
     import 'package:pytorch_dart/pytorch_dart.dart' as torch;
 
     ```
+4. For Android developers
+    libtorch for andoroid needs a specific version of NDK,so [install NDK](https://developer.android.com/studio/projects/install-ndk?hl=zh-cn) and choose version 21.4.7075529  
+
+    Then add a column in 'android/local.properties'  
+
+    ```
+    ndk.dir=<path_to_your_ndk>/21.4.7075529
+    ```
+    After adding a column,your 'local.properties' should look like this:  
+    ```
+    flutter.sdk=/home/pc/flutter
+    sdk.dir=/home/pc/Android/Sdk
+    flutter.buildMode=debug
+    ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
+    ```
+
 ## Usage
 1. It only include some basic functions about torch.Tensor now
 2. The functions avaliable now:  
