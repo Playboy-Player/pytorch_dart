@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)  # for example
 project(pytorch_dart_plugin)
 
-set(CMAKE_CXX_STANDARD 14)  # needed for libtorch
+set(CMAKE_CXX_STANDARD 17)  # needed for libtorch
 set(CMAKE_CXX_FLAGS "-fvisibility=hidden")
 add_library( pytorch_dart
 

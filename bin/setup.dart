@@ -58,7 +58,7 @@ Future<void> setup4Android() async {
 
     // 存储旧文件夹名到新文件夹名的映射关系
     Map<String, String> dirRenames = {
-      'lib': 'bin',
+      'jni': 'lib',
       'headers': 'include',
       
     };

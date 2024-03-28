@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "pytorch_dart_re",
+            "name": "pytorch_dart",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "pytorch_dart_re (profile mode)",
+            "name": "pytorch_dart (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "pytorch_dart_re (release mode)",
+            "name": "pytorch_dart (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
