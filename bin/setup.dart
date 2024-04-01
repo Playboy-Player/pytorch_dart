@@ -6,38 +6,98 @@ import 'package:path/path.dart' as path;
 import 'package:collection/collection.dart';
 
 Future<void> setup4Linux() async {
-// 文件的URL
-  var url = Uri.parse('https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip');
-  // 输出文件名
+var url = Uri.parse('https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip');
   var filename = 'libtorch-shared-with-deps-latest.zip';
 
   // 下载文件
   var response = await http.get(url);
   if (response.statusCode == 200) {
-    // 保存下载的文件
     var file = File(filename);
     await file.writeAsBytes(response.bodyBytes);
     print('File downloaded and saved as $filename');
 
     // 读取ZIP文件
-    var bytes = file.readAsBytesSync();
-
-    // 解压缩文件内容
+    var bytes = await file.readAsBytes();
     var archive = ZipDecoder().decodeBytes(bytes);
+
+    // 创建新的目录来解压缩文件
+    var newFolder = 'libtorch-linux';
+    var newPath = path.join(Directory.current.path, newFolder);
+    Directory(newPath).createSync(recursive: true);
 
     // 从压缩包中提取文件
     for (var file in archive) {
-      var filename = file.name;
-      if (file.isFile) {
+      var fileName = file.name;
+
+      // 如果是根目录下的文件夹，则跳过不解压缩
+      if (file.isFile || path.split(fileName).length != 1) {
         var data = file.content as List<int>;
-        File(filename)
-          ..createSync(recursive: true)
-          ..writeAsBytesSync(data);
-      } else {
-        Directory(filename).createSync(recursive: true);
+        var outputPath = path.join(newPath, fileName);
+
+        // 确保父目录存在
+        Directory(path.dirname(outputPath)).createSync(recursive: true);
+
+        if (file.isFile) {
+          File(outputPath)..writeAsBytesSync(data);
+        } else {
+          // 如果项是文件夹，则创建文件夹
+          Directory(outputPath).createSync(recursive: true);
+        }
+        print('Extracted: $outputPath');
       }
     }
-    print('Files extracted');
+    print('Files extracted to $newFolder');
+
+    // 删除下载的ZIP文件
+    await file.delete();
+    print('ZIP file deleted');
+  } else {
+    print('Failed to download file: ${response.statusCode}');
+  }
+}
+
+Future<void> setup4Windows() async {
+var url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-2.2.2%2Bcpu.zip');
+  var filename = 'libtorch-win-shared-with-deps-2.2.2+cpu.zip';
+
+  // 下载文件
+  var response = await http.get(url);
+  if (response.statusCode == 200) {
+    var file = File(filename);
+    await file.writeAsBytes(response.bodyBytes);
+    print('File downloaded and saved as $filename');
+
+    // 读取ZIP文件
+    var bytes = await file.readAsBytes();
+    var archive = ZipDecoder().decodeBytes(bytes);
+
+    // 创建新的目录来解压缩文件
+    var newFolder = 'libtorch-windows';
+    var newPath = path.join(Directory.current.path, newFolder);
+    Directory(newPath).createSync(recursive: true);
+
+    // 从压缩包中提取文件
+    for (var file in archive) {
+      var fileName = file.name;
+
+      // 如果是根目录下的文件夹，则跳过不解压缩
+      if (file.isFile || path.split(fileName).length != 1) {
+        var data = file.content as List<int>;
+        var outputPath = path.join(newPath, fileName);
+
+        // 确保父目录存在
+        Directory(path.dirname(outputPath)).createSync(recursive: true);
+
+        if (file.isFile) {
+          File(outputPath)..writeAsBytesSync(data);
+        } else {
+          // 如果项是文件夹，则创建文件夹
+          Directory(outputPath).createSync(recursive: true);
+        }
+        print('Extracted: $outputPath');
+      }
+    }
+    print('Files extracted to $newFolder');
 
     // 删除下载的ZIP文件
     await file.delete();
@@ -48,11 +108,13 @@ Future<void> setup4Linux() async {
 }
 
 
+
 Future<void> setup4Android() async {
- // 文件的URL
-  var url = Uri.parse('https://oss.sonatype.org/service/local/artifact/maven/redirect?r=releases&g=org.pytorch&a=pytorch_android&v=2.1.0&e=aar');
- 
- var response = await http.get(url);
+  // 文件的URL
+  var url = Uri.parse(
+      'https://oss.sonatype.org/service/local/artifact/maven/redirect?r=releases&g=org.pytorch&a=pytorch_android&v=2.1.0&e=aar');
+
+  var response = await http.get(url);
   if (response.statusCode == 200) {
     var archive = ZipDecoder().decodeBytes(response.bodyBytes);
 
@@ -60,7 +122,6 @@ Future<void> setup4Android() async {
     Map<String, String> dirRenames = {
       'jni': 'lib',
       'headers': 'include',
-      
     };
 
     // 循环每个文件
@@ -78,7 +139,8 @@ Future<void> setup4Android() async {
 
       if (file.isFile) {
         final data = file.content as List<int>;
-        final outputPath = path.join("${Directory.current.path}/libtorch-android", filePath);
+        final outputPath =
+            path.join("${Directory.current.path}/libtorch-android", filePath);
         // 确保父目录存在
         final directory = Directory(path.dirname(outputPath));
         if (!directory.existsSync()) {
@@ -86,7 +148,9 @@ Future<void> setup4Android() async {
         }
         File(outputPath)..writeAsBytesSync(data);
       } else {
-        Directory(path.join("${Directory.current.path}/libtorch-android", filePath))..createSync(recursive: true);
+        Directory(
+            path.join("${Directory.current.path}/libtorch-android", filePath))
+          ..createSync(recursive: true);
       }
     }
     print('Extraction done.');
@@ -95,23 +159,17 @@ Future<void> setup4Android() async {
   }
 }
 
-
-void main(List<String> arguments) async{
+void main(List<String> arguments) async {
   print('Setting up pytorch_dart...');
-  String command=arguments[0];
-  if(command == '--platform')
-  {
-    if(arguments[1]=='linux'){
-  
-  await setup4Linux();
-  
+  String command = arguments[0];
+  if (command == '--platform') {
+    if (arguments[1] == 'linux') {
+      await setup4Linux();
+    } else if (arguments[1] == 'windows') {
+      await setup4Windows();
     }
-  if(arguments[1]=='android')
-  {
-    await setup4Android();
-  
+    if (arguments[1] == 'android') {
+      await setup4Android();
+    }
   }
-  
-  }
-
 }

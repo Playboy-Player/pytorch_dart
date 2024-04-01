@@ -13,7 +13,7 @@
 extern "C" {
 #endif
 
-FLUTTER_PLUGIN_EXPORT void PytorchDartPluginCApiRegisterWithRegistrar(
+FLUTTER_PLUGIN_EXPORT void PytorchDartPluginRegisterWithRegistrar(
     FlutterDesktopPluginRegistrarRef registrar);
 
 #if defined(__cplusplus)

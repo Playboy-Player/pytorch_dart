@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 # Project-level configuration.
 set(PROJECT_NAME "pytorch_dart")
 project(${PROJECT_NAME} LANGUAGES CXX)
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../libtorch/share/cmake")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../libtorch-linux/libtorch/share/cmake")
 # This value is used when generating builds using this plugin, so it must
 # not be changed.
 set(PLUGIN_NAME "pytorch_dart_plugin")

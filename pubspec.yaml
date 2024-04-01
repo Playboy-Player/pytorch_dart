@@ -51,7 +51,8 @@ flutter:
         pluginClass: NativePytorchPlugin
       linux:
         pluginClass: NativePytorchPlugin
-
+      windows:
+        pluginClass: PytorchDartPlugin
 executables:
   setup: setup
 
