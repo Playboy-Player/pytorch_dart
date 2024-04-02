@@ -13,7 +13,7 @@ set(PLUGIN_NAME "pytorch_dart_plugin")
 find_package(Torch REQUIRED)
 # Any new source files that you add to the plugin should be added here.
 list(APPEND PLUGIN_SOURCES
-  "native_pytorch_plugin.cc"
+  "pytorch_dart_plugin.cc"
   "../src/torch.cc"
   "../src/tensor.cc"
   
@@ -48,7 +48,7 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE flutter)
 target_link_libraries(${PLUGIN_NAME} PRIVATE PkgConfig::GTK)
 
 
-target_link_libraries(${PLUGIN_NAME} PRIVATE "${TORCH_LIBRARIES}")
+target_link_libraries(${PLUGIN_NAME} PRIVATE ${TORCH_LIBRARIES})
 set_property(TARGET ${PLUGIN_NAME} PROPERTY CXX_STANDARD 17)
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an

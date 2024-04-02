@@ -50,7 +50,7 @@ flutter:
       ios:
         pluginClass: NativePytorchPlugin
       linux:
-        pluginClass: NativePytorchPlugin
+        pluginClass: PytorchDartPlugin
       windows:
         pluginClass: PytorchDartPlugin
 executables:
