@@ -45,8 +45,8 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.native_pytorch
-        pluginClass: NativePytorchPlugin
+        package: com.example.pytorch_dart
+        pluginClass: PytorchDartPlugin
       ios:
         pluginClass: NativePytorchPlugin
       linux:
