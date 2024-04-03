@@ -1,7 +1,7 @@
 # pytorch_dart
 
 A dart wrapper for Libtorch,provides some fundametal bindings.
-You can use it as an alternative to NumPy.
+You can use it as an alternative to NumPy in your Flutter projects.
 
 ## Getting Started
 ### Add pytorch_dart to your pubspec.yaml  
