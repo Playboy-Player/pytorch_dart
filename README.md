@@ -9,14 +9,14 @@ You can use it as an alternative to NumPy.
     pytorch_dart:^0.0.7
 ```
 ### Setup
- ```
+    ```
     dart run pytorch_dart:setup --platform <your_platform>
-```
+    ```
     `<your_platform>` only support `linux` , `android` and `windows` now.  
      
 
 ### Enjoy it!
- ```dart
+```dart
     import 'package:pytorch_dart/pytorch_dart.dart' as torch;
 
 ```
@@ -25,16 +25,17 @@ You can use it as an alternative to NumPy.
 
     Then add a column in 'android/local.properties'  
 
-```
+    ```
     ndk.dir=<path_to_your_ndk>/21.4.7075529
-```
+    ```
     After adding a column,your 'local.properties' should look like this:  
-```
+
+    ```
     flutter.sdk=/home/pc/flutter
     sdk.dir=/home/pc/Android/Sdk
     flutter.buildMode=debug
     ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
-```
+    ```
 ### For windows developers
 #### Troubleshooting
 ```
