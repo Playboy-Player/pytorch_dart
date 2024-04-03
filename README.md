@@ -12,7 +12,8 @@ You can use it as an alternative to NumPy.
     ```
     dart run pytorch_dart:setup --platform <your_platform>
     ```
-    `<your_platform>` only support `linux` , `android` and `windows` now.  
+
+`<your_platform>` only support `linux` , `android` and `windows` now.  
      
 
 ### Enjoy it!
@@ -21,14 +22,14 @@ You can use it as an alternative to NumPy.
 
 ```
 ### For Android developers  
-    libtorch for andoroid needs a specific version of NDK,so [install NDK](https://developer.android.com/studio/projects/install-ndk?hl=zh-cn) and choose version 21.4.7075529  
+libtorch for andoroid needs a specific version of NDK,so [install NDK](https://developer.android.com/studio/projects/install-ndk?hl=zh-cn) and choose version 21.4.7075529  
 
-    Then add a column in 'android/local.properties'  
+Then add a column in 'android/local.properties'  
 
     ```
     ndk.dir=<path_to_your_ndk>/21.4.7075529
     ```
-    After adding a column,your 'local.properties' should look like this:  
+After adding a column,your 'local.properties' should look like this:  
 
     ```
     flutter.sdk=/home/pc/flutter
