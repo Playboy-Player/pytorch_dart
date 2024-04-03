@@ -26,9 +26,9 @@ libtorch for andoroid needs a specific version of NDK,so [install NDK](https://d
 
 Then add a column in 'android/local.properties'  
 
-    ```
+    
     ndk.dir=<path_to_your_ndk>/21.4.7075529
-    ```
+    
 After adding a column,your 'local.properties' should look like this:  
 
     ```
