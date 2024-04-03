@@ -4,17 +4,23 @@ A dart wrapper for Libtorch,provides some fundametal bindings.
 You can use it as an alternative to NumPy.
 
 ## Getting Started
-1. Add pytorch_dart to your pubspec.yaml
-2. ```
+### Add pytorch_dart to your pubspec.yaml  
+```
+    pytorch_dart:^0.0.7
+```
+### Setup
+ ```
     dart run pytorch_dart:setup --platform <your_platform>
-    ```
-    `<your_platform>` only support `linux` and `android` now.  
-    Attention:In setup,you need to have access to Google Drive.
-3. ```dart
+```
+    `<your_platform>` only support `linux` , `android` and `windows` now.  
+     
+
+### Enjoy it!
+ ```dart
     import 'package:pytorch_dart/pytorch_dart.dart' as torch;
 
-    ```
-4. For Android developers
+```
+### For Android developers  
     libtorch for andoroid needs a specific version of NDK,so [install NDK](https://developer.android.com/studio/projects/install-ndk?hl=zh-cn) and choose version 21.4.7075529  
 
     Then add a column in 'android/local.properties'  
@@ -29,6 +35,18 @@ You can use it as an alternative to NumPy.
     flutter.buildMode=debug
     ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
     ```
+### For windows developers
+#### Troubleshooting
+```
+Launching lib\main.dart on Windows in debug mode...
+√  Built build\windows\x64\runner\Debug\example.exe.
+Error waiting for a debug connection: The log reader stopped unexpectedly, or never started.
+Error launching application on Windows.
+```
+#### Solutions:  
+1. Download libtorch from [here](https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-2.2.2%2Bcpu.zip)  
+2. Unzip it
+3. copy all the files from `libtorch\lib\` to `build\windows\x64\runner\Debug\`
 
 ## Usage
 1. It only include some basic functions about torch.Tensor now
@@ -53,7 +71,8 @@ print(d);
 ```
 Result:
 ```
-flutter:  1  0
+flutter:
+ 1  0
  0  1
  0  0
 [ CPUFloatType{3,2} ]
