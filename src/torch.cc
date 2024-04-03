@@ -1,20 +1,15 @@
 // Copyright 2020, GoTorch Authors
+
 #include "torch.h"
 #include "math.h"
-#if defined(__GNUC__)
-// Attributes to prevent 'unused' function from being removed and to make it visible
-#define FUNCTION_ATTRIBUTE __attribute__((visibility("default"))) __attribute__((used))
-#elif defined(_MSC_VER)
-// Marking a function for export
-#define FUNCTION_ATTRIBUTE __declspec(dllexport)
-#endif
+
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////
 
-FUNCTION_ATTRIBUTE const char *exception_str(const char *e)
+   const char *exception_str(const char *e)
 {
   auto len = strlen(e);
   auto r = new char[len + 1];
@@ -26,7 +21,7 @@ FUNCTION_ATTRIBUTE const char *exception_str(const char *e)
 // Tensor construction and operations
 ////////////////////////////////////////////////////////////////////////////////
 
-FUNCTION_ATTRIBUTE const char *RandN(int64_t *size, int64_t length, int64_t requires_grad,
+   const char *RandN(int64_t *size, int64_t length, int64_t requires_grad,
                                      Tensor *result)
 {
   try
@@ -43,7 +38,7 @@ FUNCTION_ATTRIBUTE const char *RandN(int64_t *size, int64_t length, int64_t requ
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Rand(int64_t *size, int64_t length, int64_t requires_grad,
+   const char *Rand(int64_t *size, int64_t length, int64_t requires_grad,
                                     Tensor *result)
 {
   try
@@ -60,7 +55,7 @@ FUNCTION_ATTRIBUTE const char *Rand(int64_t *size, int64_t length, int64_t requi
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Stack(Tensor *tensors, int64_t tensors_size, int64_t dim,
+   const char *Stack(Tensor *tensors, int64_t tensors_size, int64_t dim,
                                      Tensor *result)
 {
   try
@@ -78,7 +73,7 @@ FUNCTION_ATTRIBUTE const char *Stack(Tensor *tensors, int64_t tensors_size, int6
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Empty(int64_t *size, int64_t length, int64_t requires_grad,
+   const char *Empty(int64_t *size, int64_t length, int64_t requires_grad,
                                      Tensor *result)
 {
   try
@@ -96,7 +91,7 @@ FUNCTION_ATTRIBUTE const char *Empty(int64_t *size, int64_t length, int64_t requ
 }
 
 // torch.ones
-FUNCTION_ATTRIBUTE const char *Ones(int64_t *size, int64_t length, int64_t requires_grad,
+   const char *Ones(int64_t *size, int64_t length, int64_t requires_grad,
                                     Tensor *result)
 {
   try
@@ -114,7 +109,7 @@ FUNCTION_ATTRIBUTE const char *Ones(int64_t *size, int64_t length, int64_t requi
 }
 
 // torch.eye
-FUNCTION_ATTRIBUTE const char *Eye(int64_t n, int64_t m, int64_t requires_grad, Tensor *result)
+   const char *Eye(int64_t n, int64_t m, int64_t requires_grad, Tensor *result)
 {
   try
   {
@@ -148,7 +143,7 @@ const char *Full(int64_t *size, int64_t length, float value,
 }
 
 // torch.arange
-FUNCTION_ATTRIBUTE const char *Arange(float start, float end, float step, int64_t requires_grad,
+   const char *Arange(float start, float end, float step, int64_t requires_grad,
                                       Tensor *result)
 {
   try
@@ -165,7 +160,7 @@ FUNCTION_ATTRIBUTE const char *Arange(float start, float end, float step, int64_
 }
 
 // torch.linspace
-FUNCTION_ATTRIBUTE const char *Linspace(float start, float end, int64_t steps,
+   const char *Linspace(float start, float end, int64_t steps,
                                         int64_t requires_grad, Tensor *result)
 {
   try
@@ -182,7 +177,7 @@ FUNCTION_ATTRIBUTE const char *Linspace(float start, float end, int64_t steps,
 }
 
 // torch.logspace
-FUNCTION_ATTRIBUTE const char *Logspace(float start, float end, int64_t steps, double base,
+   const char *Logspace(float start, float end, int64_t steps, double base,
                                         int64_t requires_grad, Tensor *result)
 {
   try
@@ -199,7 +194,7 @@ FUNCTION_ATTRIBUTE const char *Logspace(float start, float end, int64_t steps, d
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Equal(Tensor a, Tensor b, int64_t *result)
+   const char *Equal(Tensor a, Tensor b, int64_t *result)
 {
   try
   {
@@ -212,7 +207,7 @@ FUNCTION_ATTRIBUTE const char *Equal(Tensor a, Tensor b, int64_t *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *MM(Tensor a, Tensor b, Tensor *result)
+   const char *MM(Tensor a, Tensor b, Tensor *result)
 {
   try
   {
@@ -226,7 +221,7 @@ FUNCTION_ATTRIBUTE const char *MM(Tensor a, Tensor b, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Sum(Tensor a, Tensor *result)
+   const char *Sum(Tensor a, Tensor *result)
 {
   try
   {
@@ -239,7 +234,7 @@ FUNCTION_ATTRIBUTE const char *Sum(Tensor a, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *SumByDim(Tensor a, int64_t dim, int8_t keepDim, Tensor *result)
+   const char *SumByDim(Tensor a, int64_t dim, int8_t keepDim, Tensor *result)
 {
   try
   {
@@ -252,7 +247,7 @@ FUNCTION_ATTRIBUTE const char *SumByDim(Tensor a, int64_t dim, int8_t keepDim, T
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Relu(Tensor a, Tensor *result)
+   const char *Relu(Tensor a, Tensor *result)
 {
   try
   {
@@ -265,7 +260,7 @@ FUNCTION_ATTRIBUTE const char *Relu(Tensor a, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *LeakyRelu(Tensor a, double negative_slope, Tensor *result)
+   const char *LeakyRelu(Tensor a, double negative_slope, Tensor *result)
 {
   try
   {
@@ -278,7 +273,7 @@ FUNCTION_ATTRIBUTE const char *LeakyRelu(Tensor a, double negative_slope, Tensor
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Tanh(Tensor a, Tensor *result)
+   const char *Tanh(Tensor a, Tensor *result)
 {
   try
   {
@@ -291,7 +286,7 @@ FUNCTION_ATTRIBUTE const char *Tanh(Tensor a, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Sigmoid(Tensor a, Tensor *result)
+   const char *Sigmoid(Tensor a, Tensor *result)
 {
   try
   {
@@ -304,7 +299,7 @@ FUNCTION_ATTRIBUTE const char *Sigmoid(Tensor a, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Add(Tensor a, Tensor other, float alpha, Tensor *result)
+   const char *Add(Tensor a, Tensor other, float alpha, Tensor *result)
 {
   try
   {
@@ -327,7 +322,7 @@ FUNCTION_ATTRIBUTE const char *Add(Tensor a, Tensor other, float alpha, Tensor *
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Add_(Tensor a, Tensor other, float alpha, Tensor *result)
+   const char *Add_(Tensor a, Tensor other, float alpha, Tensor *result)
 {
   try
   {
@@ -350,7 +345,7 @@ FUNCTION_ATTRIBUTE const char *Add_(Tensor a, Tensor other, float alpha, Tensor 
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Sub(Tensor a, Tensor other, float alpha, Tensor *result)
+   const char *Sub(Tensor a, Tensor other, float alpha, Tensor *result)
 {
   try
   {
@@ -373,7 +368,7 @@ FUNCTION_ATTRIBUTE const char *Sub(Tensor a, Tensor other, float alpha, Tensor *
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Sub_(Tensor a, Tensor other, float alpha, Tensor *result)
+   const char *Sub_(Tensor a, Tensor other, float alpha, Tensor *result)
 {
   try
   {
@@ -396,7 +391,7 @@ FUNCTION_ATTRIBUTE const char *Sub_(Tensor a, Tensor other, float alpha, Tensor 
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Mul(Tensor a, Tensor other, Tensor *result)
+   const char *Mul(Tensor a, Tensor other, Tensor *result)
 {
   try
   {
@@ -409,7 +404,7 @@ FUNCTION_ATTRIBUTE const char *Mul(Tensor a, Tensor other, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Mul_(Tensor a, Tensor other, Tensor *result)
+   const char *Mul_(Tensor a, Tensor other, Tensor *result)
 {
   try
   {
@@ -422,7 +417,7 @@ FUNCTION_ATTRIBUTE const char *Mul_(Tensor a, Tensor other, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Div(Tensor a, Tensor other, Tensor *result)
+   const char *Div(Tensor a, Tensor other, Tensor *result)
 {
   try
   {
@@ -435,7 +430,7 @@ FUNCTION_ATTRIBUTE const char *Div(Tensor a, Tensor other, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Div_(Tensor a, Tensor other, Tensor *result)
+   const char *Div_(Tensor a, Tensor other, Tensor *result)
 {
   try
   {
@@ -448,7 +443,7 @@ FUNCTION_ATTRIBUTE const char *Div_(Tensor a, Tensor other, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Permute(Tensor a, int64_t *dims, int64_t dims_size,
+   const char *Permute(Tensor a, int64_t *dims, int64_t dims_size,
                                        Tensor *result)
 {
   try
@@ -463,7 +458,7 @@ FUNCTION_ATTRIBUTE const char *Permute(Tensor a, int64_t *dims, int64_t dims_siz
   }
 }
 
-FUNCTION_ATTRIBUTE const char *AllClose(Tensor a, Tensor b, int64_t *result)
+   const char *AllClose(Tensor a, Tensor b, int64_t *result)
 {
   try
   {
@@ -476,7 +471,7 @@ FUNCTION_ATTRIBUTE const char *AllClose(Tensor a, Tensor b, int64_t *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Flatten(Tensor a, int64_t startDim, int64_t endDim,
+   const char *Flatten(Tensor a, int64_t startDim, int64_t endDim,
                                        Tensor *result)
 {
   try
@@ -490,7 +485,7 @@ FUNCTION_ATTRIBUTE const char *Flatten(Tensor a, int64_t startDim, int64_t endDi
   }
 }
 
-FUNCTION_ATTRIBUTE const char *TopK(Tensor a, int64_t k, int64_t dim, int8_t largest,
+   const char *TopK(Tensor a, int64_t k, int64_t dim, int8_t largest,
                                     int8_t sorted, Tensor *values, Tensor *indices)
 {
   try
@@ -506,7 +501,7 @@ FUNCTION_ATTRIBUTE const char *TopK(Tensor a, int64_t k, int64_t dim, int8_t lar
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Transpose(Tensor a, int64_t dim0, int64_t dim1, Tensor *result)
+   const char *Transpose(Tensor a, int64_t dim0, int64_t dim1, Tensor *result)
 {
   try
   {
@@ -519,7 +514,7 @@ FUNCTION_ATTRIBUTE const char *Transpose(Tensor a, int64_t dim0, int64_t dim1, T
   }
 }
 
-FUNCTION_ATTRIBUTE const char *ExpandAs(Tensor a, Tensor other, Tensor *result)
+   const char *ExpandAs(Tensor a, Tensor other, Tensor *result)
 {
   try
   {
@@ -532,7 +527,7 @@ FUNCTION_ATTRIBUTE const char *ExpandAs(Tensor a, Tensor other, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Eq(Tensor a, Tensor other, Tensor *result)
+   const char *Eq(Tensor a, Tensor other, Tensor *result)
 {
   try
   {
@@ -545,7 +540,7 @@ FUNCTION_ATTRIBUTE const char *Eq(Tensor a, Tensor other, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *IndexSelect(Tensor a, int64_t dim, Tensor index, Tensor *result)
+   const char *IndexSelect(Tensor a, int64_t dim, Tensor index, Tensor *result)
 {
   try
   {
@@ -558,7 +553,7 @@ FUNCTION_ATTRIBUTE const char *IndexSelect(Tensor a, int64_t dim, Tensor index, 
   }
 }
 
-FUNCTION_ATTRIBUTE const char *View(Tensor a, Tensor *result, int64_t *size, int64_t size_len)
+   const char *View(Tensor a, Tensor *result, int64_t *size, int64_t size_len)
 {
   try
   {
@@ -571,7 +566,7 @@ FUNCTION_ATTRIBUTE const char *View(Tensor a, Tensor *result, int64_t *size, int
   }
 }
 
-FUNCTION_ATTRIBUTE const char *LogSoftmax(Tensor a, int64_t dim, Tensor *result)
+   const char *LogSoftmax(Tensor a, int64_t dim, Tensor *result)
 {
   try
   {
@@ -584,7 +579,7 @@ FUNCTION_ATTRIBUTE const char *LogSoftmax(Tensor a, int64_t dim, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Squeeze(Tensor a, Tensor *result)
+   const char *Squeeze(Tensor a, Tensor *result)
 {
   try
   {
@@ -597,7 +592,7 @@ FUNCTION_ATTRIBUTE const char *Squeeze(Tensor a, Tensor *result)
   }
 }
 
-FUNCTION_ATTRIBUTE const char *SqueezeWithDim(Tensor a, int64_t dim, Tensor *result)
+   const char *SqueezeWithDim(Tensor a, int64_t dim, Tensor *result)
 {
   try
   {
@@ -614,7 +609,7 @@ FUNCTION_ATTRIBUTE const char *SqueezeWithDim(Tensor a, int64_t dim, Tensor *res
 // value nullptr indicate not-specified.  Please be aware that we need only one
 // "pointerized" parameter because C++ doesn't allow named parameters and the
 // rest optional parameters don't need to be pointerized.
-FUNCTION_ATTRIBUTE const char *Argmin(Tensor a, int64_t *dim, int8_t keepdim, Tensor *result)
+   const char *Argmin(Tensor a, int64_t *dim, int8_t keepdim, Tensor *result)
 {
   try
   {
@@ -634,7 +629,7 @@ FUNCTION_ATTRIBUTE const char *Argmin(Tensor a, int64_t *dim, int8_t keepdim, Te
   }
 }
 
-FUNCTION_ATTRIBUTE const char *Argmax(Tensor a, int64_t *dim, int8_t keepdim, Tensor *result)
+   const char *Argmax(Tensor a, int64_t *dim, int8_t keepdim, Tensor *result)
 {
   try
   {

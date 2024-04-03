@@ -21,8 +21,8 @@ message("${TORCH_INCLUDE_DIRS}")
 list(APPEND PLUGIN_SOURCES
   "pytorch_dart_plugin.cpp"
   "pytorch_dart_plugin.h"
-  "../src-win/torch.cc"
-  "../src-win/tensor.cc"
+  "../src/torch.cc"
+  "../src/tensor.cc"
 )
 if(WIN32)
   add_definitions("/wd4018")
