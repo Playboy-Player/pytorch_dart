@@ -2,52 +2,53 @@
 # installed that includes CMake 3.14 or later. You should not increase this
 # version, as doing so will cause the plugin to fail to compile for some
 # customers of the plugin.
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
+
 # Project-level configuration.
 set(PROJECT_NAME "pytorch_dart")
 project(${PROJECT_NAME} LANGUAGES CXX)
-
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../libtorch-windows/libtorch/share/cmake")
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
-cmake_policy(VERSION 3.10...3.25)
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../libtorch-windows/libtorch/share/cmake/Torch")
+cmake_policy(VERSION 3.14...3.25)
+
 # This value is used when generating builds using this plugin, so it must
 # not be changed
 set(PLUGIN_NAME "pytorch_dart_plugin")
 find_package(Torch REQUIRED)
-message("${CMAKE_PREFIX_PATH}")
-message("${TORCH_INCLUDE_DIRS}")
 # Any new source files that you add to the plugin should be added here.
 list(APPEND PLUGIN_SOURCES
   "pytorch_dart_plugin.cpp"
-  "pytorch_dart_plugin.h"
   "../src/torch.cc"
   "../src/tensor.cc"
+  
 )
 if(WIN32)
-  add_definitions("/wd4018")
-  add_definitions("/wd4267")
-  add_definitions("/wd4996")
-  add_definitions("/wd4702")
-  add_definitions("/wd2220")
-endif(WIN32)
+    add_compile_options(/wd4018)
+    add_compile_options(/wd4267)
+    add_compile_options(/wd4996)
+    add_compile_options(/wd4702)
+endif()
 # Define the plugin library target. Its name must not be changed (see comment
 # on PLUGIN_NAME above).
 add_library(${PLUGIN_NAME} SHARED
-  "include/pytorch_dart/pytorch_dart_plugin.h"
+  "include/pytorch_dart/pytorch_dart_plugin_c_api.h"
   "pytorch_dart_plugin_c_api.cpp"
   ${PLUGIN_SOURCES}
 )
-target_include_directories(${PLUGIN_NAME} INTERFACE
-  "${CMAKE_CURRENT_SOURCE_DIR}/include")
-target_include_directories(${PLUGIN_NAME} PUBLIC
-        ${TORCH_INCLUDE_DIRS})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+
 # Apply a standard set of build settings that are configured in the
 # application-level CMakeLists.txt. This can be removed for plugins that want
 # full control over build settings.
 apply_standard_settings(${PLUGIN_NAME})
-
+if (WIN32)
+  file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
+  add_custom_command(TARGET ${PLUGIN_NAME}
+                     POST_BUILD
+                     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                     ${TORCH_DLLS}
+                     $<TARGET_FILE_DIR:${PLUGIN_NAME}>)
+endif (WIN32)
 # Symbols are hidden by default to reduce the chance of accidental conflicts
 # between plugins. This should not be removed; any symbols that should be
 # exported should be explicitly exported with the FLUTTER_PLUGIN_EXPORT macro.
@@ -57,9 +58,11 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 
 # Source include directories and library dependencies. Add any plugin-specific
 # dependencies here.
-
+target_include_directories(${PLUGIN_NAME} INTERFACE
+  "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
-target_link_libraries(${PLUGIN_NAME} PUBLIC "${TORCH_LIBRARIES}")
+target_link_libraries(${PLUGIN_NAME} PRIVATE ${TORCH_LIBRARIES})
+set_property(TARGET ${PLUGIN_NAME} PROPERTY CXX_STANDARD 17)
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
 # external build triggered from this build file.
@@ -67,14 +70,7 @@ set(pytorch_dart_bundled_libraries
   ""
   PARENT_SCOPE
 )
-if (MSVC)
-  file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
-  add_custom_command(TARGET ${PLUGIN_NAME}
-                     POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                     ${TORCH_DLLS}
-                     $<TARGET_FILE_DIR:${PLUGIN_NAME}>)
-endif (MSVC)
+
 # === Tests ===
 # These unit tests can be run from a terminal after building the example, or
 # from Visual Studio after opening the generated solution file.

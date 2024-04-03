@@ -6,9 +6,9 @@
 
 #include "generated_plugin_registrant.h"
 
-#include <pytorch_dart/pytorch_dart_plugin.h>
+#include <pytorch_dart/pytorch_dart_plugin_c_api.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
-  PytorchDartPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("PytorchDartPlugin"));
+  PytorchDartPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("PytorchDartPluginCApi"));
 }

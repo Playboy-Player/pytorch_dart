@@ -52,7 +52,7 @@ flutter:
       linux:
         pluginClass: PytorchDartPlugin
       windows:
-        pluginClass: PytorchDartPlugin
+        pluginClass: PytorchDartPluginCApi
 executables:
   setup: setup
 
