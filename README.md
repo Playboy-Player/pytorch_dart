@@ -31,12 +31,12 @@ Then add a column in 'android/local.properties'
     
 After adding a column,your 'local.properties' should look like this:  
 
-    ```
+    
     flutter.sdk=/home/pc/flutter
     sdk.dir=/home/pc/Android/Sdk
     flutter.buildMode=debug
     ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
-    ```
+    
 ### For windows developers
 #### Troubleshooting
 ```
