@@ -24,9 +24,9 @@ void Tensor_Close(Tensor a);
 void FreeString(const char *s);
 const char *Tensor_Save(Tensor tensor, const char *path);
 const char *Tensor_Load(const char *path, Tensor *result);
-const char *Tensor_Dim(Tensor tensor, int64_t *dim);
-const char *Tensor_Shape(Tensor tensor, int64_t *dims);
-const char *Tensor_Dtype(Tensor tensor, int8_t *dtype);
+FUNCTION_ATTRIBUTE const char *Tensor_Dim(Tensor tensor, int64_t *dim);
+FUNCTION_ATTRIBUTE const char *Tensor_Shape(Tensor tensor, int64_t *dims);
+FUNCTION_ATTRIBUTE const char *Tensor_Dtype(Tensor tensor, int8_t *dtype);
 const char *Tensor_SetData(Tensor self, Tensor new_data);
 FUNCTION_ATTRIBUTE const char *Tensor_FromBlob(void *data, int8_t dtype, int64_t *sizes_data,
                             int64_t sizes_data_len, Tensor *result);
