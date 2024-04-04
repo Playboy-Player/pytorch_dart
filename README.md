@@ -9,9 +9,9 @@ You can use it as an alternative to NumPy in your Flutter projects.
     pytorch_dart:^0.0.7
 ```
 ### Setup
-    ```dart
+```dart
     run pytorch_dart:setup --platform <your_platform>
-    ```
+```
 
 `<your_platform>` only support `linux` , `android` and `windows` now.  
      
