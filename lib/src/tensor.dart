@@ -1,4 +1,3 @@
-
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
@@ -39,8 +38,8 @@ final Pointer<Utf8> Function(
                     Pointer<Pointer<Void>> result)>>('Eye')
         .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Int64> size, int length,double value,int requiresGrad,
-        Pointer<Pointer<Void>> result) _full =
+final Pointer<Utf8> Function(Pointer<Int64> size, int length, double value,
+        int requiresGrad, Pointer<Pointer<Void>> result) _full =
     nativeLib
         .lookup<
             NativeFunction<
@@ -53,7 +52,8 @@ final Pointer<Utf8> Function(Pointer<Int64> size, int length,double value,int re
         .asFunction();
 
 final Pointer<Utf8> Function(Pointer<Void>) _print = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void>)>>('Tensor_Print')
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void>)>>(
+        'Tensor_Print')
     .asFunction();
 
 final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>> result)
@@ -63,12 +63,18 @@ final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>> result)
                 Pointer<Utf8> Function(Pointer<Void> tensor,
                     Pointer<Pointer<Void>> result)>>('Tensor_Detach')
         .asFunction();
-final Pointer<Utf8> Function(Pointer<Void>,Pointer<Int64>) _shape = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void>,Pointer<Int64>)>>('Tensor_Shape')
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int64>) _shape = nativeLib
+    .lookup<
+        NativeFunction<
+            Pointer<Utf8> Function(
+                Pointer<Void>, Pointer<Int64>)>>('Tensor_Shape')
     .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Void>,Pointer<Int64>) _dim = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void>,Pointer<Int64>)>>('Tensor_Dim')
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int64>) _dim = nativeLib
+    .lookup<
+        NativeFunction<
+            Pointer<Utf8> Function(
+                Pointer<Void>, Pointer<Int64>)>>('Tensor_Dim')
     .asFunction();
 final Pointer<Utf8> Function(
         Pointer<Void> data,
@@ -263,7 +269,6 @@ final Pointer<Utf8> Function(
                 Pointer<Pointer<Void>> result)>>('Div_')
     .asFunction();
 
-
 // 类定义
 class TypedNumberList<T extends num> {
   List<T> _values = [];
@@ -305,14 +310,12 @@ class Tensor {
 
   @override
   String toString() {
-    
-    var stringPtr=_print(_tensorPtr);
-    final string=stringPtr.cast<Utf8>().toDartString();
+    var stringPtr = _print(_tensorPtr);
+    final string = stringPtr.cast<Utf8>().toDartString();
     return string;
   }
 
   Tensor detach() {
-   
     final resultTensorPtr = calloc<Pointer<Void>>();
 
     final errorMsg = _detach(_tensorPtr, resultTensorPtr);
@@ -331,9 +334,9 @@ class Tensor {
 
     return tensor;
   }
-int dim()
-{
-  final dimPtr = calloc<Int64>();
+
+  int dim() {
+    final dimPtr = calloc<Int64>();
 
     final errorMsg = _dim(_tensorPtr, dimPtr);
 
@@ -346,17 +349,15 @@ int dim()
       throw Exception(errorString);
     }
 
-    
-    Int64List rawDim=dimPtr.asTypedList(1);
-    int dim=rawDim[0];
+    Int64List rawDim = dimPtr.asTypedList(1);
+    int dim = rawDim[0];
     calloc.free(dimPtr); // 释放结果指针
 
     return dim;
+  }
 
-}
-List<int> shape()
-{
-  final shapePtr = calloc<Int64>();
+  List<int> shape() {
+    final shapePtr = calloc<Int64>();
 
     final errorMsg = _shape(_tensorPtr, shapePtr);
 
@@ -369,17 +370,69 @@ List<int> shape()
       throw Exception(errorString);
     }
 
-    
-    Int64List rawShape=shapePtr.asTypedList(dim());
+    Int64List rawShape = shapePtr.asTypedList(dim());
     calloc.free(shapePtr); // 释放结果指针
-    List<int> shape=List<int>.from(rawShape);
+    List<int> shape = List<int>.from(rawShape);
     return shape;
+  }
 
-}
-void add_(dynamic b,{double alpha=1})
-{if(b==Tensor){
-   final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg = _add_(this._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
+  List<int> size() {
+    final shapePtr = calloc<Int64>();
+
+    final errorMsg = _shape(_tensorPtr, shapePtr);
+
+    // 释放原生数组内存
+
+    // 检查是否有错误信息，如果有，则抛出异常
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+      calloc.free(errorMsg);
+      throw Exception(errorString);
+    }
+
+    Int64List rawShape = shapePtr.asTypedList(dim());
+    calloc.free(shapePtr); // 释放结果指针
+    List<int> shape = List<int>.from(rawShape);
+    return shape;
+  }
+
+  void add_(dynamic b, {double alpha = 1}) {
+    if (b is Tensor) {
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _add_(this._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+    } else if (b is num) {
+      Tensor broadcast = full(shape(), b);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _add_(this._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+    } else {
+      throw Exception("wrong data type.");
+    }
+  }
+
+  void sub_(Tensor b, {double alpha = 1}) {
+    final resultTensorPtr = calloc<Pointer<Void>>();
+    final errorMsg =
+        _sub_(this._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
 
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -387,32 +440,9 @@ void add_(dynamic b,{double alpha=1})
       throw Exception(errorString);
     }
 
-    this._tensorPtr=resultTensorPtr.value;
+    this._tensorPtr = resultTensorPtr.value;
     calloc.free(resultTensorPtr);
-
-}
-else if(b==num){
-
-
-}
-}
-
-void sub_(Tensor b,{double alpha=1})
-{
-   final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg = _sub_(this._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
-
-    if (errorMsg != nullptr) {
-      final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
-      throw Exception(errorString);
-    }
-
-    this._tensorPtr=resultTensorPtr.value;
-    calloc.free(resultTensorPtr);
-
-    
-}
+  }
 }
 
 Tensor from_blob<T extends num>(TypedNumberList<T> list, List<int> sizes_data) {
@@ -528,16 +558,16 @@ Tensor ones(List<int> size, {bool requiresGrad = false}) {
   return tensor;
 }
 
-Tensor full(List<int> size,num values, {bool requiresGrad = false}) {
+Tensor full(List<int> size, num values, {bool requiresGrad = false}) {
   // 将 Dart 的数组转换为原生指针
   final Pointer<Int64> int64Pointer = calloc<Int64>(size.length);
   final Int64List int64List = int64Pointer.asTypedList(size.length);
   int64List.setAll(0, size);
 
-  // 调用 C++ 的 Empty 函数
+  
   final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg =
-      _full(int64Pointer, size.length,values.toDouble(), requiresGrad ? 1 : 0, resultTensorPtr);
+  final errorMsg = _full(int64Pointer, size.length, values.toDouble(),
+      requiresGrad ? 1 : 0, resultTensorPtr);
 
   // 释放原生数组内存
   calloc.free(int64Pointer);
@@ -554,6 +584,7 @@ Tensor full(List<int> size,num values, {bool requiresGrad = false}) {
 
   return tensor;
 }
+
 Tensor eye(int n, int m, {bool requiresGrad = false}) {
   final resultTensorPtr = calloc<Pointer<Void>>();
   final errorMsg = _eye(n, m, requiresGrad ? 1 : 0, resultTensorPtr);
@@ -692,8 +723,8 @@ Tensor sumByDim(Tensor a, int dim, {bool keepDim = false}) {
   return tensor;
 }
 
-Tensor add(Tensor a, Tensor b, {double alpha = 1}) {
-
+Tensor add(Tensor a, dynamic b, {double alpha = 1}) {
+  if (b is Tensor) {
     final resultTensorPtr = calloc<Pointer<Void>>();
     final errorMsg = _add(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
 
@@ -707,73 +738,83 @@ Tensor add(Tensor a, Tensor b, {double alpha = 1}) {
     calloc.free(resultTensorPtr);
 
     return tensor;
-  
+  } else if (b is num) {
+    Tensor broadcast = full(a.shape(), b);
+    final resultTensorPtr = calloc<Pointer<Void>>();
+    final errorMsg =
+        _add(a._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
+
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+      calloc.free(errorMsg);
+      throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr.value);
+    calloc.free(resultTensorPtr);
+
+    return tensor;
+  } else {
+    throw Exception("wrong data type.");
+  }
 }
 
 Tensor sub(Tensor a, Tensor b, {double alpha = 1}) {
-  
-    final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg = _sub(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _sub(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
 
-    if (errorMsg != nullptr) {
-      final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
-      throw Exception(errorString);
-    }
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    calloc.free(errorMsg);
+    throw Exception(errorString);
+  }
 
-    final tensor = Tensor._internal(resultTensorPtr.value);
-    calloc.free(resultTensorPtr);
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
 
-    return tensor;
-  
+  return tensor;
 }
 
 Tensor mul(Tensor a, Tensor b) {
- 
-    final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg = _mul(a._tensorPtr, b._tensorPtr, resultTensorPtr);
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _mul(a._tensorPtr, b._tensorPtr, resultTensorPtr);
 
-    if (errorMsg != nullptr) {
-      final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
-      throw Exception(errorString);
-    }
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    calloc.free(errorMsg);
+    throw Exception(errorString);
+  }
 
-    final tensor = Tensor._internal(resultTensorPtr.value);
-    calloc.free(resultTensorPtr);
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
 
-    return tensor;
-  
+  return tensor;
 }
 
 Tensor div(Tensor a, Tensor b) {
-  
-    final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg = _div(a._tensorPtr, b._tensorPtr, resultTensorPtr);
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _div(a._tensorPtr, b._tensorPtr, resultTensorPtr);
 
-    if (errorMsg != nullptr) {
-      final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
-      throw Exception(errorString);
-    }
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    calloc.free(errorMsg);
+    throw Exception(errorString);
+  }
 
-    final tensor = Tensor._internal(resultTensorPtr.value);
-    calloc.free(resultTensorPtr);
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
 
-    return tensor;
-  
+  return tensor;
 }
 
 Tensor IntTensor(dynamic list) {
   List<num> flatList = [];
   List<int> sizes = [];
-  bool isFirstElement = true; 
+  bool isFirstElement = true;
 
-  
   void flatten(dynamic element, int depth) {
     if (element is List) {
       if (isFirstElement) {
-       
         sizes.add(element.length);
         isFirstElement = false;
       }
@@ -782,26 +823,25 @@ Tensor IntTensor(dynamic list) {
       }
     } else if (element is num) {
       flatList.add(element);
-      isFirstElement = true; 
+      isFirstElement = true;
     }
   }
 
   flatten(list, 0);
-  
-  Tensor outputTensor = from_blob(TypedNumberList<int>(flatList.cast<int>()), sizes);
+
+  Tensor outputTensor =
+      from_blob(TypedNumberList<int>(flatList.cast<int>()), sizes);
   return outputTensor;
 }
 
 Tensor DoubleTensor(dynamic list) {
   List<num> flatList = [];
   List<int> sizes = [];
-  bool isFirstElement = true; 
+  bool isFirstElement = true;
 
-  
   void flatten(dynamic element, int depth) {
     if (element is List) {
       if (isFirstElement) {
-       
         sizes.add(element.length);
         isFirstElement = false;
       }
@@ -810,12 +850,13 @@ Tensor DoubleTensor(dynamic list) {
       }
     } else if (element is num) {
       flatList.add(element);
-      isFirstElement = true; 
+      isFirstElement = true;
     }
   }
 
   flatten(list, 0);
- 
-  Tensor outputTensor = from_blob(TypedNumberList<double>(flatList.cast<double>()), sizes);
+
+  Tensor outputTensor =
+      from_blob(TypedNumberList<double>(flatList.cast<double>()), sizes);
   return outputTensor;
 }

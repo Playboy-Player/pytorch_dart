@@ -314,6 +314,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     {
       *result = new at::Tensor(a->add(*other, alpha));
     }
+  
     return nullptr;
   }
   catch (const std::exception &e)
