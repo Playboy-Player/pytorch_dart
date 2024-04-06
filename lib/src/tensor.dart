@@ -453,7 +453,7 @@ Tensor operator/(dynamic b){
  if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
-          _mul_(this._tensorPtr, b._tensorPtr, resultTensorPtr);
+          _div_(this._tensorPtr, b._tensorPtr, resultTensorPtr);
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -469,7 +469,7 @@ Tensor operator/(dynamic b){
       Tensor broadcast = from_blob([b],[1],dtype: int32);
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
-          _mul_(this._tensorPtr, broadcast._tensorPtr,resultTensorPtr);
+          _div_(this._tensorPtr, broadcast._tensorPtr,resultTensorPtr);
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -486,7 +486,7 @@ Tensor operator/(dynamic b){
         Tensor broadcast = from_blob([b],[1],dtype: float64);
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
-          _mul_(this._tensorPtr, broadcast._tensorPtr, resultTensorPtr);
+          _div_(this._tensorPtr, broadcast._tensorPtr, resultTensorPtr);
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
