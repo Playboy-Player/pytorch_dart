@@ -357,7 +357,7 @@ class Tensor {
   }
 
   List<int> shape() {
-    final shapePtr = calloc<Int64>();
+    final shapePtr = calloc<Int64>(dim());
 
     final errorMsg = _shape(_tensorPtr, shapePtr);
 
@@ -371,13 +371,14 @@ class Tensor {
     }
 
     Int64List rawShape = shapePtr.asTypedList(dim());
-    calloc.free(shapePtr); // 释放结果指针
+    
     List<int> shape = List<int>.from(rawShape);
+    
     return shape;
   }
 
   List<int> size() {
-    final shapePtr = calloc<Int64>();
+    final shapePtr = calloc<Int64>(dim());
 
     final errorMsg = _shape(_tensorPtr, shapePtr);
 
@@ -391,11 +392,13 @@ class Tensor {
     }
 
     Int64List rawShape = shapePtr.asTypedList(dim());
-    calloc.free(shapePtr); // 释放结果指针
+    
     List<int> shape = List<int>.from(rawShape);
+    
     return shape;
   }
 
+  
   void add_(dynamic b, {double alpha = 1}) {
     if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
@@ -411,7 +414,8 @@ class Tensor {
       this._tensorPtr = resultTensorPtr.value;
       calloc.free(resultTensorPtr);
     } else if (b is num) {
-      Tensor broadcast = full(shape(), b);
+      if(b is int){
+      Tensor broadcast = IntTensor([b]);//maybe change to torch.full()
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
           _add_(this._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
@@ -424,24 +428,79 @@ class Tensor {
 
       this._tensorPtr = resultTensorPtr.value;
       calloc.free(resultTensorPtr);
+      }
+      else if(b is double)
+      {
+        Tensor broadcast = DoubleTensor([b]);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _add_(this._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+      }
+      else{throw Exception("wrong data type");}
     } else {
       throw Exception("wrong data type.");
     }
   }
 
-  void sub_(Tensor b, {double alpha = 1}) {
-    final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg =
-        _sub_(this._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
+  void sub_(dynamic b, {double alpha = 1}) {
+    if (b is Tensor) {
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _sub_(this._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
 
-    if (errorMsg != nullptr) {
-      final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
-      throw Exception(errorString);
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+    } else if (b is num) {
+      if(b is int){
+      Tensor broadcast = IntTensor([b]);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _sub_(this._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+      }
+      else if(b is double)
+      {
+        Tensor broadcast = DoubleTensor([b]);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _sub_(this._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+      }
+      else{throw Exception("wrong data type");}
+    } else {
+      throw Exception("wrong data type.");
     }
-
-    this._tensorPtr = resultTensorPtr.value;
-    calloc.free(resultTensorPtr);
   }
 }
 
@@ -725,8 +784,63 @@ Tensor sumByDim(Tensor a, int dim, {bool keepDim = false}) {
 
 Tensor add(Tensor a, dynamic b, {double alpha = 1}) {
   if (b is Tensor) {
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _add_(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr.value);
+      calloc.free(resultTensorPtr);
+      return tensor;
+    } else if (b is num) {
+      if(b is int){
+      Tensor broadcast = IntTensor([b]);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _add_(a._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr.value);
+      calloc.free(resultTensorPtr);
+      return tensor;
+      }
+      else if(b is double)
+      {
+        Tensor broadcast = DoubleTensor([b]);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _add_(a._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr.value);
+      calloc.free(resultTensorPtr);
+      return tensor;
+      }
+      else{throw Exception("wrong data type");}
+    } else {
+      throw Exception("wrong data type.");
+    }
+}
+
+Tensor sub(Tensor a, dynamic b, {double alpha = 1}) {
+  if (b is Tensor) {
     final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg = _add(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
+    final errorMsg = _sub(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
 
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -739,10 +853,10 @@ Tensor add(Tensor a, dynamic b, {double alpha = 1}) {
 
     return tensor;
   } else if (b is num) {
-    Tensor broadcast = full(a.shape(), b);
+    Tensor broadcast = full([1], b);
     final resultTensorPtr = calloc<Pointer<Void>>();
     final errorMsg =
-        _add(a._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
+        _sub(a._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
 
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -759,52 +873,76 @@ Tensor add(Tensor a, dynamic b, {double alpha = 1}) {
   }
 }
 
-Tensor sub(Tensor a, Tensor b, {double alpha = 1}) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _sub(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
+Tensor mul(Tensor a, dynamic b) {
+  if (b is Tensor) {
+    final resultTensorPtr = calloc<Pointer<Void>>();
+    final errorMsg = _mul(a._tensorPtr, b._tensorPtr,resultTensorPtr);
 
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
-    throw Exception(errorString);
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+      calloc.free(errorMsg);
+      throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr.value);
+    calloc.free(resultTensorPtr);
+
+    return tensor;
+  } else if (b is num) {
+    Tensor broadcast = full([1], b);
+    final resultTensorPtr = calloc<Pointer<Void>>();
+    final errorMsg =
+        _mul(a._tensorPtr, broadcast._tensorPtr, resultTensorPtr);
+
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+      calloc.free(errorMsg);
+      throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr.value);
+    calloc.free(resultTensorPtr);
+
+    return tensor;
+  } else {
+    throw Exception("wrong data type.");
   }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
 }
 
-Tensor mul(Tensor a, Tensor b) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _mul(a._tensorPtr, b._tensorPtr, resultTensorPtr);
+Tensor div(Tensor a, dynamic b) {
+  if (b is Tensor) {
+    final resultTensorPtr = calloc<Pointer<Void>>();
+    final errorMsg = _div(a._tensorPtr, b._tensorPtr, resultTensorPtr);
 
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
-    throw Exception(errorString);
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+      calloc.free(errorMsg);
+      throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr.value);
+    calloc.free(resultTensorPtr);
+
+    return tensor;
+  } else if (b is num) {
+    Tensor broadcast = full([1], b);
+    final resultTensorPtr = calloc<Pointer<Void>>();
+    final errorMsg =
+        _div(a._tensorPtr, broadcast._tensorPtr, resultTensorPtr);
+
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+      calloc.free(errorMsg);
+      throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr.value);
+    calloc.free(resultTensorPtr);
+
+    return tensor;
+  } else {
+    throw Exception("wrong data type.");
   }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
-}
-
-Tensor div(Tensor a, Tensor b) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _div(a._tensorPtr, b._tensorPtr, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
 }
 
 Tensor IntTensor(dynamic list) {

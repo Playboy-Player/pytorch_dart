@@ -51,9 +51,9 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
    
      var e=torch.sum(d);
      
-    var f=torch.full([5,5],5);
+    var f=torch.sub(c,30);
    
-    print(f.shape());
+    print(f);
     
      
      
