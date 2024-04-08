@@ -53,7 +53,7 @@ const char *Item(Tensor a, float *result);
 const char *ItemInt64(Tensor a, int64_t *result);
 const char *ItemFloat64(Tensor a, double *result);
 
-const char *Tensor_Index(Tensor a, int64_t *index, int64_t index_len,
+FUNCTION_ATTRIBUTE const char *Tensor_Index(Tensor a, int64_t *index, int64_t index_len,
                          Tensor *result);
 
 #ifdef __cplusplus

@@ -64,6 +64,12 @@ final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>> result)
                 Pointer<Utf8> Function(Pointer<Void> tensor,
                     Pointer<Pointer<Void>> result)>>('Tensor_Detach')
         .asFunction();
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int64>,int,Pointer<Pointer<Void>>) _index = nativeLib
+    .lookup<
+        NativeFunction<
+            Pointer<Utf8> Function(
+                Pointer<Void>, Pointer<Int64>,Int64,Pointer<Pointer<Void>>)>>('Tensor_Index')
+    .asFunction();
 final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int64>) _shape = nativeLib
     .lookup<
         NativeFunction<
@@ -77,6 +83,14 @@ final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int64>) _dim = nativeLib
             Pointer<Utf8> Function(
                 Pointer<Void>, Pointer<Int64>)>>('Tensor_Dim')
     .asFunction();
+
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int8>) _dtype = nativeLib
+    .lookup<
+        NativeFunction<
+            Pointer<Utf8> Function(
+                Pointer<Void>, Pointer<Int8>)>>('Tensor_Dtype')
+    .asFunction();
+
 final Pointer<Utf8> Function(
         Pointer<Void> data,
         int dtype,
@@ -170,6 +184,22 @@ final Pointer<Utf8> Function(
             Pointer<Utf8> Function(Pointer<Void> a, Pointer<Void> other,
                 Pointer<Pointer<Void>> result)>>('MM')
     .asFunction();
+
+    final Pointer<Utf8> Function(Pointer<Void>,int dim0,int dim1, Pointer<Pointer<Void>> result)
+    _transpose = nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Utf8> Function(Pointer<Void> tensor,Int64 dim0,Int64 dim1,
+                    Pointer<Pointer<Void>> result)>>('Transpose')
+        .asFunction();
+
+        final Pointer<Utf8> Function(Pointer<Void>,Pointer<Int64>,int dim_size, Pointer<Pointer<Void>> result)
+    _permute = nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Utf8> Function(Pointer<Void> tensor,Pointer<Int64>,Int64 dim_size,
+                    Pointer<Pointer<Void>> result)>>('Permute')
+        .asFunction();
 
 final Pointer<Utf8> Function(
   Pointer<Void> a,
@@ -504,6 +534,12 @@ Tensor operator/(dynamic b){
     }
 }
 
+ Tensor operator[](int index_num){
+
+  return index([index_num]);
+ }
+
+
 
 
   @override
@@ -553,6 +589,27 @@ Tensor operator/(dynamic b){
 
     return dim;
   }
+ int dtype() {
+    final dtypePtr = calloc<Int8>();
+
+    final errorMsg = _dtype(_tensorPtr, dtypePtr);
+
+    // 释放原生数组内存
+
+    // 检查是否有错误信息，如果有，则抛出异常
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+      calloc.free(errorMsg);
+      throw Exception(errorString);
+    }
+
+    Int8List rawDtype = dtypePtr.asTypedList(1);
+    int dtype = rawDtype[0];
+    calloc.free(dtypePtr); // 释放结果指针
+
+    return dtype;
+  }
+
 
   List<int> shape() {
     final shapePtr = calloc<Int64>(dim());
@@ -700,7 +757,183 @@ Tensor operator/(dynamic b){
       throw Exception("wrong data type.");
     }
   }
+
+ void mul_(dynamic b){
+ if (b is Tensor) {
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _mul_(this._tensorPtr, b._tensorPtr, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+      
+    } else if (b is num) {
+      if(b is int){
+      Tensor broadcast = from_blob([b],[1],dtype: int32);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _mul_(this._tensorPtr, broadcast._tensorPtr,resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+       this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+      
+      }
+      else if(b is double)
+      {
+        Tensor broadcast = from_blob([b],[1],dtype: float64);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _mul_(this._tensorPtr, broadcast._tensorPtr, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+       this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+      
+      }
+      else{throw Exception("wrong data type");}
+    } else {
+      throw Exception("wrong data type.");
+    }
 }
+
+
+ void div_(dynamic b){
+ if (b is Tensor) {
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _div_(this._tensorPtr, b._tensorPtr, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+      this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+      
+    } else if (b is num) {
+      if(b is int){
+      Tensor broadcast = from_blob([b],[1],dtype: int32);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _div_(this._tensorPtr, broadcast._tensorPtr,resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+       this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+      
+      }
+      else if(b is double)
+      {
+        Tensor broadcast = from_blob([b],[1],dtype: float64);
+      final resultTensorPtr = calloc<Pointer<Void>>();
+      final errorMsg =
+          _div_(this._tensorPtr, broadcast._tensorPtr, resultTensorPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        calloc.free(errorMsg);
+        throw Exception(errorString);
+      }
+
+       this._tensorPtr = resultTensorPtr.value;
+      calloc.free(resultTensorPtr);
+      
+      }
+      else{throw Exception("wrong data type");}
+    } else {
+      throw Exception("wrong data type.");
+    }
+}
+
+  Tensor index(List<int> index_list)
+  {final Pointer<Int64> indexPointer = malloc<Int64>(index_list.length);
+     final Int64List indexList = indexPointer.asTypedList(index_list.length);
+    indexList.setAll(0, index_list);
+final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _index(this._tensorPtr,indexPointer,index_list.length, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    calloc.free(errorMsg);
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+
+  return tensor;
+
+  }
+  
+
+
+
+Tensor transpose(int dim0,int dim1) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _transpose(this._tensorPtr,dim0,dim1,resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    calloc.free(errorMsg);
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+
+  return tensor;
+}
+
+
+   Tensor permute(List<int> permute_list)
+  {final Pointer<Int64> permutePointer = malloc<Int64>(permute_list.length);
+     final Int64List permuteList = permutePointer.asTypedList(permute_list.length);
+    permuteList.setAll(0, permute_list);
+final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _permute(this._tensorPtr,permutePointer,permute_list.length, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    calloc.free(errorMsg);
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+
+  return tensor;
+
+  }  
+  
+}
+
+
+
+
 
 Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
   if (dtype==int32) {
@@ -976,6 +1209,42 @@ Tensor mm(Tensor a, Tensor b) {
   return tensor;
 }
 
+Tensor transpose(Tensor a,int dim0,int dim1) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _transpose(a._tensorPtr,dim0,dim1,resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    calloc.free(errorMsg);
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+
+  return tensor;
+}
+
+ Tensor permute(Tensor a,List<int> permute_list)
+  {final Pointer<Int64> permutePointer = malloc<Int64>(permute_list.length);
+     final Int64List permuteList = permutePointer.asTypedList(permute_list.length);
+    permuteList.setAll(0, permute_list);
+final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _permute(a._tensorPtr,permutePointer,permute_list.length, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    calloc.free(errorMsg);
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+
+  return tensor;
+
+  }  
+
 Tensor sum(Tensor a) {
   final resultTensorPtr = calloc<Pointer<Void>>();
   final errorMsg = _sum(a._tensorPtr, resultTensorPtr);
@@ -1009,7 +1278,11 @@ Tensor sumByDim(Tensor a, int dim, {bool keepDim = false}) {
   return tensor;
 }
 
-Tensor add(Tensor a, dynamic b, {double alpha = 1}) {
+Tensor add(dynamic a, dynamic b, {double alpha = 1}) {
+if(a is num){
+  return add(b,a,alpha: alpha);
+}
+else if(a is Tensor){
   if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
@@ -1063,9 +1336,15 @@ Tensor add(Tensor a, dynamic b, {double alpha = 1}) {
       throw Exception("wrong data type.");
     }
 }
+else{throw Exception("wrong data type");}
+}
 
-Tensor sub(Tensor a, dynamic b, {double alpha = 1}) {
- if (b is Tensor) {
+Tensor sub(dynamic a, dynamic b, {double alpha = 1}) {
+ if(a is num){
+  return sub(b,a,alpha: alpha);
+}
+else if(a is Tensor){
+  if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
           _sub(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
@@ -1118,8 +1397,15 @@ Tensor sub(Tensor a, dynamic b, {double alpha = 1}) {
       throw Exception("wrong data type.");
     }
 }
+else{throw Exception("wrong data type");}
+}
 
-Tensor mul(Tensor a, dynamic b) {
+Tensor mul(dynamic a, dynamic b) {
+if(a is num)
+{
+  return mul(b,a);
+}
+else if(a is Tensor){
   if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
@@ -1173,8 +1459,15 @@ Tensor mul(Tensor a, dynamic b) {
       throw Exception("wrong data type.");
     }
 }
+else{throw Exception("wrong data type.");}
+}
 
-Tensor div(Tensor a, dynamic b) {
+Tensor div(dynamic a, dynamic b) {
+  if(a is num)
+{
+  return div(b,a);
+}
+else if(a is Tensor){
   if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
@@ -1228,9 +1521,15 @@ Tensor div(Tensor a, dynamic b) {
       throw Exception("wrong data type.");
     }
 }
+else{throw Exception("wrong data type.");}
+}
 
 
-Tensor add_(Tensor a, dynamic b, {double alpha = 1}) {
+Tensor add_(dynamic a, dynamic b, {double alpha = 1}) {
+  if(a is num){
+  return add_(b,a,alpha: alpha);
+}
+else if(a is Tensor){
   if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
@@ -1284,9 +1583,15 @@ Tensor add_(Tensor a, dynamic b, {double alpha = 1}) {
       throw Exception("wrong data type.");
     }
 }
+else{throw Exception("wrong data type");}
+}
 
-Tensor sub_(Tensor a, dynamic b, {double alpha = 1}) {
- if (b is Tensor) {
+Tensor sub_(dynamic a, dynamic b, {double alpha = 1}) {
+ if(a is num){
+  return sub_(b,a,alpha: alpha);
+}
+else if(a is Tensor){
+  if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
           _sub_(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
@@ -1339,8 +1644,15 @@ Tensor sub_(Tensor a, dynamic b, {double alpha = 1}) {
       throw Exception("wrong data type.");
     }
 }
+else{throw Exception("wrong data type");}
+}
 
-Tensor mul_(Tensor a, dynamic b) {
+Tensor mul_(dynamic a, dynamic b) {
+  if(a is num)
+{
+  return mul_(b,a);
+}
+else if(a is Tensor){
   if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
@@ -1394,8 +1706,15 @@ Tensor mul_(Tensor a, dynamic b) {
       throw Exception("wrong data type.");
     }
 }
+else{throw Exception("wrong data type.");}
+}
 
-Tensor div_(Tensor a, dynamic b) {
+Tensor div_(dynamic a, dynamic b) {
+   if(a is num)
+{
+  return div_(b,a);
+}
+else if(a is Tensor){
   if (b is Tensor) {
       final resultTensorPtr = calloc<Pointer<Void>>();
       final errorMsg =
@@ -1449,6 +1768,8 @@ Tensor div_(Tensor a, dynamic b) {
       throw Exception("wrong data type.");
     }
 }
+else{throw Exception("wrong data type.");}
+}
 
 
 
@@ -1476,6 +1797,33 @@ Tensor IntTensor(dynamic list) {
 
   Tensor outputTensor =
       from_blob(flatList.cast<int>(), sizes,dtype: int32);
+  return outputTensor;
+}
+
+Tensor FloatTensor(dynamic list) {
+  List<num> flatList = [];
+  List<int> sizes = [];
+  bool isFirstElement = true;
+
+  void flatten(dynamic element, int depth) {
+    if (element is List) {
+      if (isFirstElement) {
+        sizes.add(element.length);
+        isFirstElement = false;
+      }
+      for (var subElement in element) {
+        flatten(subElement, depth + 1);
+      }
+    } else if (element is num) {
+      flatList.add(element);
+      isFirstElement = true;
+    }
+  }
+
+  flatten(list, 0);
+
+  Tensor outputTensor =
+      from_blob(flatList.cast<double>(), sizes,dtype:float32);
   return outputTensor;
 }
 
