@@ -142,49 +142,49 @@ flutter: 1
 
 1. `torch.tensor()` is not supported in pytorch_dart,use `torch.IntTensor()`,`torch.FloatTensor` or `torch.DoubleTensor` to create tensors.
 2. Functions avaliable now:
-   `torch.empty()`
-   `torch.eye()`
-   `torch.ones()`
-   `torch.IntTensor(List<int> list)`
-   `torch.FloatTensor(List<double> list)`
-   `torch.DoubleTensor(List<double> list)`
-   `torch.arange(double start, double end, double step,{bool requiresGrad = false})`
-   `torch.linspace(double start, double end, int steps,{bool requiresGrad = false})`
-   `torch.logspace(double start, double end, int steps, double base,{bool requiresGrad = false})`
-   `torch.equal(Tensor a,Tensor b)`
-   `torch.add(Tensor a, tensor b,{double alpha=1})`
-   `torch.sub(Tensor a, tensor b,{double alpha=1})`
-   `torch.mul(Tensor a, tensor b)`
-   `torch.div(Tensor a, tensor b)`
-   `torch.add_(Tensor a, tensor b,{double alpha=1})`
-   `torch.sub_(Tensor a, tensor b,{double alpha=1})`
-   `torch.mul_(Tensor a, tensor b)`
-   `torch.div_(Tensor a, tensor b)`
-   `torch.sum(Tensor a)`
-   `torch.mm(Tensor a, Tensor b)`
-   `torch.transpose(Tensor a,int dim0,int dim1)`
-   `torch.permute(Tensor a,List <int> permute_list)`
-3. Almost all function usages remain consistent with PyTorch.
-4. Some in-place operation are supported,such as `torch.add_()`
-5. Example
+`torch.empty()`  
+`torch.eye()`  
+`torch.ones()`  
+`torch.IntTensor(List<int> list)`  
+`torch.FloatTensor(List<double> list)`  
+`torch.DoubleTensor(List<double> list)`  
+`torch.arange(double start, double end, double step,{bool requiresGrad = false})`  
+`torch.linspace(double start, double end, int steps,{bool requiresGrad = false})`  
+`torch.logspace(double start, double end, int steps, double base,{bool requiresGrad = false})`  
+`torch.equal(Tensor a,Tensor b)`  
+`torch.add(Tensor a, tensor b,{double alpha=1})`  
+`torch.sub(Tensor a, tensor b,{double alpha=1})`  
+`torch.mul(Tensor a, tensor b)`  
+`torch.div(Tensor a, tensor b)`  
+`torch.add_(Tensor a, tensor b,{double alpha=1})`  
+`torch.sub_(Tensor a, tensor b,{double alpha=1})`  
+`torch.mul_(Tensor a, tensor b)`  
+`torch.div_(Tensor a, tensor b)`  
+`torch.sum(Tensor a)`  
+`torch.mm(Tensor a, Tensor b)`  
+`torch.transpose(Tensor a,int dim0,int dim1)`  
+`torch.permute(Tensor a,List <int> permute_list)`  
+12. Almost all function usages remain consistent with PyTorch.
+13. Some in-place operation are supported,such as `torch.add_()`
+14. Example
 
-   ```dart
-   import 'package:pytorch_dart/pytorch_dart.dart' as torch;
-   ...
+    ```dart
+    import 'package:pytorch_dart/pytorch_dart.dart' as torch;
+    ...
 
-   var c=torch.DoubleTensor([[1.0,2.0,3.0],[4.0,5.0,6.0]]);
-   var d=torch.add(10,c)
-   print(d)
-   ```
+    var c=torch.DoubleTensor([[1.0,2.0,3.0],[4.0,5.0,6.0]]);
+    var d=torch.add(10,c)
+    print(d)
+    ```
 
-   Result:
+    Result:
 
-   ```dart
-   flutter:
-    11  12  13
-    14  15  16
-   [ CPUDoubleType{2,3} ]
-   ```
+    ```dart
+    flutter:
+     11  12  13
+     14  15  16
+    [ CPUDoubleType{2,3} ]
+    ```
 
 ### torch.tensor
 
@@ -199,8 +199,11 @@ flutter: 1
    `.mul_()`
    `.div_()`
 2. `.dtype()` is different from its implementation in Pytorch.
+
    In Pytorch,`.dtype` returns an object represents the data type of a tensor
+
    But in pytorch_dart,`.dtype()` returns a number represents the data type of a tensor.(maybe I will rewrite it later)
+
    Example
 
    ```dart
