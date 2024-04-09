@@ -1,6 +1,7 @@
 # Pytorch_Dart
 
 Pytorch_Dart is a dart wrapper for Libtorch,striving to provide an experience identical to [PyTorch](https://github.com/pytorch/pytorch).
+
 You can use it as an alternative to Numpy in your Dart/Flutter projects.
 
 **This package is experimental and APIs may change in the future**.
@@ -48,7 +49,7 @@ Then add a row in `android/local.properties` in your project
 ndk.dir=<path_to_your_ndk>/21.4.7075529
 ```
 
-After adding a column,your `local.properties` should look like this:
+After adding a row,your `local.properties` should look like this:
 
 ```gradle
 flutter.sdk=/home/pc/flutter
@@ -81,7 +82,8 @@ Error launching application on Windows.
 1. It include some basic functions in [torch](https://pytorch.org/docs/stable/torch.html) now.
 2. Support for [torch.nn](https://pytorch.org/docs/stable/nn.html) is coming soon.
 3. **Almost all function usages remain consistent with PyTorch.**
-4. Example
+4. **Broadcasting also works for pytorch_dart.**
+5. Example
 
 ```dart
 var d=torch.eye(3,2);
@@ -163,9 +165,8 @@ flutter: 1
    `torch.transpose(Tensor a,int dim0,int dim1)`
    `torch.permute(Tensor a,List <int> permute_list)`
 3. Almost all function usages remain consistent with PyTorch.
-4. **Broadcasting also works for pytorch_dart.**
-5. Some in-place operation are supported,such as `torch.add_()`
-6. Example
+4. Some in-place operation are supported,such as `torch.add_()`
+5. Example
 
    ```dart
    import 'package:pytorch_dart/pytorch_dart.dart' as torch;
@@ -217,6 +218,8 @@ flutter: 1
    ```
 
    `7` represents `torch.float64.`
+
+   All the corresponding relations are in `lib/src/constants.dart`
 3. Other function usages remain consistent with PyTorch.
 
 ## Roadmap
