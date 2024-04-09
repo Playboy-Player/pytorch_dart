@@ -8,7 +8,15 @@ import 'package:collection/collection.dart';
 Future<void> setup4Linux() async {
 var url = Uri.parse('https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip');
   var filename = 'libtorch-shared-with-deps-latest.zip';
-
+ var packageConfig = await findPackageConfig(Directory.current);
+  if (packageConfig == null) {
+    print("Package config not found.");
+    return;
+  }
+  // 查找特定插件的包信息
+  var pluginPackage = packageConfig.packages.firstWhere((pkg) => pkg.name == 'pytorch_dart');
+  // 使用这个信息得到插件根目录
+  var pluginRootPath = pluginPackage.packageUriRoot.toFilePath(windows: Platform.isWindows);
   // 下载文件
   var response = await http.get(url);
   if (response.statusCode == 200) {
@@ -22,7 +30,7 @@ var url = Uri.parse('https://download.pytorch.org/libtorch/nightly/cpu/libtorch-
 
     // 创建新的目录来解压缩文件
     var newFolder = 'libtorch-linux';
-    var newPath = path.join(Directory.current.path, newFolder);
+    var newPath = path.join(path.dirname(pluginRootPath), newFolder);
     Directory(newPath).createSync(recursive: true);
 
     // 从压缩包中提取文件
@@ -59,7 +67,15 @@ var url = Uri.parse('https://download.pytorch.org/libtorch/nightly/cpu/libtorch-
 Future<void> setup4Windows() async {
 var url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-2.2.2%2Bcpu.zip');
   var filename = 'libtorch-win-shared-with-deps-2.2.2+cpu.zip';
-
+  var packageConfig = await findPackageConfig(Directory.current);
+  if (packageConfig == null) {
+    print("Package config not found.");
+    return;
+  }
+  // 查找特定插件的包信息
+  var pluginPackage = packageConfig.packages.firstWhere((pkg) => pkg.name == 'pytorch_dart');
+  // 使用这个信息得到插件根目录
+  var pluginRootPath = pluginPackage.packageUriRoot.toFilePath(windows: Platform.isWindows);
   // 下载文件
   var response = await http.get(url);
   if (response.statusCode == 200) {
@@ -73,7 +89,7 @@ var url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shar
 
     // 创建新的目录来解压缩文件
     var newFolder = 'libtorch-windows';
-    var newPath = path.join(Directory.current.path, newFolder);
+    var newPath = path.join(path.dirname(pluginRootPath), newFolder);
     Directory(newPath).createSync(recursive: true);
 
     // 从压缩包中提取文件
@@ -117,7 +133,15 @@ Future<void> setup4Android() async {
   var response = await http.get(url);
   if (response.statusCode == 200) {
     var archive = ZipDecoder().decodeBytes(response.bodyBytes);
-
+  var packageConfig = await findPackageConfig(Directory.current);
+  if (packageConfig == null) {
+    print("Package config not found.");
+    return;
+  }
+  // 查找特定插件的包信息
+  var pluginPackage = packageConfig.packages.firstWhere((pkg) => pkg.name == 'pytorch_dart');
+  // 使用这个信息得到插件根目录
+  var pluginRootPath = pluginPackage.packageUriRoot.toFilePath(windows: Platform.isWindows);
     // 存储旧文件夹名到新文件夹名的映射关系
     Map<String, String> dirRenames = {
       'jni': 'lib',
@@ -140,7 +164,7 @@ Future<void> setup4Android() async {
       if (file.isFile) {
         final data = file.content as List<int>;
         final outputPath =
-            path.join("${Directory.current.path}/libtorch-android", filePath);
+            path.join("${pluginRootPath}/libtorch-android", filePath);
         // 确保父目录存在
         final directory = Directory(path.dirname(outputPath));
         if (!directory.existsSync()) {
@@ -149,7 +173,7 @@ Future<void> setup4Android() async {
         File(outputPath)..writeAsBytesSync(data);
       } else {
         Directory(
-            path.join("${Directory.current.path}/libtorch-android", filePath))
+            path.join("${pluginRootPath}/libtorch-android", filePath))
           ..createSync(recursive: true);
       }
     }

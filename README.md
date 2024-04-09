@@ -1,8 +1,6 @@
-# pytorch_dart
+# Pytorch_Dart
 
-A dart wrapper for Libtorch.
-
-Strive to provide an experience identical to [PyTorch](https://github.com/pytorch/pytorch).
+Pytorch_Dart is a dart wrapper for Libtorch,striving to provide an experience identical to [PyTorch](https://github.com/pytorch/pytorch).
 You can use it as an alternative to Numpy in your Dart/Flutter projects.
 
 **This package is experimental and APIs may change in the future**.
@@ -22,7 +20,7 @@ Theoretically you can run pytorch_dart on MacOS by simply replace `/libtorch-lin
 ### Add pytorch_dart to your pubspec.yaml
 
 ```dart
-    pytorch_dart:^0.0.7
+    pytorch_dart:^0.0.9
 ```
 
 ### Setup
@@ -54,9 +52,9 @@ After adding a column,your `local.properties` should look like this:
 
 ```gradle
 flutter.sdk=/home/pc/flutter
-    sdk.dir=/home/pc/Android/Sdk
-    flutter.buildMode=debug
-    ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
+sdk.dir=/home/pc/Android/Sdk
+flutter.buildMode=debug
+ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
 ```
 
 ### For windows developers
@@ -118,6 +116,8 @@ var e=10+c;//cause errors
 Other binary operators (`-`,`*`,`/`)are just like `+`
 
 For operator `[]` ,you can use it just like in Pytorch.
+
+However,in current version,slicing is not supported.Therefore,you cant't use `[a:b]` to select sub tensor.
 
 Example
 
