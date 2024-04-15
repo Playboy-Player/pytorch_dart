@@ -32,7 +32,7 @@
     *result = new at::Tensor(t);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -49,7 +49,7 @@
     *result = new at::Tensor(t);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -67,7 +67,7 @@
     *result = new at::Tensor(out);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -84,7 +84,7 @@
     *result = new at::Tensor(t);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -102,7 +102,7 @@
     *result = new at::Tensor(t);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -118,7 +118,7 @@
     *result = new at::Tensor(t);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -136,7 +136,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(t);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -153,7 +153,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(t);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -170,7 +170,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(t);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -188,7 +188,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(t);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -201,7 +201,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = at::equal(*a, *b) ? 1 : 0;
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -215,7 +215,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(c);
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -228,7 +228,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->sum());
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -241,7 +241,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->sum(dim, keepDim));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -254,7 +254,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->relu());
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -267,7 +267,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(at::leaky_relu(*a, negative_slope));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -280,7 +280,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->tanh());
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -293,7 +293,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->sigmoid());
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -317,7 +317,7 @@ const char *Full(int64_t *size, int64_t length, float value,
   
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -340,7 +340,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     }
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -363,7 +363,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     }
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -386,7 +386,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     }
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -399,7 +399,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(torch::mul(*a, *other));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -412,7 +412,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->mul_(*other));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -425,7 +425,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(torch::div(*a, *other));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -438,7 +438,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->div_(*other));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -453,7 +453,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->permute(d));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -466,7 +466,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = at::allclose(*a, *b) ? 1 : 0;
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -480,7 +480,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(torch::flatten(*a, startDim, endDim));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -496,7 +496,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *indices = new at::Tensor(std::get<1>(outputs));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -509,7 +509,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(torch::transpose(*a, dim0, dim1));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -522,7 +522,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->expand_as(*other));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -535,7 +535,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(torch::eq(*a, *other));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -548,7 +548,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(torch::index_select(*a, dim, *index));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -561,7 +561,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->view(torch::IntArrayRef(size, size_len)));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -574,7 +574,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->log_softmax(dim));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -587,7 +587,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->squeeze());
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -600,7 +600,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     *result = new at::Tensor(a->squeeze(dim));
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -624,7 +624,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     }
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }
@@ -644,7 +644,7 @@ const char *Full(int64_t *size, int64_t length, float value,
     }
     return nullptr;
   }
-  catch (const std::exception &e)
+  catch (const c10::Error &e)
   {
     return exception_str(e.what());
   }

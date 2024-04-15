@@ -10,7 +10,7 @@
   try {
     *result = new at::Tensor(a->detach());
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -19,7 +19,7 @@
   try {
     *result = a->item<float>();
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -28,7 +28,7 @@
   try {
     *result = a->item<int64_t>();
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -37,7 +37,7 @@
   try {
     *result = a->item<double>();
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -46,7 +46,7 @@
   try {
     *result = new at::Tensor(a->mean());
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -72,7 +72,7 @@
   try {
     *dim = tensor->dim();
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -82,7 +82,7 @@
     int i = 0;
     for (int64_t dim : tensor->sizes()) dims[i++] = dim;
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -92,7 +92,7 @@
     auto t = tensor->scalar_type();
     *dtype = static_cast<int8_t>(t);
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -115,7 +115,7 @@ const char *Tensor_To(Tensor input, Device device, int8_t dtype,
     auto result = input->to(*device, static_cast<at::ScalarType>(dtype));
     *output = new at::Tensor(result);
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -129,7 +129,7 @@ const char *Tensor_CUDA(Tensor input, Device device, int8_t non_blocking,
     auto result = input->to(*device, static_cast<bool>(non_blocking));
     *output = new at::Tensor(result);
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -139,7 +139,7 @@ const char *Tensor_CastTo(Tensor input, int8_t dtype, Tensor *output) {
     auto result = input->to(static_cast<at::ScalarType>(dtype));
     *output = new at::Tensor(result);
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -149,7 +149,7 @@ const char *Tensor_CopyTo(Tensor input, Device device, Tensor *output) {
     auto result = input->to(*device);
     *output = new at::Tensor(result);
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -159,7 +159,7 @@ const char *Tensor_CopyTo(Tensor input, Device device, Tensor *output) {
     auto result = input->pin_memory();
     *output = new at::Tensor(result);
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -172,7 +172,7 @@ const char *Tensor_SetData(Tensor self, Tensor new_data) {
   try {
     self->set_data(*new_data);
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -188,7 +188,7 @@ const char *Tensor_SetData(Tensor self, Tensor new_data) {
                  .clone();
     *result = new at::Tensor(t);
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }
@@ -203,7 +203,7 @@ const char *Tensor_SetData(Tensor self, Tensor new_data) {
     at::ArrayRef<at::indexing::TensorIndex> ref(indices.data(), index_len);
     *result = new at::Tensor(input->index(ref));
     return nullptr;
-  } catch (const std::exception &e) {
+  } catch (const c10::Error &e) {
     return exception_str(e.what());
   }
 }

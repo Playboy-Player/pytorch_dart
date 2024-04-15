@@ -317,7 +317,7 @@ class Tensor {
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -333,7 +333,7 @@ class Tensor {
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -350,7 +350,7 @@ class Tensor {
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -375,7 +375,7 @@ class Tensor {
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -391,7 +391,7 @@ class Tensor {
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -408,7 +408,7 @@ class Tensor {
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -432,7 +432,7 @@ class Tensor {
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -448,7 +448,7 @@ class Tensor {
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -465,7 +465,7 @@ class Tensor {
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -487,7 +487,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -503,7 +503,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -520,7 +520,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -559,7 +559,7 @@ Tensor operator/(dynamic b){
     // 检查是否有错误信息，如果有，则抛出异常
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
+      
       throw Exception(errorString);
     }
 
@@ -579,7 +579,7 @@ Tensor operator/(dynamic b){
     // 检查是否有错误信息，如果有，则抛出异常
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
+      
       throw Exception(errorString);
     }
 
@@ -599,7 +599,7 @@ Tensor operator/(dynamic b){
     // 检查是否有错误信息，如果有，则抛出异常
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
+      
       throw Exception(errorString);
     }
 
@@ -621,7 +621,7 @@ Tensor operator/(dynamic b){
     // 检查是否有错误信息，如果有，则抛出异常
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
+      
       throw Exception(errorString);
     }
 
@@ -642,7 +642,7 @@ Tensor operator/(dynamic b){
     // 检查是否有错误信息，如果有，则抛出异常
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
+      
       throw Exception(errorString);
     }
 
@@ -662,7 +662,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -677,7 +677,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -693,7 +693,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -714,7 +714,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -729,7 +729,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -745,7 +745,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -766,7 +766,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -782,7 +782,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -799,7 +799,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -822,7 +822,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -838,7 +838,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -855,7 +855,7 @@ Tensor operator/(dynamic b){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -878,7 +878,7 @@ final resultTensorPtr = calloc<Pointer<Void>>();
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -898,7 +898,7 @@ Tensor transpose(int dim0,int dim1) {
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -918,7 +918,7 @@ final resultTensorPtr = calloc<Pointer<Void>>();
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -955,7 +955,7 @@ Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
 
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
+      
       throw Exception(errorString);
     }
     final tensor = Tensor._internal(resultTensorPtr.value);
@@ -982,7 +982,7 @@ Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
 
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
+      
       throw Exception(errorString);
     }
     final tensor = Tensor._internal(resultTensorPtr.value);
@@ -1010,7 +1010,7 @@ Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
 
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
-      calloc.free(errorMsg);
+      
       throw Exception(errorString);
     }
     final tensor = Tensor._internal(resultTensorPtr.value);
@@ -1040,7 +1040,7 @@ Tensor empty(List<int> size, {bool requiresGrad = false}) {
   // 检查是否有错误信息，如果有，则抛出异常
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1067,7 +1067,7 @@ Tensor ones(List<int> size, {bool requiresGrad = false}) {
   // 检查是否有错误信息，如果有，则抛出异常
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1094,7 +1094,7 @@ Tensor full(List<int> size, num values, {bool requiresGrad = false}) {
   // 检查是否有错误信息，如果有，则抛出异常
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1113,7 +1113,7 @@ Tensor eye(int n, int m, {bool requiresGrad = false}) {
   // 检查是否有错误信息，如果有，则抛出异常
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1131,7 +1131,7 @@ Tensor arange(double start, double end, double step,
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1149,7 +1149,7 @@ Tensor linspace(double start, double end, int steps,
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1167,7 +1167,7 @@ Tensor logspace(double start, double end, int steps, double base,
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1183,7 +1183,7 @@ bool equal(Tensor a, Tensor b) {
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1199,7 +1199,7 @@ Tensor mm(Tensor a, Tensor b) {
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1215,7 +1215,7 @@ Tensor transpose(Tensor a,int dim0,int dim1) {
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1234,7 +1234,7 @@ final resultTensorPtr = calloc<Pointer<Void>>();
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1251,7 +1251,7 @@ Tensor sum(Tensor a) {
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1268,7 +1268,7 @@ Tensor sumByDim(Tensor a, int dim, {bool keepDim = false}) {
 
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
-    calloc.free(errorMsg);
+    
     throw Exception(errorString);
   }
 
@@ -1290,7 +1290,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1306,7 +1306,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1323,7 +1323,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1351,7 +1351,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1367,7 +1367,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1384,7 +1384,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1413,7 +1413,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1429,7 +1429,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1446,7 +1446,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1475,7 +1475,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1491,7 +1491,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1508,7 +1508,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1537,7 +1537,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1553,7 +1553,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1570,7 +1570,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1598,7 +1598,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1614,7 +1614,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1631,7 +1631,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1660,7 +1660,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1676,7 +1676,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1693,7 +1693,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1722,7 +1722,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1738,7 +1738,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
@@ -1755,7 +1755,7 @@ else if(a is Tensor){
 
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
-        calloc.free(errorMsg);
+        
         throw Exception(errorString);
       }
 
