@@ -1,5 +1,5 @@
 // Copyright 2020, GoTorch Authors
-#include "cgotorch/pickle.h"
+#include "pickle.h"
 
 #include <vector>
 

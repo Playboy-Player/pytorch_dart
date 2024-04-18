@@ -52,8 +52,9 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
    
      var e=torch.sum(d);
      
-    var f=torch.from_blob([1.0,2.0,3.0,4.0,5.0,6.0],[2,3],dtype:torch.float32);
-   var g=torch.logspace(1, 3,2,10);
+    var f=torch.from_blob([1.0,2.0,3.0,4.0,5.0,6.0],[2,3],dtype:torch.float64);
+     var h=torch.from_blob([1,2,3,4,5,6],[2,3],dtype:torch.int32);
+   var g=f.toList();
    print(g);
     
    
