@@ -6,7 +6,7 @@
 #include <chrono>
 #ifdef __cplusplus
 #include <torch/torch.h>
-
+#include <torch/script.h>
 #include <vector>
 extern "C" {
 typedef at::Tensor *Tensor;

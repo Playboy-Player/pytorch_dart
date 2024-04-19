@@ -16,7 +16,7 @@ list(APPEND PLUGIN_SOURCES
   "pytorch_dart_plugin.cc"
   "../src/torch.cc"
   "../src/tensor.cc"
-  
+  "../src/tensor4desktop.cc"
 )
 
 

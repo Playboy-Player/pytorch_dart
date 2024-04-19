@@ -21,6 +21,7 @@ list(APPEND PLUGIN_SOURCES
   "pytorch_dart_plugin.cpp"
   "../src/torch.cc"
   "../src/tensor.cc"
+  "../src/tensor4desktop.cc"
   
 )
 if(WIN32)

@@ -52,11 +52,13 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
    
      var e=torch.sum(d);
      
-    var f=torch.from_blob([1.0,2.0,3.0,4.0,5.0,6.0],[2,3],dtype:torch.float64);
-     var h=torch.from_blob([1,2,3,4,5,6],[2,3],dtype:torch.int32);
+    var f=torch.DoubleTensor([1.0,2.0,3.0,4.0,5.0,6.0]);
+     var h=torch.IntTensor([1,2,3,4,5,6]);
    var g=f.toList();
    print(g);
-    
+    torch.save(f,"C:\\Users\\pc\\Desktop\\a.pth");
+    i=torch.load("C:\\Users\\pc\\Desktop\\a.pth");
+    print(i);
    
     
      

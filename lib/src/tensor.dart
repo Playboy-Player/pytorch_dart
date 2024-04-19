@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
@@ -340,6 +341,22 @@ final Pointer<Utf8> Function(
                 Pointer<Pointer<Void>> result)>>('Div_')
     .asFunction();
 
+final Pointer<Utf8> Function(
+  Pointer<Void> a,
+  Pointer<Utf8> path
+) _save = nativeLib
+    .lookup<
+        NativeFunction<
+            Pointer<Utf8> Function(Pointer<Void> a, Pointer<Utf8>)>>('Tensor_Save')
+    .asFunction();
+final Pointer<Utf8> Function(
+  Pointer<Utf8> path,
+  Pointer<Pointer<Void>> a
+) _load = nativeLib
+    .lookup<
+        NativeFunction<
+            Pointer<Utf8> Function(Pointer<Utf8> path,Pointer<Pointer<Void>> a)>>('Tensor_Load')
+    .asFunction();
 // 类定义
 
 
@@ -947,6 +964,9 @@ Tensor transpose(int dim0,int dim1) {
 
   return tensor;
 }
+
+
+
 
 
    Tensor permute(List<int> permute_list)
@@ -1953,6 +1973,61 @@ else{throw Exception("wrong data type.");}
 }
 
 
+void save(Tensor a,String path)
+{if(Platform.isWindows || Platform.isLinux){
+  final units = utf8.encode(path);
+  // 在本地分配足够的内存来复制这个 Uint8List
+  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
+  // 获取 Uint8List 的指针
+  final Uint8List nativeString = result.asTypedList(units.length + 1);
+  // 将 Uint8List 复制到分配的内存中
+  nativeString.setRange(0, units.length, units);
+  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
+  nativeString[units.length] = 0;
+  // 返回指向已编码字符串的指针
+  final path_Utf8= result.cast<Utf8>();
+
+final errorMsg = _save(a._tensorPtr,path_Utf8);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+
+}
+}
+else{throw Exception("only support desktop platform");}
+}
+Tensor load(String path) {
+  if(Platform.isWindows || Platform.isLinux){
+  final units = utf8.encode(path);
+  // 在本地分配足够的内存来复制这个 Uint8List
+  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
+  // 获取 Uint8List 的指针
+  final Uint8List nativeString = result.asTypedList(units.length + 1);
+  // 将 Uint8List 复制到分配的内存中
+  nativeString.setRange(0, units.length, units);
+  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
+  nativeString[units.length] = 0;
+  // 返回指向已编码字符串的指针
+  final path_Utf8= result.cast<Utf8>();
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _load(path_Utf8,resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+
+  return tensor;
+  }
+  else{throw Exception("only support desktop platform");}
+}
+
 
 Tensor IntTensor(dynamic list) {
   List<num> flatList = [];
@@ -2034,3 +2109,4 @@ Tensor DoubleTensor(dynamic list) {
       from_blob(flatList.cast<double>(), sizes,dtype:float64);
   return outputTensor;
 }
+
