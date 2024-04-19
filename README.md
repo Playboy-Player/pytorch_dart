@@ -59,7 +59,9 @@ ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
 ```
 
 Also,'torch.load()' and 'torch.save()' are not available on Android.In fact,they only work well on Linux
-some exceptions they threw in Windows are like this:
+
+Some exceptions they threw in Windows are like this:
+
 ```
 [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: Exception: [enforce fail at inline_container.cc:633] . invalid file name: 
 00007FFAA49D3F08 <unknown symbol address> c10.dll!<unknown symbol> [<unknown file> @ <unknown line number>]

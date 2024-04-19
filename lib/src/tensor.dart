@@ -11,7 +11,7 @@ final DynamicLibrary nativeLib = Platform.isAndroid
     ? DynamicLibrary.open('libpytorch_dart.so')
     : DynamicLibrary.process();
 
-final Pointer<Utf8> Function(Pointer<Int64> size, int length, int requiresGrad,
+final Pointer<Utf8> Function(Pointer<Int64> size, int length, int requiresGrad,int dtype,
         Pointer<Pointer<Void>> result) _empty =
     nativeLib
         .lookup<
@@ -20,23 +20,24 @@ final Pointer<Utf8> Function(Pointer<Int64> size, int length, int requiresGrad,
                     Pointer<Int64> size,
                     Int64 length,
                     Int64 requiresGrad,
+                    Int8 dtype,
                     Pointer<Pointer<Void>> result)>>('Empty')
         .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Int64> size, int length, int requiresGrad,
+final Pointer<Utf8> Function(Pointer<Int64> size, int length, int requiresGrad,int dtype,
         Pointer<Pointer<Void>> result) _ones =
     nativeLib
         .lookup<
             NativeFunction<
                 Pointer<Utf8> Function(Pointer<Int64> size, Int64 length,
-                    Int64 requiresGrad, Pointer<Pointer<Void>> result)>>('Ones')
+                    Int64 requiresGrad,Int8 dtype, Pointer<Pointer<Void>> result)>>('Ones')
         .asFunction();
 final Pointer<Utf8> Function(
-        int n, int m, int requiresGrad, Pointer<Pointer<Void>> result) _eye =
+        int n, int m, int requiresGrad,int dtype, Pointer<Pointer<Void>> result) _eye =
     nativeLib
         .lookup<
             NativeFunction<
-                Pointer<Utf8> Function(Int64 n, Int64 m, Int64 requiresGrad,
+                Pointer<Utf8> Function(Int64 n, Int64 m, Int64 requiresGrad,Int8 dtype,
                     Pointer<Pointer<Void>> result)>>('Eye')
         .asFunction();
 
@@ -357,6 +358,37 @@ final Pointer<Utf8> Function(
         NativeFunction<
             Pointer<Utf8> Function(Pointer<Utf8> path,Pointer<Pointer<Void>> a)>>('Tensor_Load')
     .asFunction();
+
+
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>> result) _relu = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Pointer<Void>> result)>>('Relu')
+    .asFunction();
+
+final Pointer<Utf8> Function(Pointer<Void>, double, Pointer<Pointer<Void>> result) _leakyRelu = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Double negative_slope, Pointer<Pointer<Void>> result)>>('LeakyRelu')
+    .asFunction();
+
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>> result) _tanh = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Pointer<Void>> result)>>('Tanh')
+    .asFunction();
+
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>> result) _sigmoid = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Pointer<Void>> result)>>('Sigmoid')
+    .asFunction();
+
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Void>, Pointer<Int64> result) _allClose = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensorA, Pointer<Void> tensorB, Pointer<Int64> result)>>('AllClose')
+    .asFunction();
+
+
+final Pointer<Utf8> Function(Pointer<Void>, int,int, Pointer<Pointer<Void>> result) _flatten = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Int64 startDim, Int64 endDim, Pointer<Pointer<Void>> result)>>('Flatten')
+    .asFunction();
+
+  final Pointer<Utf8> Function(Pointer<Void>, int,int,int,int, Pointer<Pointer<Void>>, Pointer<Pointer<Void>>) _topK = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Int64 k, Int64 dim, Int8 largest, Int8 sorted, Pointer<Pointer<Void>> values, Pointer<Pointer<Void>> indices)>>('TopK')
+    .asFunction();
+
 // 类定义
 
 
@@ -1126,11 +1158,115 @@ List<dynamic> toList() {
 }
 
 
+
+
+
 }
 
 
+Tensor relu(Tensor a) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _relu(a._tensorPtr, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
+Tensor leakyRelu(Tensor a,double negative_slope) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _leakyRelu(a._tensorPtr, negative_slope, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
+
+Tensor tanh(Tensor a) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _tanh(a._tensorPtr, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
+
+Tensor sigmoid(Tensor a) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _sigmoid(a._tensorPtr, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
+
+bool allClose(Tensor a,Tensor other) {
+  final resultValue = calloc<Int64>();
+  final errorMsg = _allClose(a._tensorPtr, other._tensorPtr, resultValue);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final bool close = resultValue.value == 1;
+  calloc.free(resultValue);
+  
+  return close;
+}
+
+Tensor flatten(Tensor a,int startDim, int endDim) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _flatten(a._tensorPtr, startDim, endDim, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+
+  return tensor;
+}
 
 
+Map<String, Tensor> topk(Tensor a,int k, int dim, {bool largest = true, bool sorted = true}) {
+  final valuesTensorPtr = calloc<Pointer<Void>>();
+  final indicesTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _topK(a._tensorPtr, k, dim, largest ? 1 : 0, sorted ? 1 : 0, valuesTensorPtr, indicesTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final valuesTensor = Tensor._internal(valuesTensorPtr.value);
+  final indicesTensor = Tensor._internal(indicesTensorPtr.value);
+  calloc.free(valuesTensorPtr);
+  calloc.free(indicesTensorPtr);
+
+  return {'values': valuesTensor, 'indices': indicesTensor};
+}
 
 Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
   if (dtype==int32) {
@@ -1224,7 +1360,7 @@ Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
 
 
 
-Tensor empty(List<int> size, {bool requiresGrad = false}) {
+Tensor empty(List<int> size, {bool requiresGrad = false,int dtype=float32}) {
   // 将 Dart 的数组转换为原生指针
   final Pointer<Int64> int64Pointer = calloc<Int64>(size.length);
   final Int64List int64List = int64Pointer.asTypedList(size.length);
@@ -1233,7 +1369,7 @@ Tensor empty(List<int> size, {bool requiresGrad = false}) {
   // 调用 C++ 的 Empty 函数
   final resultTensorPtr = calloc<Pointer<Void>>();
   final errorMsg =
-      _empty(int64Pointer, size.length, requiresGrad ? 1 : 0, resultTensorPtr);
+      _empty(int64Pointer, size.length, requiresGrad ? 1 : 0, dtype,resultTensorPtr);
 
   // 释放原生数组内存
   calloc.free(int64Pointer);
@@ -1251,7 +1387,7 @@ Tensor empty(List<int> size, {bool requiresGrad = false}) {
   return tensor;
 }
 
-Tensor ones(List<int> size, {bool requiresGrad = false}) {
+Tensor ones(List<int> size, {bool requiresGrad = false,int dtype=float32}) {
   // 将 Dart 的数组转换为原生指针
   final Pointer<Int64> int64Pointer = calloc<Int64>(size.length);
   final Int64List int64List = int64Pointer.asTypedList(size.length);
@@ -1260,7 +1396,7 @@ Tensor ones(List<int> size, {bool requiresGrad = false}) {
   // 调用 C++ 的 Empty 函数
   final resultTensorPtr = calloc<Pointer<Void>>();
   final errorMsg =
-      _ones(int64Pointer, size.length, requiresGrad ? 1 : 0, resultTensorPtr);
+      _ones(int64Pointer, size.length, requiresGrad ? 1 : 0, dtype,resultTensorPtr);
 
   // 释放原生数组内存
   calloc.free(int64Pointer);
@@ -1305,9 +1441,9 @@ Tensor full(List<int> size, num values, {bool requiresGrad = false}) {
   return tensor;
 }
 
-Tensor eye(int n, int m, {bool requiresGrad = false}) {
+Tensor eye(int n, int m, {bool requiresGrad = false,int dtype=float32}) {
   final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _eye(n, m, requiresGrad ? 1 : 0, resultTensorPtr);
+  final errorMsg = _eye(n, m, requiresGrad ? 1 : 0, dtype,resultTensorPtr);
 
   // 释放原生数组内存
 

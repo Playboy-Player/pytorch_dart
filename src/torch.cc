@@ -21,14 +21,14 @@
 // Tensor construction and operations
 ////////////////////////////////////////////////////////////////////////////////
 
-   const char *RandN(int64_t *size, int64_t length, int64_t requires_grad,
+   const char *RandN(int64_t *size, int64_t length, int64_t requires_grad,int8_t dtype,
                                      Tensor *result)
 {
   try
   {
     at::Tensor t =
         torch::randn(torch::IntArrayRef(size, length),
-                     at::TensorOptions().requires_grad(requires_grad));
+                     at::TensorOptions(torch::dtype(at::ScalarType(dtype))).requires_grad(requires_grad));
     *result = new at::Tensor(t);
     return nullptr;
   }
@@ -38,14 +38,14 @@
   }
 }
 
-   const char *Rand(int64_t *size, int64_t length, int64_t requires_grad,
+   const char *Rand(int64_t *size, int64_t length, int64_t requires_grad,int8_t dtype,
                                     Tensor *result)
 {
   try
   {
     at::Tensor t =
         torch::rand(torch::IntArrayRef(size, length),
-                    at::TensorOptions().requires_grad(requires_grad));
+                    at::TensorOptions(torch::dtype(at::ScalarType(dtype))).requires_grad(requires_grad));
     *result = new at::Tensor(t);
     return nullptr;
   }
@@ -73,14 +73,14 @@
   }
 }
 
-   const char *Empty(int64_t *size, int64_t length, int64_t requires_grad,
+   const char *Empty(int64_t *size, int64_t length, int64_t requires_grad,int8_t dtype,
                                      Tensor *result)
 {
   try
   {
     at::Tensor t =
         torch::empty(torch::IntArrayRef(size, length),
-                     at::TensorOptions().requires_grad(requires_grad));
+                     at::TensorOptions(torch::dtype(at::ScalarType(dtype))).requires_grad(requires_grad));
     *result = new at::Tensor(t);
     return nullptr;
   }
@@ -91,14 +91,14 @@
 }
 
 // torch.ones
-   const char *Ones(int64_t *size, int64_t length, int64_t requires_grad,
+   const char *Ones(int64_t *size, int64_t length, int64_t requires_grad,int8_t dtype,
                                     Tensor *result)
 {
   try
   {
     at::Tensor t =
         torch::ones(torch::IntArrayRef(size, length),
-                    at::TensorOptions().requires_grad(requires_grad));
+                    at::TensorOptions(torch::dtype(at::ScalarType(dtype))).requires_grad(requires_grad));
     *result = new at::Tensor(t);
     return nullptr;
   }
@@ -109,12 +109,12 @@
 }
 
 // torch.eye
-   const char *Eye(int64_t n, int64_t m, int64_t requires_grad, Tensor *result)
+   const char *Eye(int64_t n, int64_t m, int64_t requires_grad,int8_t dtype, Tensor *result)
 {
   try
   {
     at::Tensor t =
-        torch::eye(n, m, at::TensorOptions().requires_grad(requires_grad));
+        torch::eye(n, m, at::TensorOptions(torch::dtype(at::ScalarType(dtype))).requires_grad(requires_grad));
     *result = new at::Tensor(t);
     return nullptr;
   }

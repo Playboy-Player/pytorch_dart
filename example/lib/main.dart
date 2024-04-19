@@ -40,13 +40,13 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
 
   void _tensorTest() async {
     torch.Tensor a=torch.empty([3,2,3,4]);
-    torch.Tensor b=torch.ones([2,2,3]);
-    
+    torch.Tensor b=torch.ones([2,2,3],dtype: torch.float64);
+    print(b);
    
     
      torch.Tensor c=torch.DoubleTensor([[1.0,2.0,3.0],[4.0,5.0,6.0]]);
      var i=torch.add(10,c);
-  print(c[0][0]);
+ 
     
     torch.Tensor d=torch.eye(2,3);
    
@@ -55,10 +55,7 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
     var f=torch.DoubleTensor([1.0,2.0,3.0,4.0,5.0,6.0]);
      var h=torch.IntTensor([1,2,3,4,5,6]);
    var g=f.toList();
-   print(g);
-    
-    print(i);
-   
+  
     
      
     setState(() {

@@ -18,19 +18,19 @@ extern "C" {
 ////////////////////////////////////////////////////////////////////////////////
 
 // torch.randn
-const char *RandN(int64_t *size, int64_t length, int64_t require_grad,
+const char *RandN(int64_t *size, int64_t length, int64_t require_grad,int8_t dtype,
                   Tensor *result);
 // torch.rand
-const char *Rand(int64_t *size, int64_t length, int64_t require_grad,
+const char *Rand(int64_t *size, int64_t length, int64_t require_grad,int8_t dtype,
                  Tensor *result);
 // torch.empty
-FUNCTION_ATTRIBUTE const char *Empty(int64_t *size, int64_t length, int64_t require_grad,
+FUNCTION_ATTRIBUTE const char *Empty(int64_t *size, int64_t length, int64_t require_grad,int8_t dtype,
                   Tensor *result);
 // torch.ones
-FUNCTION_ATTRIBUTE const char *Ones(int64_t *size, int64_t length, int64_t require_grad,
+FUNCTION_ATTRIBUTE const char *Ones(int64_t *size, int64_t length, int64_t require_grad,int8_t dtype,
                  Tensor *result);
 // torch.eye
-FUNCTION_ATTRIBUTE const char *Eye(int64_t n, int64_t m, int64_t require_grad, Tensor *result);
+FUNCTION_ATTRIBUTE const char *Eye(int64_t n, int64_t m, int64_t require_grad,int8_t dtype, Tensor *result);
 // torch.full, only for float32
 FUNCTION_ATTRIBUTE const char *Full(int64_t *size, int64_t length, float value,
                  int64_t require_grad, Tensor *result);

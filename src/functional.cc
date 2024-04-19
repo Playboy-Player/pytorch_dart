@@ -1,5 +1,5 @@
 // Copyright 2020, GoTorch Authors
-#include "cgotorch/functional.h"
+#include "functional.h"
 
 #include <string>
 #include <unordered_map>
