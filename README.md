@@ -58,6 +58,14 @@ flutter.buildMode=debug
 ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
 ```
 
+Also,'torch.load()' and 'torch.save()' are not available on Android.In fact,they only work well on Linux
+some exceptions they threw in Windows are like this:
+```
+[ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: Exception: [enforce fail at inline_container.cc:633] . invalid file name: 
+00007FFAA49D3F08 <unknown symbol address> c10.dll!<unknown symbol> [<unknown file> @ <unknown line number>]
+00007FFAA49D4823 <unknown symbol address> c10.dll!<unknown symbol> [<unknown file> @ <unknown line number>]
+```
+
 ### For windows developers
 
 #### Troubleshooting
@@ -142,49 +150,51 @@ flutter: 1
 
 1. `torch.tensor()` is not supported in pytorch_dart,use `torch.IntTensor()`,`torch.FloatTensor` or `torch.DoubleTensor` to create tensors.
 2. Functions avaliable now:
-`torch.empty()`  
-`torch.eye()`  
-`torch.ones()`  
-`torch.IntTensor(List<int> list)`  
-`torch.FloatTensor(List<double> list)`  
-`torch.DoubleTensor(List<double> list)`  
-`torch.arange(double start, double end, double step,{bool requiresGrad = false})`  
-`torch.linspace(double start, double end, int steps,{bool requiresGrad = false})`  
-`torch.logspace(double start, double end, int steps, double base,{bool requiresGrad = false})`  
-`torch.equal(Tensor a,Tensor b)`  
-`torch.add(Tensor a, tensor b,{double alpha=1})`  
-`torch.sub(Tensor a, tensor b,{double alpha=1})`  
-`torch.mul(Tensor a, tensor b)`  
-`torch.div(Tensor a, tensor b)`  
-`torch.add_(Tensor a, tensor b,{double alpha=1})`  
-`torch.sub_(Tensor a, tensor b,{double alpha=1})`  
-`torch.mul_(Tensor a, tensor b)`  
-`torch.div_(Tensor a, tensor b)`  
-`torch.sum(Tensor a)`  
-`torch.mm(Tensor a, Tensor b)`  
-`torch.transpose(Tensor a,int dim0,int dim1)`  
-`torch.permute(Tensor a,List <int> permute_list)`  
-12. Almost all function usages remain consistent with PyTorch.
-13. Some in-place operation are supported,such as `torch.add_()`
-14. Example
+   `torch.empty()`
+   `torch.eye()`
+   `torch.ones()`
+   `torch.IntTensor(List<int> list)`
+   `torch.FloatTensor(List<double> list)`
+   `torch.DoubleTensor(List<double> list)`
+   `torch.arange(double start, double end, double step,{bool requiresGrad = false})`
+   `torch.linspace(double start, double end, int steps,{bool requiresGrad = false})`
+   `torch.logspace(double start, double end, int steps, double base,{bool requiresGrad = false})`
+   `torch.equal(Tensor a,Tensor b)`
+   `torch.add(Tensor a, tensor b,{double alpha=1})`
+   `torch.sub(Tensor a, tensor b,{double alpha=1})`
+   `torch.mul(Tensor a, tensor b)`
+   `torch.div(Tensor a, tensor b)`
+   `torch.add_(Tensor a, tensor b,{double alpha=1})`
+   `torch.sub_(Tensor a, tensor b,{double alpha=1})`
+   `torch.mul_(Tensor a, tensor b)`
+   `torch.div_(Tensor a, tensor b)`
+   `torch.sum(Tensor a)`
+   `torch.mm(Tensor a, Tensor b)`
+   `torch.transpose(Tensor a,int dim0,int dim1)`
+   `torch.permute(Tensor a,List <int> permute_list)`
+   `torch.save(Tensor a,String path)`
+   `torch.load(String path)`
+3. Almost all function usages remain consistent with PyTorch.
+4. Some in-place operation are supported,such as `torch.add_()`
+5. Example
 
-    ```dart
-    import 'package:pytorch_dart/pytorch_dart.dart' as torch;
-    ...
+   ```dart
+   import 'package:pytorch_dart/pytorch_dart.dart' as torch;
+   ...
 
-    var c=torch.DoubleTensor([[1.0,2.0,3.0],[4.0,5.0,6.0]]);
-    var d=torch.add(10,c)
-    print(d)
-    ```
+   var c=torch.DoubleTensor([[1.0,2.0,3.0],[4.0,5.0,6.0]]);
+   var d=torch.add(10,c)
+   print(d)
+   ```
 
-    Result:
+   Result:
 
-    ```dart
-    flutter:
-     11  12  13
-     14  15  16
-    [ CPUDoubleType{2,3} ]
-    ```
+   ```dart
+   flutter:
+    11  12  13
+    14  15  16
+   [ CPUDoubleType{2,3} ]
+   ```
 
 ### torch.tensor
 
@@ -198,6 +208,7 @@ flutter: 1
    `.sub_()`
    `.mul_()`
    `.div_()`
+   `.toList()`
 2. `.dtype()` is different from its implementation in Pytorch.
 
    In Pytorch,`.dtype` returns an object represents the data type of a tensor

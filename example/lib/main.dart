@@ -56,8 +56,7 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
      var h=torch.IntTensor([1,2,3,4,5,6]);
    var g=f.toList();
    print(g);
-    torch.save(f,"C:\\Users\\pc\\Desktop\\a.pth");
-    i=torch.load("C:\\Users\\pc\\Desktop\\a.pth");
+    
     print(i);
    
     
