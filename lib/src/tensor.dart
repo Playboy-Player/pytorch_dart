@@ -389,6 +389,30 @@ final Pointer<Utf8> Function(Pointer<Void>, int,int, Pointer<Pointer<Void>> resu
     .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Int64 k, Int64 dim, Int8 largest, Int8 sorted, Pointer<Pointer<Void>> values, Pointer<Pointer<Void>> indices)>>('TopK')
     .asFunction();
 
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Void>, Pointer<Pointer<Void>> result)
+_expandAs = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Void> other, Pointer<Pointer<Void>> result)>>('ExpandAs')
+    .asFunction();
+
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Void>, Pointer<Pointer<Void>> result)
+_eq = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Void> other, Pointer<Pointer<Void>> result)>>('Eq')
+    .asFunction();
+
+final Pointer<Utf8> Function(Pointer<Void>, int dim, Pointer<Void> index, Pointer<Pointer<Void>> result)
+_indexSelect = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Int64 dim, Pointer<Void> index, Pointer<Pointer<Void>> result)>>('IndexSelect')
+    .asFunction();
+
+
+final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>>,Pointer<Int64>, int)
+_view = nativeLib
+    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Pointer<Void>> result,Pointer<Int64> sizes, Int64 sizeLen)>>('View')
+    .asFunction();
+
+
+
+
 // 类定义
 
 
@@ -1158,10 +1182,127 @@ List<dynamic> toList() {
 }
 
 
+Map<String, Tensor> topk(int k, {int dim=-1, bool largest = true, bool sorted = true}) {
+  final valuesTensorPtr = calloc<Pointer<Void>>();
+  final indicesTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _topK(this._tensorPtr, k, dim, largest ? 1 : 0, sorted ? 1 : 0, valuesTensorPtr, indicesTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final valuesTensor = Tensor._internal(valuesTensorPtr.value);
+  final indicesTensor = Tensor._internal(indicesTensorPtr.value);
+  calloc.free(valuesTensorPtr);
+  calloc.free(indicesTensorPtr);
+
+  return {'values': valuesTensor, 'indices': indicesTensor};
+}
+
+
+Tensor expand_as(Tensor other) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _expandAs(this._tensorPtr, other._tensorPtr, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
+
+
+Tensor eq(Tensor other) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _eq(this._tensorPtr, other._tensorPtr, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
+
+Tensor index_select(int dim, Tensor index) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _indexSelect(this._tensorPtr, dim, index._tensorPtr, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
+
+
+Tensor view(List<int> size) {
+  final sizePtr = calloc<Int64>(size.length);
+   final Int64List sizeList = sizePtr.asTypedList(size.length);
+    sizeList.setAll(0, size);
+
+ 
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _view(this._tensorPtr, resultTensorPtr,sizePtr, size.length);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(sizePtr);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
 
 
 
 }
+
+
+
+
+
+Tensor eq(Tensor a,Tensor other) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _eq(a._tensorPtr, other._tensorPtr, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
+
+Tensor index_select(Tensor a,int dim, Tensor index) {
+  final resultTensorPtr = calloc<Pointer<Void>>();
+  final errorMsg = _indexSelect(a._tensorPtr, dim, index._tensorPtr, resultTensorPtr);
+
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr.value);
+  calloc.free(resultTensorPtr);
+  return tensor;
+}
+
+
+
 
 
 Tensor relu(Tensor a) {
@@ -1250,7 +1391,7 @@ Tensor flatten(Tensor a,int startDim, int endDim) {
 }
 
 
-Map<String, Tensor> topk(Tensor a,int k, int dim, {bool largest = true, bool sorted = true}) {
+Map<String, Tensor> topk(Tensor a,int k, {int dim=-1, bool largest = true, bool sorted = true}) {
   final valuesTensorPtr = calloc<Pointer<Void>>();
   final indicesTensorPtr = calloc<Pointer<Void>>();
   final errorMsg = _topK(a._tensorPtr, k, dim, largest ? 1 : 0, sorted ? 1 : 0, valuesTensorPtr, indicesTensorPtr);
