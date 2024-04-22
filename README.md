@@ -16,12 +16,16 @@ You can use it as an alternative to Numpy in your Dart/Flutter projects.
 
 Theoretically you can run pytorch_dart on MacOS by simply replace `/libtorch-linux/libtorch` with libtorch for MacOS.
 
+## Attention
+
+Pytorch_dart will be refactored based on the C wrapper of TorchSharp since v0.1.1,the last version using the C wrapper of gotorch is 0.1.0
+
 ## Getting Started
 
 ### Add pytorch_dart to your pubspec.yaml
 
 ```dart
-    pytorch_dart:^0.0.9
+    pytorch_dart:^0.1.0
 ```
 
 ### Setup

@@ -53,7 +53,7 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
      var e=torch.sum(d);
      
     var f=torch.DoubleTensor([1.0,2.0,3.0,4.0,5.0,6.0]);
-   var result=c.index_select(0,torch.IntTensor([1]));
+   var result=torch.permute(c,[0,1]);
    print(result);
      
     setState(() {
