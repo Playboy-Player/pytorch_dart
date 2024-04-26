@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import 'package:pytorch_dart/pytorch_dart.dart' as torch;
@@ -52,7 +54,7 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
    
      var e=torch.sum(d);
      
-    var f=torch.div(c,c);
+    var f=torch.mul_(c,10);
      print(f);
     setState(() {
      

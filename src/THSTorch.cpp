@@ -3,13 +3,6 @@
 
 #include "torch/torch.h"
 #include "torch/cuda.h"
-const char *exception_str(const char *e)
-{
-  auto len = strlen(e);
-  auto r = new char[len + 1];
-  snprintf(r, len + 1, "%s", e);
-  return r;
-}
 
 void THSTorch_manual_seed(const int64_t seed)
 {
@@ -157,6 +150,7 @@ const char * THSTorch_get_and_reset_last_err()
 {
     char *tmp = torch_last_err;
     torch_last_err = nullptr;
+    
     return tmp;
 }
 
