@@ -22,6 +22,10 @@ list(APPEND PLUGIN_SOURCES
   "../src/torch.cc"
   "../src/tensor.cc"
   "../src/tensor4desktop.cc"
+  "../src/Utils.cpp"
+  "../src/THSTorch.cpp"
+  "../src/THSTensor.cpp"
+  "../src/THSTensorMath.cpp"
   
 )
 if(WIN32)
@@ -29,6 +33,9 @@ if(WIN32)
     add_compile_options(/wd4267)
     add_compile_options(/wd4996)
     add_compile_options(/wd4702)
+    add_compile_options(/wd4189)
+    add_compile_options(/wd4701)
+    add_compile_options(/wd4703)
 endif()
 # Define the plugin library target. Its name must not be changed (see comment
 # on PLUGIN_NAME above).

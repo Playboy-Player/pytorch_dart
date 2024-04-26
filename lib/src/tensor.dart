@@ -11,6 +11,103 @@ final DynamicLibrary nativeLib = Platform.isAndroid
     ? DynamicLibrary.open('libpytorch_dart.so')
     : DynamicLibrary.process();
 
+final Pointer<Utf8> Function() _get_and_reset_last_err=
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Utf8> Function(
+                    )>>('THSTorch_get_and_reset_last_err')
+        .asFunction();
+
+
+
+final Pointer<Void> Function(int value) _int32_to_scalar =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Int value)>>('THSTorch_int32_to_scalar')
+        .asFunction();
+
+final Pointer<Void> Function(double value) _float64_to_scalar =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Double value)>>('THSTorch_float64_to_scalar')
+        .asFunction();
+
+final Pointer<Void> Function(Pointer<Void> left,Pointer<Void> right,Pointer<Void> alpha) Tensor_add =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Pointer<Void> left,Pointer<Void> right,Pointer<Void> alpha)>>('THSTensor_add')
+        .asFunction();
+
+
+final Pointer<Void> Function(Pointer<Void> left,Pointer<Void> right,Pointer<Void> alpha) Tensor_add_scalar =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Pointer<Void> left,Pointer<Void> right,Pointer<Void> alpha)>>('THSTensor_add_scalar')
+        .asFunction();
+
+
+final Pointer<Void> Function(Pointer<Void> left,Pointer<Void> right,Pointer<Void> alpha) Tensor_sub =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Pointer<Void> left,Pointer<Void> right,Pointer<Void> alpha)>>('THSTensor_sub')
+        .asFunction();
+
+
+final Pointer<Void> Function(Pointer<Void> left,Pointer<Void> right,Pointer<Void> alpha) Tensor_sub_scalar =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Pointer<Void> left,Pointer<Void> right,Pointer<Void> alpha)>>('THSTensor_sub_scalar')
+        .asFunction();
+
+
+
+final Pointer<Void> Function(Pointer<Void> left,Pointer<Void> right) Tensor_mul =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Pointer<Void> left,Pointer<Void> right)>>('THSTensor_mul')
+        .asFunction();
+
+
+final Pointer<Void> Function(Pointer<Void> left,Pointer<Void> right) Tensor_mul_scalar =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Pointer<Void> left,Pointer<Void> right)>>('THSTensor_mul_scalar')
+        .asFunction();
+
+
+        final Pointer<Void> Function(Pointer<Void> left,Pointer<Void> right) Tensor_div =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Pointer<Void> left,Pointer<Void> right)>>('THSTensor_div')
+        .asFunction();
+
+
+final Pointer<Void> Function(Pointer<Void> left,Pointer<Void> right) Tensor_div_scalar =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Pointer<Void> left,Pointer<Void> right)>>('THSTensor_div_scalar')
+        .asFunction();
 final Pointer<Utf8> Function(Pointer<Int64> size, int length, int requiresGrad,int dtype,
         Pointer<Pointer<Void>> result) _empty =
     nativeLib
@@ -414,6 +511,14 @@ _view = nativeLib
 
 
 // 类定义
+
+class Scalar{
+  Pointer<Void> _scalarPtr;
+
+  Scalar._internal(this._scalarPtr);
+
+}
+
 
 
 class Tensor {
@@ -1762,51 +1867,50 @@ if(a is num){
 }
 else if(a is Tensor){
   if (b is Tensor) {
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _add(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
+    final alphaScalar=float64_to_scalar(alpha);
 
+      final resultTensorPtr =
+          Tensor_add(a._tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
+      
       return tensor;
     } else if (b is num) {
       if(b is int){
-      Tensor broadcast = from_blob([b],[1],dtype: int32);
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _add(a._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
-
+       final alphaScalar=float64_to_scalar(alpha);
+        final rightScalar=int32_to_scalar(b);
+      final resultTensorPtr =
+          Tensor_add_scalar(a._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
       }
       else if(b is double)
       {
-        Tensor broadcast = from_blob([b],[1],dtype: float64);
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _add(a._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
-
+       final alphaScalar=float64_to_scalar(alpha);
+        final rightScalar=float64_to_scalar(b);
+      final resultTensorPtr =
+          Tensor_add_scalar(a._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
       }
       else{throw Exception("wrong data type");}
@@ -1823,51 +1927,49 @@ Tensor sub(dynamic a, dynamic b, {double alpha = 1}) {
 }
 else if(a is Tensor){
   if (b is Tensor) {
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _sub(a._tensorPtr, b._tensorPtr, alpha, resultTensorPtr);
-
+      final alphaScalar=float64_to_scalar(alpha);
+        
+      final resultTensorPtr =
+          Tensor_sub(a._tensorPtr,b._tensorPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
     } else if (b is num) {
       if(b is int){
-      Tensor broadcast = from_blob([b],[1],dtype: int32);
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _sub(a._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
-
+      final alphaScalar=float64_to_scalar(alpha);
+       final rightScalar=int32_to_scalar(b); 
+      final resultTensorPtr =
+          Tensor_sub_scalar(a._tensorPtr,rightScalar._scalarPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
       }
       else if(b is double)
       {
-        Tensor broadcast = from_blob([b],[1],dtype: float64);
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _sub(a._tensorPtr, broadcast._tensorPtr, alpha, resultTensorPtr);
-
+         final alphaScalar=float64_to_scalar(alpha);
+       final rightScalar=float64_to_scalar(b); 
+      final resultTensorPtr =
+          Tensor_sub_scalar(a._tensorPtr,rightScalar._scalarPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
       }
       else{throw Exception("wrong data type");}
@@ -1885,51 +1987,45 @@ if(a is num)
 }
 else if(a is Tensor){
   if (b is Tensor) {
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _mul(a._tensorPtr, b._tensorPtr, resultTensorPtr);
-
+      final resultTensorPtr =
+          Tensor_mul(a._tensorPtr,b._tensorPtr);
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
     } else if (b is num) {
       if(b is int){
-      Tensor broadcast = from_blob([b],[1],dtype: int32);
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _mul(a._tensorPtr, broadcast._tensorPtr,resultTensorPtr);
-
+        final rightScalar=int32_to_scalar(b);
+       final resultTensorPtr =
+          Tensor_mul_scalar(a._tensorPtr,rightScalar._scalarPtr);
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
       }
       else if(b is double)
       {
-        Tensor broadcast = from_blob([b],[1],dtype: float64);
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _mul(a._tensorPtr, broadcast._tensorPtr, resultTensorPtr);
-
+        final rightScalar=float64_to_scalar(b);
+       final resultTensorPtr =
+          Tensor_mul_scalar(a._tensorPtr,rightScalar._scalarPtr);
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
       }
       else{throw Exception("wrong data type");}
@@ -1947,51 +2043,45 @@ Tensor div(dynamic a, dynamic b) {
 }
 else if(a is Tensor){
   if (b is Tensor) {
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _div(a._tensorPtr, b._tensorPtr, resultTensorPtr);
-
+      final resultTensorPtr =
+          Tensor_div(a._tensorPtr,b._tensorPtr);
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
     } else if (b is num) {
       if(b is int){
-      Tensor broadcast = from_blob([b],[1],dtype: int32);
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _div(a._tensorPtr, broadcast._tensorPtr,resultTensorPtr);
-
+      final rightScalar=int32_to_scalar(b);
+       final resultTensorPtr =
+          Tensor_div_scalar(a._tensorPtr,rightScalar._scalarPtr);
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
       }
       else if(b is double)
       {
-        Tensor broadcast = from_blob([b],[1],dtype: float64);
-      final resultTensorPtr = calloc<Pointer<Void>>();
-      final errorMsg =
-          _div(a._tensorPtr, broadcast._tensorPtr, resultTensorPtr);
-
+       final rightScalar=float64_to_scalar(b);
+       final resultTensorPtr =
+          Tensor_div_scalar(a._tensorPtr,rightScalar._scalarPtr);
+      final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
         
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr.value);
-      calloc.free(resultTensorPtr);
+      final tensor = Tensor._internal(resultTensorPtr);
       return tensor;
       }
       else{throw Exception("wrong data type");}
@@ -2387,3 +2477,28 @@ Tensor DoubleTensor(dynamic list) {
   return outputTensor;
 }
 
+Scalar int32_to_scalar(int value){
+final result=_int32_to_scalar(value);
+final errorMsg=_get_and_reset_last_err();
+if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+  final scalar=Scalar._internal(result);
+  return scalar;
+
+}
+
+Scalar float64_to_scalar(double value){
+final result=_float64_to_scalar(value);
+final errorMsg=_get_and_reset_last_err();
+if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+  final scalar=Scalar._internal(result);
+  return scalar;
+
+}
