@@ -243,6 +243,13 @@ final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int64>,int,Pointer<Pointer<V
             Pointer<Utf8> Function(
                 Pointer<Void>, Pointer<Int64>,Int64,Pointer<Pointer<Void>>)>>('Tensor_Index')
     .asFunction();
+
+    final Pointer<Void> Function(Pointer<Void>, Pointer<Int64>,Pointer<Int64>,Pointer<Int64>,Pointer<Pointer<Void>>,int) Tensor_index = nativeLib
+    .lookup<
+        NativeFunction<
+            Pointer<Void> Function(
+                Pointer<Void>, Pointer<Int64>,Pointer<Int64>,Pointer<Int64>,Pointer<Pointer<Void>>,Int64)>>('THSTensor_index')
+    .asFunction();
 final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int64>) _shape = nativeLib
     .lookup<
         NativeFunction<
@@ -756,7 +763,7 @@ Tensor operator/(dynamic b){
 
  Tensor operator[](int index_num){
 
-  return index([index_num]);
+  return index([index_num],[-1],[-1],[empty([0])]);//In this situation,only indexStarts is useful.See THSTensor_index in src/THSTensor.cpp for more information.
  }
 
 
@@ -1080,27 +1087,50 @@ Tensor operator/(dynamic b){
     }
 }
 
-  Tensor index(List<int> index_list)
-  {final Pointer<Int64> indexPointer = malloc<Int64>(index_list.length);
-     final Int64List indexList = indexPointer.asTypedList(index_list.length);
-    indexList.setAll(0, index_list);
-final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _index(this._tensorPtr,indexPointer,index_list.length, resultTensorPtr);
+  
+  List<Tensor> convertPointerToTensorList(Pointer<Pointer<Void>> ptr, int count) {
+  List<Tensor> tensors = [];
+  for (int i = 0; i < count; i++) {
+    tensors.add(Tensor._internal(ptr.elementAt(i).value));
+  }
+  return tensors;
+}
 
+Pointer<Pointer<Void>> convertListToPointerPointer(List<Tensor> list) {
+  final ptr = calloc<Pointer<Void>>(list.length);
+  for (int i = 0; i < list.length; i++) {
+    ptr[i] = list[i]._tensorPtr;
+  }
+  return ptr;
+}
+  Tensor index(List<int> starts,List<int> ends,List<int> steps,List<Tensor> indexTensors)
+  {final Pointer<Int64> startPointer = malloc<Int64>(starts.length);
+     final Int64List startList = startPointer.asTypedList(starts.length);
+    startList.setAll(0, starts);
+    final Pointer<Int64> endPointer = malloc<Int64>(ends.length);
+     final Int64List endList = endPointer.asTypedList(ends.length);
+    endList.setAll(0, ends);
+    final Pointer<Int64> stepPointer = malloc<Int64>(steps.length);
+     final Int64List stepList = stepPointer.asTypedList(steps.length);
+    stepList.setAll(0, steps);
+    final indexTensorsPtr=convertListToPointerPointer(indexTensors);
+    if(!((starts.length==ends.length)&&(ends.length==steps.length)))
+    {throw Exception("wrong input");}
+
+  final resultTensorPtr = Tensor_index(this._tensorPtr,startPointer,endPointer, stepPointer,indexTensorsPtr,starts.length);
+    final errorMsg=_get_and_reset_last_err();
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
     
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
+  final tensor = Tensor._internal(resultTensorPtr);
+  
 
   return tensor;
 
   }
-  
-
 
 
 Tensor transpose(int dim0,int dim1) {
@@ -2503,26 +2533,43 @@ Tensor FloatTensor(dynamic list) {
 }
 
 Tensor DoubleTensor(dynamic list) {
-  List<num> flatList = [];
+   List<num> flatList = [];
   List<int> sizes = [];
-  bool isFirstElement = true;
+  List<bool> isFirstElementAtDepth = [];
 
   void flatten(dynamic element, int depth) {
     if (element is List) {
-      if (isFirstElement) {
-        sizes.add(element.length);
-        isFirstElement = false;
+      if (isFirstElementAtDepth.length <= depth || isFirstElementAtDepth[depth]) {
+        // 如果是首次进入此深度的列表
+        if (sizes.length <= depth) {
+          sizes.add(element.length); // 添加新尺寸
+        } else {
+          sizes[depth] = element.length; // 更新此深度的尺寸
+        }
+        // 扩展或更新首元素标记列表
+        if (isFirstElementAtDepth.length <= depth) {
+          isFirstElementAtDepth.add(false); // 添加新的深度标记
+        } else {
+          isFirstElementAtDepth[depth] = false; // 更新此深度的首元素标记
+        }
       }
+
       for (var subElement in element) {
         flatten(subElement, depth + 1);
       }
+
+      // 退出当前列表深度时，重置此深度的首元素标记
+      if (isFirstElementAtDepth.length > depth) {
+        isFirstElementAtDepth[depth] = true;
+      }
     } else if (element is num) {
       flatList.add(element);
-      isFirstElement = true;
     }
   }
 
   flatten(list, 0);
+
+ 
 
   Tensor outputTensor =
       from_blob(flatList.cast<double>(), sizes,dtype:float64);
