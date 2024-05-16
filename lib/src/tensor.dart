@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 import 'dart:developer' as dev;
 import 'constants.dart';
+import "pinnedMemory.dart";
 
 final DynamicLibrary nativeLib = Platform.isAndroid
     ? DynamicLibrary.open('libpytorch_dart.so')
@@ -466,8 +467,10 @@ final Pointer<Utf8> Function(Pointer<Void>, int,int, Pointer<Pointer<Void>> resu
     .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Int64 startDim, Int64 endDim, Pointer<Pointer<Void>> result)>>('Flatten')
     .asFunction();
 
-  final Pointer<Utf8> Function(Pointer<Void>, int,int,int,int, Pointer<Pointer<Void>>, Pointer<Pointer<Void>>) _topK = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Int64 k, Int64 dim, Int8 largest, Int8 sorted, Pointer<Pointer<Void>> values, Pointer<Pointer<Void>> indices)>>('TopK')
+ 
+
+    final void Function(Pointer<Void>,Pointer<NativeFunction<AllocatePinnedArrayNative>>, int,int,bool,bool) Tensor_topk = nativeLib
+    .lookup<NativeFunction<Void Function(Pointer<Void> tensor,Pointer<NativeFunction<AllocatePinnedArrayNative>>, Int64 k, Int64 dim, Bool largest, Bool sorted)>>('THSTensor_topk')
     .asFunction();
 
 final Pointer<Utf8> Function(Pointer<Void>, Pointer<Void>, Pointer<Pointer<Void>> result)
@@ -496,6 +499,10 @@ _view = nativeLib
 
 // 类定义
 
+
+
+
+
 class Scalar{
   Pointer<Void> _scalarPtr;
 
@@ -511,254 +518,25 @@ class Tensor {
   Tensor._internal(this._tensorPtr);
   
   Tensor operator +(dynamic b){
-    double alpha=1;
-    if (b is Tensor) {
-      final alphaScalar=float64_to_scalar(alpha);
-
-      
-          Tensor_add_(this._tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      
-      return tensor;
-    } else if (b is num) {
-      if(b is int){
-      final alphaScalar=float64_to_scalar(alpha);
-       final rightScalar=int32_to_scalar(b);
-      
-          Tensor_add_scalar_(this._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      
-      return tensor;
-      }
-      else if(b is double)
-      {
-        final alphaScalar=float64_to_scalar(alpha);
-       final rightScalar=float64_to_scalar(b);
-      
-          Tensor_add_scalar_(this._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      
-      return tensor;
-      }
-      else{throw Exception("wrong data type");}
-    } else {
-      throw Exception("wrong data type.");
-    }
-    
+    add_(b);
+    return Tensor._internal(_tensorPtr);
 
   }
 
    Tensor operator -(dynamic b){
-    double alpha=1;
-    if (b is Tensor) {
-      final alphaScalar=float64_to_scalar(alpha);
-
-      
-          Tensor_sub_(this._tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      
-      return tensor;
-    } else if (b is num) {
-      if(b is int){
-       final alphaScalar=float64_to_scalar(alpha);
-       final rightScalar=int32_to_scalar(b);
-      
-          Tensor_sub_scalar_(this._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      
-      return tensor;
-      }
-      else if(b is double)
-      {
-         final alphaScalar=float64_to_scalar(alpha);
-       final rightScalar=float64_to_scalar(b);
-      
-          Tensor_sub_scalar_(this._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      
-      return tensor;
-      }
-      else{throw Exception("wrong data type");}
-    } else {
-      throw Exception("wrong data type.");
-    }
-    
+    sub_(b);
+    return Tensor._internal(_tensorPtr);
 
   }
 
   Tensor operator*(dynamic b){
- if (b is Tensor) {
-      
-          Tensor_mul_(this._tensorPtr,b._tensorPtr);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      return tensor;
-    } else if (b is num) {
-      if(b is int){
-     final rightScalar=int32_to_scalar(b);
-       
-          Tensor_mul_scalar_(this._tensorPtr,rightScalar._scalarPtr);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      return tensor;
-      }
-      else if(b is double)
-      {
-         final rightScalar=float64_to_scalar(b);
-      
-          Tensor_mul_scalar_(this._tensorPtr,rightScalar._scalarPtr);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      return tensor;
-      }
-      else{throw Exception("wrong data type");}
-    } else {
-      throw Exception("wrong data type.");
-    }
+ mul_(b);
+ return Tensor._internal(_tensorPtr);
 }
 
 Tensor operator/(dynamic b){
-  String rounding_mode="";
- if (b is Tensor) {
-      final units = utf8.encode(rounding_mode);
-  // 在本地分配足够的内存来复制这个 Uint8List
-  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
-  // 获取 Uint8List 的指针
-  final Uint8List nativeString = result.asTypedList(units.length + 1);
-  // 将 Uint8List 复制到分配的内存中
-  nativeString.setRange(0, units.length, units);
-  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
-  nativeString[units.length] = 0;
-  // 返回指向已编码字符串的指针
-  final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
-      
-          Tensor_div_(this._tensorPtr,b._tensorPtr,rounding_mode_Utf8);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      return tensor;
-    } else if (b is num) {
-      if(b is int){
-      final rightScalar=int32_to_scalar(b);
-
-      final units = utf8.encode(rounding_mode);
-  // 在本地分配足够的内存来复制这个 Uint8List
-  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
-  // 获取 Uint8List 的指针
-  final Uint8List nativeString = result.asTypedList(units.length + 1);
-  // 将 Uint8List 复制到分配的内存中
-  nativeString.setRange(0, units.length, units);
-  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
-  nativeString[units.length] = 0;
-  // 返回指向已编码字符串的指针
-  final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
-       
-          Tensor_div_scalar_(this._tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      return tensor;
-      }
-      else if(b is double)
-      {
-        final rightScalar=float64_to_scalar(b);
-       final units = utf8.encode(rounding_mode);
-  // 在本地分配足够的内存来复制这个 Uint8List
-  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
-  // 获取 Uint8List 的指针
-  final Uint8List nativeString = result.asTypedList(units.length + 1);
-  // 将 Uint8List 复制到分配的内存中
-  nativeString.setRange(0, units.length, units);
-  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
-  nativeString[units.length] = 0;
-  // 返回指向已编码字符串的指针
-  final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
-       
-          Tensor_div_scalar_(this._tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(this._tensorPtr);
-      return tensor;
-      }
-      else{throw Exception("wrong data type");}
-    } else {
-      throw Exception("wrong data type.");
-    }
+  div_(b);
+  return Tensor._internal(_tensorPtr);
 }
 
  Tensor operator[](int index_num){
@@ -1091,7 +869,10 @@ Tensor operator/(dynamic b){
   List<Tensor> convertPointerToTensorList(Pointer<Pointer<Void>> ptr, int count) {
   List<Tensor> tensors = [];
   for (int i = 0; i < count; i++) {
+    if(ptr.elementAt(i).value!=nullptr){
     tensors.add(Tensor._internal(ptr.elementAt(i).value));
+    }
+    else{throw Exception("null Pointer.");}
   }
   return tensors;
 }
@@ -1309,23 +1090,19 @@ List<dynamic> toList() {
   // 使用完毕后释放指针
 }
 
-
-Map<String, Tensor> topk(int k, {int dim=-1, bool largest = true, bool sorted = true}) {
-  final valuesTensorPtr = calloc<Pointer<Void>>();
-  final indicesTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _topK(this._tensorPtr, k, dim, largest ? 1 : 0, sorted ? 1 : 0, valuesTensorPtr, indicesTensorPtr);
-
+  
+List<Tensor> topk(int k, {int dim=-1, bool largest = true, bool sorted = true}) {
+  
+   
+  Tensor_topk(this._tensorPtr, Pointer.fromFunction<AllocatePinnedArrayNative>(allocateMemory),k, dim, largest, sorted);
+final errorMsg=_get_and_reset_last_err();
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
     throw Exception(errorString);
   }
-
-  final valuesTensor = Tensor._internal(valuesTensorPtr.value);
-  final indicesTensor = Tensor._internal(indicesTensorPtr.value);
-  calloc.free(valuesTensorPtr);
-  calloc.free(indicesTensorPtr);
-
-  return {'values': valuesTensor, 'indices': indicesTensor};
+List<Tensor> tensorList=convertPointerToTensorList(allocator.pointer,2);
+return tensorList;
+ 
 }
 
 
@@ -1396,6 +1173,8 @@ Tensor view(List<int> size) {
 
 
 }
+
+
 
 
 
@@ -1520,23 +1299,9 @@ Tensor flatten(Tensor a,int startDim, int endDim) {
   return tensor;
 }
 
-
-Map<String, Tensor> topk(Tensor a,int k, {int dim=-1, bool largest = true, bool sorted = true}) {
-  final valuesTensorPtr = calloc<Pointer<Void>>();
-  final indicesTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _topK(a._tensorPtr, k, dim, largest ? 1 : 0, sorted ? 1 : 0, valuesTensorPtr, indicesTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    throw Exception(errorString);
-  }
-
-  final valuesTensor = Tensor._internal(valuesTensorPtr.value);
-  final indicesTensor = Tensor._internal(indicesTensorPtr.value);
-  calloc.free(valuesTensorPtr);
-  calloc.free(indicesTensorPtr);
-
-  return {'values': valuesTensor, 'indices': indicesTensor};
+List<Tensor> topk(Tensor a,int k, {int dim=-1, bool largest = true, bool sorted = true}) {
+ return a.topk(k,dim: dim,largest: largest,sorted: sorted);
+ 
 }
 
 Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {

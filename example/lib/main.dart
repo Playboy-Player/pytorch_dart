@@ -51,11 +51,11 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
  
     
     torch.Tensor d=torch.eye(3,3);
-   
-     print(c);
+   var e=torch.arange(1,6,1);
+    
      
-    var f=c[1][1][2];
-    print(f);
+    
+    
     setState(() {
      
     });
