@@ -406,13 +406,10 @@ final Pointer<Utf8> Function(
                 Pointer<Pointer<Void>> result)>>('MM')
     .asFunction();
 
-    final Pointer<Utf8> Function(Pointer<Void>,int dim0,int dim1, Pointer<Pointer<Void>> result)
-    _transpose = nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(Pointer<Void> tensor,Int64 dim0,Int64 dim1,
-                    Pointer<Pointer<Void>> result)>>('Transpose')
-        .asFunction();
+    final Pointer<Void> Function(Pointer<Void> tensor, int dim1, int dim2) 
+Tensor_transpose = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor, Int64 dim1, Int64 dim2)>>('THSTensor_transpose')
+    .asFunction();
 
         final Pointer<Void> Function(Pointer<Void>,Pointer<Int64>,int dim_size)
     Tensor_permute = nativeLib
@@ -1162,20 +1159,20 @@ Pointer<Pointer<Void>> convertListToPointerPointer(List<Tensor> list) {
   }
 
 
-Tensor transpose(int dim0,int dim1) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _transpose(this._tensorPtr,dim0,dim1,resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
+Tensor transpose(int dim1, int dim2) {
     
-    throw Exception(errorString);
-  }
+    
+    final resultTensorPtr = Tensor_transpose(_tensorPtr, dim1, dim2);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
 
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
+    final tensor = Tensor._internal(resultTensorPtr);
+    
+    
+    return tensor;
 }
 
 
@@ -1187,7 +1184,7 @@ Tensor transpose(int dim0,int dim1) {
      final Int64List permuteList = permutePointer.asTypedList(permute_list.length);
     permuteList.setAll(0, permute_list);
 
-  final resultTensorPtr= Tensor_permute(this._tensorPtr,permutePointer,permute_list.length);
+  final resultTensorPtr= Tensor_permute(_tensorPtr,permutePointer,permute_list.length);
   final errorMsg=_get_and_reset_last_err();
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1831,19 +1828,7 @@ Tensor mm(Tensor a, Tensor b) {
 }
 
 Tensor transpose(Tensor a,int dim0,int dim1) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _transpose(a._tensorPtr,dim0,dim1,resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
+  return a.transpose(dim0,dim1);
 }
 
  Tensor permute(Tensor a,List<int> permute_list)
