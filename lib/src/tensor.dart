@@ -654,6 +654,254 @@ Tensor operator/(dynamic b){
     return shape;
   }
 
+Tensor add(dynamic b, {double alpha = 1}) {
+
+  if (b is Tensor) {
+    final alphaScalar=float64_to_scalar(alpha);
+
+      final resultTensorPtr =
+          Tensor_add(_tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      
+      return tensor;
+    } else if (b is num) {
+      if(b is int){
+       final alphaScalar=float64_to_scalar(alpha);
+        final rightScalar=int32_to_scalar(b);
+      final resultTensorPtr =
+          Tensor_add_scalar(_tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+      }
+      else if(b is double)
+      {
+       final alphaScalar=float64_to_scalar(alpha);
+        final rightScalar=float64_to_scalar(b);
+      final resultTensorPtr =
+          Tensor_add_scalar(_tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+      }
+      else{throw Exception("wrong data type");}
+    } else {
+      throw Exception("wrong data type.");
+    }
+}
+
+
+Tensor sub( dynamic b, {double alpha = 1}) {
+
+  if (b is Tensor) {
+      final alphaScalar=float64_to_scalar(alpha);
+        
+      final resultTensorPtr =
+          Tensor_sub(_tensorPtr,b._tensorPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+    } else if (b is num) {
+      if(b is int){
+      final alphaScalar=float64_to_scalar(alpha);
+       final rightScalar=int32_to_scalar(b); 
+      final resultTensorPtr =
+          Tensor_sub_scalar(_tensorPtr,rightScalar._scalarPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+      }
+      else if(b is double)
+      {
+         final alphaScalar=float64_to_scalar(alpha);
+       final rightScalar=float64_to_scalar(b); 
+      final resultTensorPtr =
+          Tensor_sub_scalar(_tensorPtr,rightScalar._scalarPtr,alphaScalar._scalarPtr );
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+      }
+      else{throw Exception("wrong data type");}
+    } else {
+      throw Exception("wrong data type.");
+    }
+}
+
+
+Tensor mul(dynamic b) {
+
+
+  if (b is Tensor) {
+      final resultTensorPtr =
+          Tensor_mul(_tensorPtr,b._tensorPtr);
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+    } else if (b is num) {
+      if(b is int){
+        final rightScalar=int32_to_scalar(b);
+       final resultTensorPtr =
+          Tensor_mul_scalar(_tensorPtr,rightScalar._scalarPtr);
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+      }
+      else if(b is double)
+      {
+        final rightScalar=float64_to_scalar(b);
+       final resultTensorPtr =
+          Tensor_mul_scalar(_tensorPtr,rightScalar._scalarPtr);
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+      }
+      else{throw Exception("wrong data type");}
+    } else {
+      throw Exception("wrong data type.");
+    }
+}
+
+
+Tensor div( dynamic b,{String rounding_mode=""}) {
+  
+  if (b is Tensor) {
+    final units = utf8.encode(rounding_mode);
+  // 在本地分配足够的内存来复制这个 Uint8List
+  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
+  // 获取 Uint8List 的指针
+  final Uint8List nativeString = result.asTypedList(units.length + 1);
+  // 将 Uint8List 复制到分配的内存中
+  nativeString.setRange(0, units.length, units);
+  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
+  nativeString[units.length] = 0;
+  // 返回指向已编码字符串的指针
+  
+final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
+      final resultTensorPtr =
+          Tensor_div(_tensorPtr,b._tensorPtr,rounding_mode_Utf8);
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+    } else if (b is num) {
+      if(b is int){
+      final rightScalar=int32_to_scalar(b);
+
+      final units = utf8.encode(rounding_mode);
+  // 在本地分配足够的内存来复制这个 Uint8List
+  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
+  // 获取 Uint8List 的指针
+  final Uint8List nativeString = result.asTypedList(units.length + 1);
+  // 将 Uint8List 复制到分配的内存中
+  nativeString.setRange(0, units.length, units);
+  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
+  nativeString[units.length] = 0;
+  // 返回指向已编码字符串的指针
+ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
+       final resultTensorPtr =
+          Tensor_div_scalar(_tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+      }
+      else if(b is double)
+      {
+       final rightScalar=float64_to_scalar(b);
+       final units = utf8.encode(rounding_mode);
+  // 在本地分配足够的内存来复制这个 Uint8List
+  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
+  // 获取 Uint8List 的指针
+  final Uint8List nativeString = result.asTypedList(units.length + 1);
+  // 将 Uint8List 复制到分配的内存中
+  nativeString.setRange(0, units.length, units);
+  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
+  nativeString[units.length] = 0;
+  // 返回指向已编码字符串的指针
+  final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
+       final resultTensorPtr =
+          Tensor_div_scalar(_tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
+      final errorMsg=_get_and_reset_last_err();
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        
+        throw Exception(errorString);
+      }
+
+      final tensor = Tensor._internal(resultTensorPtr);
+      return tensor;
+      }
+      else{throw Exception("wrong data type");}
+    } else {
+      throw Exception("wrong data type.");
+    }
+}
+
   
   void add_(dynamic b, {double alpha = 1}) {
     if (b is Tensor) {
@@ -1656,57 +1904,7 @@ if(a is num){
   return add(b,a,alpha: alpha);
 }
 else if(a is Tensor){
-  if (b is Tensor) {
-    final alphaScalar=float64_to_scalar(alpha);
-
-      final resultTensorPtr =
-          Tensor_add(a._tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      
-      return tensor;
-    } else if (b is num) {
-      if(b is int){
-       final alphaScalar=float64_to_scalar(alpha);
-        final rightScalar=int32_to_scalar(b);
-      final resultTensorPtr =
-          Tensor_add_scalar(a._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-      }
-      else if(b is double)
-      {
-       final alphaScalar=float64_to_scalar(alpha);
-        final rightScalar=float64_to_scalar(b);
-      final resultTensorPtr =
-          Tensor_add_scalar(a._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-      }
-      else{throw Exception("wrong data type");}
-    } else {
-      throw Exception("wrong data type.");
-    }
+  return a.add(b,alpha: alpha);
 }
 else{throw Exception("wrong data type");}
 }
@@ -1716,56 +1914,7 @@ Tensor sub(dynamic a, dynamic b, {double alpha = 1}) {
   return sub(b,a,alpha: alpha);
 }
 else if(a is Tensor){
-  if (b is Tensor) {
-      final alphaScalar=float64_to_scalar(alpha);
-        
-      final resultTensorPtr =
-          Tensor_sub(a._tensorPtr,b._tensorPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-    } else if (b is num) {
-      if(b is int){
-      final alphaScalar=float64_to_scalar(alpha);
-       final rightScalar=int32_to_scalar(b); 
-      final resultTensorPtr =
-          Tensor_sub_scalar(a._tensorPtr,rightScalar._scalarPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-      }
-      else if(b is double)
-      {
-         final alphaScalar=float64_to_scalar(alpha);
-       final rightScalar=float64_to_scalar(b); 
-      final resultTensorPtr =
-          Tensor_sub_scalar(a._tensorPtr,rightScalar._scalarPtr,alphaScalar._scalarPtr );
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-      }
-      else{throw Exception("wrong data type");}
-    } else {
-      throw Exception("wrong data type.");
-    }
+  return a.sub(b,alpha: alpha);
 }
 else{throw Exception("wrong data type");}
 }
@@ -1776,52 +1925,7 @@ if(a is num)
   return mul(b,a);
 }
 else if(a is Tensor){
-  if (b is Tensor) {
-      final resultTensorPtr =
-          Tensor_mul(a._tensorPtr,b._tensorPtr);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-    } else if (b is num) {
-      if(b is int){
-        final rightScalar=int32_to_scalar(b);
-       final resultTensorPtr =
-          Tensor_mul_scalar(a._tensorPtr,rightScalar._scalarPtr);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-      }
-      else if(b is double)
-      {
-        final rightScalar=float64_to_scalar(b);
-       final resultTensorPtr =
-          Tensor_mul_scalar(a._tensorPtr,rightScalar._scalarPtr);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-      }
-      else{throw Exception("wrong data type");}
-    } else {
-      throw Exception("wrong data type.");
-    }
+  return a.mul(b);
 }
 else{throw Exception("wrong data type.");}
 }
@@ -1832,87 +1936,7 @@ Tensor div(dynamic a, dynamic b,{String rounding_mode=""}) {
   return div(b,a);
 }
 else if(a is Tensor){
-  if (b is Tensor) {
-    final units = utf8.encode(rounding_mode);
-  // 在本地分配足够的内存来复制这个 Uint8List
-  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
-  // 获取 Uint8List 的指针
-  final Uint8List nativeString = result.asTypedList(units.length + 1);
-  // 将 Uint8List 复制到分配的内存中
-  nativeString.setRange(0, units.length, units);
-  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
-  nativeString[units.length] = 0;
-  // 返回指向已编码字符串的指针
-  
-final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
-      final resultTensorPtr =
-          Tensor_div(a._tensorPtr,b._tensorPtr,rounding_mode_Utf8);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-    } else if (b is num) {
-      if(b is int){
-      final rightScalar=int32_to_scalar(b);
-
-      final units = utf8.encode(rounding_mode);
-  // 在本地分配足够的内存来复制这个 Uint8List
-  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
-  // 获取 Uint8List 的指针
-  final Uint8List nativeString = result.asTypedList(units.length + 1);
-  // 将 Uint8List 复制到分配的内存中
-  nativeString.setRange(0, units.length, units);
-  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
-  nativeString[units.length] = 0;
-  // 返回指向已编码字符串的指针
- final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
-       final resultTensorPtr =
-          Tensor_div_scalar(a._tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-      }
-      else if(b is double)
-      {
-       final rightScalar=float64_to_scalar(b);
-       final units = utf8.encode(rounding_mode);
-  // 在本地分配足够的内存来复制这个 Uint8List
-  final Pointer<Uint8> result = malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
-  // 获取 Uint8List 的指针
-  final Uint8List nativeString = result.asTypedList(units.length + 1);
-  // 将 Uint8List 复制到分配的内存中
-  nativeString.setRange(0, units.length, units);
-  // 确保以 null 字节结尾，满足 C 语言对字符串的要求
-  nativeString[units.length] = 0;
-  // 返回指向已编码字符串的指针
-  final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
-       final resultTensorPtr =
-          Tensor_div_scalar(a._tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
-      final errorMsg=_get_and_reset_last_err();
-      if (errorMsg != nullptr) {
-        final errorString = errorMsg.cast<Utf8>().toDartString();
-        
-        throw Exception(errorString);
-      }
-
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
-      }
-      else{throw Exception("wrong data type");}
-    } else {
-      throw Exception("wrong data type.");
-    }
+  return a.div(b,rounding_mode: rounding_mode);
 }
 else{throw Exception("wrong data type.");}
 }
