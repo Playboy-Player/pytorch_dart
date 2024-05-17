@@ -13,10 +13,15 @@ set(PLUGIN_NAME "pytorch_dart_plugin")
 find_package(Torch REQUIRED)
 # Any new source files that you add to the plugin should be added here.
 list(APPEND PLUGIN_SOURCES
-  "pytorch_dart_plugin.cc"
-  "../src/torch.cc"
-  "../src/tensor.cc"
-  "../src/tensor4desktop.cc"
+"pytorch_dart_plugin.cpp"
+"../src/torch.cc"
+"../src/tensor.cc"
+"../src/tensor4desktop.cc"
+"../src/Utils.cpp"
+"../src/THSTorch.cpp"
+"../src/THSTensor.cpp"
+"../src/THSTensorMath.cpp"
+"../src/THSTensorFactories.cpp"
 )
 
 

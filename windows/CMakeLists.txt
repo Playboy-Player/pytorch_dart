@@ -26,6 +26,7 @@ list(APPEND PLUGIN_SOURCES
   "../src/THSTorch.cpp"
   "../src/THSTensor.cpp"
   "../src/THSTensorMath.cpp"
+  "../src/THSTensorFactories.cpp"
   
 )
 if(WIN32)

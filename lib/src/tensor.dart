@@ -4,9 +4,12 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
+import 'package:pytorch_dart/pytorch_dart.dart';
 import 'dart:developer' as dev;
 import 'constants.dart';
 import "pinnedMemory.dart";
+import "scalar.dart";
+import "device.dart";
 
 final DynamicLibrary nativeLib = Platform.isAndroid
     ? DynamicLibrary.open('libpytorch_dart.so')
@@ -30,6 +33,13 @@ final Pointer<Void> Function(int value) _int32_to_scalar =
                     Int value)>>('THSTorch_int32_to_scalar')
         .asFunction();
 
+final Pointer<Void> Function(double value) _float32_to_scalar =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(
+                    Float value)>>('THSTorch_float32_to_scalar')
+        .asFunction();
 final Pointer<Void> Function(double value) _float64_to_scalar =
     nativeLib
         .lookup<
@@ -178,48 +188,24 @@ final void Function(Pointer<Void> left,Pointer<Void> right,Pointer<Utf8> roundin
                 Void Function(
                     Pointer<Void> left,Pointer<Void> right,Pointer<Utf8> rounding_mode)>>('THSTensor_div_scalar_')
         .asFunction();
-final Pointer<Utf8> Function(Pointer<Int64> size, int length, int requiresGrad,int dtype,
-        Pointer<Pointer<Void>> result) _empty =
-    nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(
-                    Pointer<Int64> size,
-                    Int64 length,
-                    Int64 requiresGrad,
-                    Int8 dtype,
-                    Pointer<Pointer<Void>> result)>>('Empty')
-        .asFunction();
+final Pointer<Void> Function(Pointer<Int64> sizes,int length, int scalar_type, int device_type,int device_index, bool requires_grad) 
+Tensor_empty = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Int64> sizes, Int32 length, Int8 scalar_type, Int32 device_type, Int32 device_index, Bool requires_grad)>>('THSTensor_empty')
+    .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Int64> size, int length, int requiresGrad,int dtype,
-        Pointer<Pointer<Void>> result) _ones =
-    nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(Pointer<Int64> size, Int64 length,
-                    Int64 requiresGrad,Int8 dtype, Pointer<Pointer<Void>> result)>>('Ones')
-        .asFunction();
-final Pointer<Utf8> Function(
-        int n, int m, int requiresGrad,int dtype, Pointer<Pointer<Void>> result) _eye =
-    nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(Int64 n, Int64 m, Int64 requiresGrad,Int8 dtype,
-                    Pointer<Pointer<Void>> result)>>('Eye')
-        .asFunction();
+final Pointer<Void> Function(Pointer<Int64> sizes,int length, int scalar_type, int device_type,int device_index, bool requires_grad) 
+Tensor_ones = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Int64> sizes, Int32 length, Int8 scalar_type, Int32 device_type, Int32 device_index, Bool requires_grad)>>('THSTensor_ones')
+    .asFunction();
+final Pointer<Void> Function(int n,int m,int scalar_type, int device_type,int device_index, bool requires_grad) 
+Tensor_eye = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Int32 n,Int32 m,  Int8 scalar_type, Int32 device_type, Int32 device_index, Bool requires_grad)>>('THSTensor_eye')
+    .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Int64> size, int length, double value,
-        int requiresGrad, Pointer<Pointer<Void>> result) _full =
-    nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(
-                    Pointer<Int64> size,
-                    Int64 length,
-                    Float value,
-                    Int64 requiresGrad,
-                    Pointer<Pointer<Void>> result)>>('Full')
-        .asFunction();
+final Pointer<Void> Function(Pointer<Int64> sizes,int length, Pointer<Void> scalar,int scalar_type, int device_type,int device_index, bool requires_grad) 
+Tensor_full = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Int64> sizes, Int32 length,Pointer<Void> scalar, Int8 scalar_type, Int32 device_type, Int32 device_index, Bool requires_grad)>>('THSTensor_full')
+    .asFunction();
 
 final Pointer<Utf8> Function(Pointer<Void>) _print = nativeLib
     .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void>)>>(
@@ -500,12 +486,7 @@ _view = nativeLib
 
 
 
-class Scalar{
-  Pointer<Void> _scalarPtr;
 
-  Scalar._internal(this._scalarPtr);
-
-}
 
 
 
@@ -657,7 +638,7 @@ Tensor add(dynamic b, {double alpha = 1}) {
     final alphaScalar=float64_to_scalar(alpha);
 
       final resultTensorPtr =
-          Tensor_add(_tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
+          Tensor_add(_tensorPtr, b._tensorPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -673,7 +654,7 @@ Tensor add(dynamic b, {double alpha = 1}) {
        final alphaScalar=float64_to_scalar(alpha);
         final rightScalar=int32_to_scalar(b);
       final resultTensorPtr =
-          Tensor_add_scalar(_tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_add_scalar(_tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -689,7 +670,7 @@ Tensor add(dynamic b, {double alpha = 1}) {
        final alphaScalar=float64_to_scalar(alpha);
         final rightScalar=float64_to_scalar(b);
       final resultTensorPtr =
-          Tensor_add_scalar(_tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_add_scalar(_tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -713,7 +694,7 @@ Tensor sub( dynamic b, {double alpha = 1}) {
       final alphaScalar=float64_to_scalar(alpha);
         
       final resultTensorPtr =
-          Tensor_sub(_tensorPtr,b._tensorPtr,alphaScalar._scalarPtr );
+          Tensor_sub(_tensorPtr,b._tensorPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -728,7 +709,7 @@ Tensor sub( dynamic b, {double alpha = 1}) {
       final alphaScalar=float64_to_scalar(alpha);
        final rightScalar=int32_to_scalar(b); 
       final resultTensorPtr =
-          Tensor_sub_scalar(_tensorPtr,rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_sub_scalar(_tensorPtr,rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -744,7 +725,7 @@ Tensor sub( dynamic b, {double alpha = 1}) {
          final alphaScalar=float64_to_scalar(alpha);
        final rightScalar=float64_to_scalar(b); 
       final resultTensorPtr =
-          Tensor_sub_scalar(_tensorPtr,rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_sub_scalar(_tensorPtr,rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -781,7 +762,7 @@ Tensor mul(dynamic b) {
       if(b is int){
         final rightScalar=int32_to_scalar(b);
        final resultTensorPtr =
-          Tensor_mul_scalar(_tensorPtr,rightScalar._scalarPtr);
+          Tensor_mul_scalar(_tensorPtr,rightScalar.scalarPtr);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -796,7 +777,7 @@ Tensor mul(dynamic b) {
       {
         final rightScalar=float64_to_scalar(b);
        final resultTensorPtr =
-          Tensor_mul_scalar(_tensorPtr,rightScalar._scalarPtr);
+          Tensor_mul_scalar(_tensorPtr,rightScalar.scalarPtr);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -856,7 +837,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
   // 返回指向已编码字符串的指针
  final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
        final resultTensorPtr =
-          Tensor_div_scalar(_tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
+          Tensor_div_scalar(_tensorPtr,rightScalar.scalarPtr,rounding_mode_Utf8);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -882,7 +863,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
   // 返回指向已编码字符串的指针
   final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
        final resultTensorPtr =
-          Tensor_div_scalar(_tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
+          Tensor_div_scalar(_tensorPtr,rightScalar.scalarPtr,rounding_mode_Utf8);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -905,7 +886,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
       final alphaScalar=float64_to_scalar(alpha);
 
       
-          Tensor_add_(this._tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
+          Tensor_add_(this._tensorPtr, b._tensorPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -918,7 +899,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
       final alphaScalar=float64_to_scalar(alpha);
        final rightScalar=int32_to_scalar(b);
       
-          Tensor_add_scalar_(this._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_add_scalar_(this._tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -931,7 +912,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
         final alphaScalar=float64_to_scalar(alpha);
        final rightScalar=float64_to_scalar(b);
       
-          Tensor_add_scalar_(this._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_add_scalar_(this._tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -950,7 +931,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
       final alphaScalar=float64_to_scalar(alpha);
 
       
-          Tensor_sub_(this._tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
+          Tensor_sub_(this._tensorPtr, b._tensorPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -962,7 +943,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
       final alphaScalar=float64_to_scalar(alpha);
        final rightScalar=int32_to_scalar(b);
       
-          Tensor_sub_scalar_(this._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_sub_scalar_(this._tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -975,7 +956,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
         final alphaScalar=float64_to_scalar(alpha);
        final rightScalar=float64_to_scalar(b);
       
-          Tensor_sub_scalar_(this._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_sub_scalar_(this._tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1003,7 +984,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
       if(b is int){
       final rightScalar=int32_to_scalar(b);
        
-          Tensor_mul_scalar_(this._tensorPtr,rightScalar._scalarPtr);
+          Tensor_mul_scalar_(this._tensorPtr,rightScalar.scalarPtr);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1016,7 +997,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
       {
         final rightScalar=float64_to_scalar(b);
       
-          Tensor_mul_scalar_(this._tensorPtr,rightScalar._scalarPtr);
+          Tensor_mul_scalar_(this._tensorPtr,rightScalar.scalarPtr);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1071,7 +1052,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
   // 返回指向已编码字符串的指针
   final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
        
-          Tensor_div_scalar_(this._tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
+          Tensor_div_scalar_(this._tensorPtr,rightScalar.scalarPtr,rounding_mode_Utf8);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1095,7 +1076,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
   // 返回指向已编码字符串的指针
   final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
        
-          Tensor_div_scalar_(this._tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
+          Tensor_div_scalar_(this._tensorPtr,rightScalar.scalarPtr,rounding_mode_Utf8);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1641,70 +1622,19 @@ Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
 
 
 
-Tensor empty(List<int> size, {bool requiresGrad = false,int dtype=float32}) {
-  // 将 Dart 的数组转换为原生指针
-  final Pointer<Int64> int64Pointer = calloc<Int64>(size.length);
-  final Int64List int64List = int64Pointer.asTypedList(size.length);
-  int64List.setAll(0, size);
-
-  // 调用 C++ 的 Empty 函数
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg =
-      _empty(int64Pointer, size.length, requiresGrad ? 1 : 0, dtype,resultTensorPtr);
-
-  // 释放原生数组内存
-  calloc.free(int64Pointer);
-
-  // 检查是否有错误信息，如果有，则抛出异常
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr); // 释放结果指针
-
-  return tensor;
-}
-
-Tensor ones(List<int> size, {bool requiresGrad = false,int dtype=float32}) {
-  // 将 Dart 的数组转换为原生指针
-  final Pointer<Int64> int64Pointer = calloc<Int64>(size.length);
-  final Int64List int64List = int64Pointer.asTypedList(size.length);
-  int64List.setAll(0, size);
-
-  // 调用 C++ 的 Empty 函数
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg =
-      _ones(int64Pointer, size.length, requiresGrad ? 1 : 0, dtype,resultTensorPtr);
-
-  // 释放原生数组内存
-  calloc.free(int64Pointer);
-
-  // 检查是否有错误信息，如果有，则抛出异常
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr); // 释放结果指针
-
-  return tensor;
-}
-
-Tensor full(List<int> size, num values, {bool requiresGrad = false}) {
-  // 将 Dart 的数组转换为原生指针
-  final Pointer<Int64> int64Pointer = calloc<Int64>(size.length);
-  final Int64List int64List = int64Pointer.asTypedList(size.length);
-  int64List.setAll(0, size);
-
+Tensor empty(List<int> size, {bool requiresGrad = false,int dtype=float32,Device ?device_used}) {
   
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _full(int64Pointer, size.length, values.toDouble(),
-      requiresGrad ? 1 : 0, resultTensorPtr);
+    device_used??=device("cpu");
+  
+  // 将 Dart 的数组转换为原生指针
+  final Pointer<Int64> int64Pointer = calloc<Int64>(size.length);
+  final Int64List int64List = int64Pointer.asTypedList(size.length);
+  int64List.setAll(0, size);
+
+  // 调用 C++ 的 Empty 函数
+  final resultTensorPtr = Tensor_empty(int64Pointer, size.length, dtype, device_used.device_type,device_used.device_index,requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
+      
 
   // 释放原生数组内存
   calloc.free(int64Pointer);
@@ -1716,17 +1646,27 @@ Tensor full(List<int> size, num values, {bool requiresGrad = false}) {
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr); // 释放结果指针
+  final tensor = Tensor._internal(resultTensorPtr);
+
 
   return tensor;
 }
 
-Tensor eye(int n, int m, {bool requiresGrad = false,int dtype=float32}) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _eye(n, m, requiresGrad ? 1 : 0, dtype,resultTensorPtr);
+Tensor ones(List<int> size, {bool requiresGrad = false,int dtype=float32,Device ?device_used}) {
+  device_used??=device("cpu");
+  
+  // 将 Dart 的数组转换为原生指针
+  final Pointer<Int64> int64Pointer = calloc<Int64>(size.length);
+  final Int64List int64List = int64Pointer.asTypedList(size.length);
+  int64List.setAll(0, size);
+
+  // 调用 C++ 的 Empty 函数
+  final resultTensorPtr = Tensor_ones(int64Pointer, size.length, dtype, device_used.device_type,device_used.device_index,requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
+      
 
   // 释放原生数组内存
+  calloc.free(int64Pointer);
 
   // 检查是否有错误信息，如果有，则抛出异常
   if (errorMsg != nullptr) {
@@ -1735,8 +1675,110 @@ Tensor eye(int n, int m, {bool requiresGrad = false,int dtype=float32}) {
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr); // 释放结果指针
+  final tensor = Tensor._internal(resultTensorPtr);
+
+
+  return tensor;
+}
+
+Tensor full(List<int> size, num values, {int dtype=float32,bool requiresGrad = false,Device ?device_used}) {
+ device_used??=device("cpu");
+  
+  // 将 Dart 的数组转换为原生指针
+  final Pointer<Int64> int64Pointer = calloc<Int64>(size.length);
+  final Int64List int64List = int64Pointer.asTypedList(size.length);
+  int64List.setAll(0, size);
+
+ if(dtype==float32)
+ {
+  Scalar scalar=float32_to_scalar(values.toDouble());
+  final resultTensorPtr = Tensor_full(int64Pointer, size.length, scalar.scalarPtr,dtype, device_used.device_type,device_used.device_index,requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
+      
+
+  // 释放原生数组内存
+  calloc.free(int64Pointer);
+
+  // 检查是否有错误信息，如果有，则抛出异常
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr);
+
+
+  return tensor;
+ }
+ else if(dtype==float64)
+ {
+  Scalar scalar=float64_to_scalar(values.toDouble());
+  final resultTensorPtr = Tensor_full(int64Pointer, size.length, scalar.scalarPtr,dtype, device_used.device_type,device_used.device_index,requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
+      
+
+  // 释放原生数组内存
+  calloc.free(int64Pointer);
+
+  // 检查是否有错误信息，如果有，则抛出异常
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr);
+
+
+  return tensor;
+ }
+ else if(dtype==int32){
+  Scalar scalar=int32_to_scalar(values.toInt());
+  final resultTensorPtr = Tensor_full(int64Pointer, size.length, scalar.scalarPtr,dtype, device_used.device_type,device_used.device_index,requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
+      
+
+  // 释放原生数组内存
+  calloc.free(int64Pointer);
+
+  // 检查是否有错误信息，如果有，则抛出异常
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr);
+
+
+  return tensor;
+ }
+ else{throw Exception("wrong type");}
+  
+}
+
+Tensor eye(int n, int m, {bool requiresGrad = false,int dtype=float32,Device ?device_used}) {
+  device_used??=device("cpu");
+  
+ 
+
+  // 调用 C++ 的 Empty 函数
+  final resultTensorPtr = Tensor_eye(n,m, dtype, device_used.device_type,device_used.device_index,requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
+      
+
+ 
+
+  // 检查是否有错误信息，如果有，则抛出异常
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr);
+
 
   return tensor;
 }
@@ -1936,7 +1978,7 @@ else if(a is Tensor){
     final alphaScalar=float64_to_scalar(alpha);
 
       
-          Tensor_add_(a._tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
+          Tensor_add_(a._tensorPtr, b._tensorPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1952,7 +1994,7 @@ else if(a is Tensor){
        final alphaScalar=float64_to_scalar(alpha);
         final rightScalar=int32_to_scalar(b);
       
-          Tensor_add_scalar_(a._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_add_scalar_(a._tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1968,7 +2010,7 @@ else if(a is Tensor){
        final alphaScalar=float64_to_scalar(alpha);
         final rightScalar=float64_to_scalar(b);
       
-          Tensor_add_scalar_(a._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_add_scalar_(a._tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1996,7 +2038,7 @@ else if(a is Tensor){
     final alphaScalar=float64_to_scalar(alpha);
 
       
-          Tensor_sub_(a._tensorPtr, b._tensorPtr,alphaScalar._scalarPtr );
+          Tensor_sub_(a._tensorPtr, b._tensorPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -2012,7 +2054,7 @@ else if(a is Tensor){
        final alphaScalar=float64_to_scalar(alpha);
         final rightScalar=int32_to_scalar(b);
       
-          Tensor_sub_scalar_(a._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_sub_scalar_(a._tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -2028,7 +2070,7 @@ else if(a is Tensor){
        final alphaScalar=float64_to_scalar(alpha);
         final rightScalar=float64_to_scalar(b);
       
-          Tensor_sub_scalar_(a._tensorPtr, rightScalar._scalarPtr,alphaScalar._scalarPtr );
+          Tensor_sub_scalar_(a._tensorPtr, rightScalar.scalarPtr,alphaScalar.scalarPtr );
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -2069,7 +2111,7 @@ else if(a is Tensor){
       if(b is int){
         final rightScalar=int32_to_scalar(b);
        
-          Tensor_mul_scalar_(a._tensorPtr,rightScalar._scalarPtr);
+          Tensor_mul_scalar_(a._tensorPtr,rightScalar.scalarPtr);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -2084,7 +2126,7 @@ else if(a is Tensor){
       {
         final rightScalar=float64_to_scalar(b);
        
-          Tensor_mul_scalar_(a._tensorPtr,rightScalar._scalarPtr);
+          Tensor_mul_scalar_(a._tensorPtr,rightScalar.scalarPtr);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -2149,7 +2191,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
   // 返回指向已编码字符串的指针
  final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
        
-          Tensor_div_scalar_(a._tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
+          Tensor_div_scalar_(a._tensorPtr,rightScalar.scalarPtr,rounding_mode_Utf8);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -2175,7 +2217,7 @@ final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>()
   // 返回指向已编码字符串的指针
   final rounding_mode_Utf8 = rounding_mode.isEmpty ? nullptr : result.cast<Utf8>();
        
-          Tensor_div_scalar_(a._tensorPtr,rightScalar._scalarPtr,rounding_mode_Utf8);
+          Tensor_div_scalar_(a._tensorPtr,rightScalar.scalarPtr,rounding_mode_Utf8);
       final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -2358,7 +2400,20 @@ if (errorMsg != nullptr) {
     
     throw Exception(errorString);
   }
-  final scalar=Scalar._internal(result);
+  final scalar=Scalar(result);
+  return scalar;
+
+}
+
+Scalar float32_to_scalar(double value){
+final result=_float32_to_scalar(value);
+final errorMsg=_get_and_reset_last_err();
+if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+  final scalar=Scalar(result);
   return scalar;
 
 }
@@ -2371,7 +2426,7 @@ if (errorMsg != nullptr) {
     
     throw Exception(errorString);
   }
-  final scalar=Scalar._internal(result);
+  final scalar=Scalar(result);
   return scalar;
 
 }
