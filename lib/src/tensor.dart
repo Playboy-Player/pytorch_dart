@@ -315,18 +315,10 @@ final Pointer<Utf8> Function(
                     Pointer<Double> result)>>('Tensor_ToArray_Float64')
         .asFunction();
 
-final Pointer<Utf8> Function(double start, double end, double step,
-        int requiresGrad, Pointer<Pointer<Void>> result) _arange =
-    nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(
-                    Float start,
-                    Float end,
-                    Float step,
-                    Int64 requiresGrad,
-                    Pointer<Pointer<Void>> result)>>('Arange')
-        .asFunction();
+final Pointer<Void> Function(Pointer<Void> start, Pointer<Void> end, Pointer<Void> step, int scalar_type, int device_type, int device_index,bool requires_grad) 
+Tensor_arange = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> start, Pointer<Void> end, Pointer<Void> step, Int8 scalar_type, Int32 device_type, Int32 device_index, Bool requires_grad)>>('THSTensor_arange')
+    .asFunction();
 
 final Pointer<Utf8> Function(double start, double end, int steps,
         int requiresGrad, Pointer<Pointer<Void>> result) _linspace =
@@ -1783,22 +1775,79 @@ Tensor eye(int n, int m, {bool requiresGrad = false,int dtype=float32,Device ?de
   return tensor;
 }
 
-Tensor arange(double start, double end, double step,
-    {bool requiresGrad = false}) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg =
-      _arange(start, end, step, requiresGrad ? 1 : 0, resultTensorPtr);
+Tensor arange(num start, num end, num step,{int dtype=float32,bool requiresGrad = false,Device ?device_used}) {
+ device_used??=device("cpu");
+  
+  
+ if(dtype==float32)
+ {
+  Scalar startScalar=float32_to_scalar(start.toDouble());
+  Scalar endScalar=float32_to_scalar(start.toDouble());
+  Scalar stepScalar=float32_to_scalar(start.toDouble());
+  final resultTensorPtr = Tensor_arange(startScalar.scalarPtr,endScalar.scalarPtr,stepScalar.scalarPtr,dtype, device_used.device_type,device_used.device_index,requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
+      
 
+ 
+
+  // 检查是否有错误信息，如果有，则抛出异常
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
     
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
+  final tensor = Tensor._internal(resultTensorPtr);
+
 
   return tensor;
+ }
+ else if(dtype==float64)
+ {
+  Scalar startScalar=float64_to_scalar(start.toDouble());
+  Scalar endScalar=float64_to_scalar(start.toDouble());
+  Scalar stepScalar=float64_to_scalar(start.toDouble());
+  final resultTensorPtr = Tensor_arange(startScalar.scalarPtr,endScalar.scalarPtr,stepScalar.scalarPtr,dtype, device_used.device_type,device_used.device_index,requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
+      
+
+ 
+
+  // 检查是否有错误信息，如果有，则抛出异常
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr);
+
+
+  return tensor;
+ }
+ else if(dtype==int32){
+  Scalar startScalar=int32_to_scalar(start.toInt());
+  Scalar endScalar=int32_to_scalar(start.toInt());
+  Scalar stepScalar=int32_to_scalar(start.toInt());
+  final resultTensorPtr = Tensor_arange(startScalar.scalarPtr,endScalar.scalarPtr,stepScalar.scalarPtr,dtype, device_used.device_type,device_used.device_index,requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
+      
+
+ 
+
+  // 检查是否有错误信息，如果有，则抛出异常
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr);
+
+
+  return tensor;
+ }
+ else{throw Exception("wrong type");}
 }
 
 Tensor linspace(double start, double end, int steps,
