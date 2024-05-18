@@ -10,6 +10,7 @@ import 'constants.dart';
 import "pinnedMemory.dart";
 import "scalar.dart";
 import "device.dart";
+import "GCHandleDeleter.dart";
 
 final DynamicLibrary nativeLib = Platform.isAndroid
     ? DynamicLibrary.open('libpytorch_dart.so')
@@ -224,12 +225,7 @@ final Pointer<Void> Function(Pointer<Void> tensor)
 Tensor_detach = nativeLib
     .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor)>>('THSTensor_detach')
     .asFunction();
-final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int64>,int,Pointer<Pointer<Void>>) _index = nativeLib
-    .lookup<
-        NativeFunction<
-            Pointer<Utf8> Function(
-                Pointer<Void>, Pointer<Int64>,Int64,Pointer<Pointer<Void>>)>>('Tensor_Index')
-    .asFunction();
+
 
     final Pointer<Void> Function(Pointer<Void>, Pointer<Int64>,Pointer<Int64>,Pointer<Int64>,Pointer<Pointer<Void>>,int) Tensor_index = nativeLib
     .lookup<
@@ -258,21 +254,31 @@ final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int8>) _dtype = nativeLib
                 Pointer<Void>, Pointer<Int8>)>>('Tensor_Dtype')
     .asFunction();
 
-final Pointer<Utf8> Function(
+final Pointer<Void> Function(
         Pointer<Void> data,
-        int dtype,
+        Pointer<NativeFunction<DeleterNative>> deleter,
         Pointer<Int64> sizes_data,
         int sizes_data_len,
-        Pointer<Pointer<Void>> result) _from_blob =
+        int scalar_type,
+        int dtype,
+        int device_type,
+        int device_index,
+         bool requires_grad
+        ) Tensor_new =
     nativeLib
         .lookup<
             NativeFunction<
-                Pointer<Utf8> Function(
+                Pointer<Void> Function(
                     Pointer<Void> data,
-                    Int8 dtype,
-                    Pointer<Int64> sizes_data,
+                     Pointer<NativeFunction<DeleterNative>> deleter,
+                     Pointer<Int64> sizes_data,
                     Int64 sizes_data_len,
-                    Pointer<Pointer<Void>> result)>>('Tensor_FromBlob')
+                     Int8 scalar_type,
+                    Int8 dtype,
+                    Int device_type,
+                    Int device_index,
+                    Bool requires_grad
+                    )>>('THSTensor_new')
         .asFunction();
 
         final Pointer<Utf8> Function(
@@ -320,32 +326,15 @@ Tensor_arange = nativeLib
     .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> start, Pointer<Void> end, Pointer<Void> step, Int8 scalar_type, Int32 device_type, Int32 device_index, Bool requires_grad)>>('THSTensor_arange')
     .asFunction();
 
-final Pointer<Utf8> Function(double start, double end, int steps,
-        int requiresGrad, Pointer<Pointer<Void>> result) _linspace =
-    nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(
-                    Float start,
-                    Float end,
-                    Int64 steps,
-                    Int64 requiresGrad,
-                    Pointer<Pointer<Void>> result)>>('Linspace')
-        .asFunction();
+final Pointer<Void> Function(double start, double end, int steps, int scalar_type, int device_type, int device_index, bool requires_grad) 
+Tensor_linspace = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Double start, Double end, Int64 steps, Int8 scalar_type, Int32 device_type, Int32 device_index, Bool requires_grad)>>('THSTensor_linspace')
+    .asFunction();
 
-final Pointer<Utf8> Function(double start, double end, int steps, double base,
-        int requiresGrad, Pointer<Pointer<Void>> result) _logspace =
-    nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(
-                    Float start,
-                    Float end,
-                    Int64 steps,
-                    Double base,
-                    Int64 requiresGrad,
-                    Pointer<Pointer<Void>> result)>>('Logspace')
-        .asFunction();
+final Pointer<Void> Function(double start, double end, int steps,double base, int scalar_type, int device_type, int device_index, bool requires_grad) 
+Tensor_logspace = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Double start, Double end, Int64 steps,Double base, Int8 scalar_type, Int32 device_type, Int32 device_index, Bool requires_grad)>>('THSTensor_logspace')
+    .asFunction();
 
 final Pointer<Utf8> Function(
         Pointer<Void> a, Pointer<Void> b, Pointer<Int64> result) _equal =
@@ -1522,8 +1511,9 @@ List<Tensor> topk(Tensor a,int k, {int dim=-1, bool largest = true, bool sorted 
  
 }
 
-Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
-  if (dtype==int32) {
+Tensor from_blob(List<num> list, List<int> sizes_data,int scalar_type,int dtype,{bool requiresGrad = false,Device ?device_used}) {
+   device_used??=device("cpu");
+  if (scalar_type==int32) {
     var intList = Int32List.fromList(list.cast<int>());
     // 获取该数组的指针
     final Pointer<Int32> dataPointer = malloc<Int32>(intList.length);
@@ -1536,18 +1526,17 @@ Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
     final Int64List sizesList = sizesPointer.asTypedList(sizes_data.length);
     sizesList.setAll(0, sizes_data);
 
-    final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg = _from_blob(
-        dataPointer.cast(), dtype, sizesPointer, sizesList.length, resultTensorPtr);
-
+    final resultTensorPtr =  Tensor_new(
+        dataPointer.cast(),Pointer.fromFunction<DeleterNative>(deleteMemory),sizesPointer, sizesList.length, scalar_type, dtype, device_used.device_type,device_used.device_index,requiresGrad);
+final errorMsg=_get_and_reset_last_err();
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
       
       throw Exception(errorString);
     }
-    final tensor = Tensor._internal(resultTensorPtr.value);
+    final tensor = Tensor._internal(resultTensorPtr);
     return tensor;
-  } else if (dtype == float32) {
+  } else if (scalar_type == float32) {
     var floatList = Float32List.fromList(list.cast<double>());
     // 获取该数组的指针
     final Pointer<Float> dataPointer = malloc<Float>(floatList.length);
@@ -1563,19 +1552,18 @@ Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
     // 调用 FFI 函数
 
     // 调用 FFI 函数
-    final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg = _from_blob(
-        dataPointer.cast(), dtype, sizesPointer, sizesList.length, resultTensorPtr);
-
+    final resultTensorPtr =  Tensor_new(
+        dataPointer.cast(),Pointer.fromFunction<DeleterNative>(deleteMemory),sizesPointer, sizesList.length, scalar_type, dtype, device_used.device_type,device_used.device_index,requiresGrad);
+final errorMsg=_get_and_reset_last_err();
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
       
       throw Exception(errorString);
     }
-    final tensor = Tensor._internal(resultTensorPtr.value);
+    final tensor = Tensor._internal(resultTensorPtr);
     return tensor;
   }
-  else if (dtype == float64) {
+  else if (scalar_type== float64) {
     var floatList = Float64List.fromList(list.cast<double>());
     // 获取该数组的指针
     final Pointer<Double> dataPointer = malloc<Double>(floatList.length);
@@ -1591,17 +1579,16 @@ Tensor from_blob(List<num> list, List<int> sizes_data,{int dtype=float32}) {
     // 调用 FFI 函数
 
     // 调用 FFI 函数
-    final resultTensorPtr = calloc<Pointer<Void>>();
-    final errorMsg = _from_blob(
-        dataPointer.cast(), dtype, sizesPointer, sizesList.length, resultTensorPtr);
-
+    final resultTensorPtr =  Tensor_new(
+        dataPointer.cast(),Pointer.fromFunction<DeleterNative>(deleteMemory),sizesPointer, sizesList.length, scalar_type, dtype, device_used.device_type,device_used.device_index,requiresGrad);
+final errorMsg=_get_and_reset_last_err();
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
       
       throw Exception(errorString);
     }
-    final tensor = Tensor._internal(resultTensorPtr.value);
-    return tensor; 
+    final tensor = Tensor._internal(resultTensorPtr);
+    return tensor;
   }
   else {
     throw Exception("wrong type");
@@ -1850,37 +1837,34 @@ Tensor arange(num start, num end, num step,{int dtype=float32,bool requiresGrad 
  else{throw Exception("wrong type");}
 }
 
-Tensor linspace(double start, double end, int steps,
-    {bool requiresGrad = false}) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg =
-      _linspace(start, end, steps, requiresGrad ? 1 : 0, resultTensorPtr);
-
+Tensor linspace(double start, double end, int steps,{int dtype=float32,bool requiresGrad = false,Device ?device_used}) {
+  device_used??=device("cpu");
+  final resultTensorPtr = Tensor_linspace(start, end, steps,dtype,device_used.device_type,device_used.device_index, requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
     
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr.value);
+  final tensor = Tensor._internal(resultTensorPtr);
   calloc.free(resultTensorPtr);
 
   return tensor;
 }
 
 Tensor logspace(double start, double end, int steps, double base,
-    {bool requiresGrad = false}) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg =
-      _logspace(start, end, steps, base, requiresGrad ? 1 : 0, resultTensorPtr);
-
+    {int dtype=float32,bool requiresGrad = false,Device ?device_used}) {
+      device_used??=device("cpu");
+  final resultTensorPtr = Tensor_logspace(start, end, steps,base,dtype,device_used.device_type,device_used.device_index, requiresGrad);
+  final errorMsg =_get_and_reset_last_err();
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
     
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr.value);
+  final tensor = Tensor._internal(resultTensorPtr);
   calloc.free(resultTensorPtr);
 
   return tensor;
@@ -2366,7 +2350,7 @@ Tensor IntTensor(dynamic list) {
   flatten(list, 0);
 
   Tensor outputTensor =
-      from_blob(flatList.cast<int>(), sizes,dtype: int32);
+      from_blob(flatList.cast<int>(), sizes,int32,int32);
   return outputTensor;
 }
 
@@ -2393,7 +2377,7 @@ Tensor FloatTensor(dynamic list) {
   flatten(list, 0);
 
   Tensor outputTensor =
-      from_blob(flatList.cast<double>(), sizes,dtype:float32);
+      from_blob(flatList.cast<double>(), sizes,float32,float32);
   return outputTensor;
 }
 
@@ -2437,7 +2421,7 @@ Tensor DoubleTensor(dynamic list) {
  
 
   Tensor outputTensor =
-      from_blob(flatList.cast<double>(), sizes,dtype:float64);
+      from_blob(flatList.cast<double>(), sizes,float64,float64);
   return outputTensor;
 }
 

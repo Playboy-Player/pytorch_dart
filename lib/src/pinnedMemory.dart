@@ -2,7 +2,7 @@ import 'dart:ffi'; // For FFI
 import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 
-// Dart doesn't have direct pinning like C#, but Uint8List provides a mutable buffer.
+
 class PinnedArray {
   Pointer<Pointer<Void>> _pointer=nullptr;
   late Uint8List _array;
