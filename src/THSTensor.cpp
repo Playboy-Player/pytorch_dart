@@ -479,6 +479,10 @@ Tensor THSTensor_expand(const Tensor tensor, const int64_t* sizes, const int len
 {
     CATCH_TENSOR(tensor->expand(at::ArrayRef<int64_t>(sizes, length), implicit));
 }
+Tensor THSTensor_expand_as(const Tensor tensor, const Tensor other)
+{
+    CATCH_TENSOR(tensor->expand_as(*other));
+}
 
 Tensor THSTensor_repeat(const Tensor tensor, const int64_t* sizes, const int length)
 {
