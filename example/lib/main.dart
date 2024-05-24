@@ -52,7 +52,7 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
     
     torch.Tensor d=torch.eye(3,3);
    var e=torch.from_blob([1,2,3,4,5,6],[2,3],torch.int32,torch.float64);
-   print(e);
+   print(e.dtype());
     
    
     

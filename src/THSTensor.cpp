@@ -2211,3 +2211,95 @@ Tensor THSTensor_unflatten_names(Tensor tensor, const char** names, const int64_
 
     return nullptr;
 }
+
+  const char* Tensor_Print(Tensor a) {
+    std::ostringstream oss;
+    oss << *a;
+    std::string str = oss.str();
+
+ 
+    char* cstr = new char[str.length() + 1];
+    std::strcpy(cstr, str.c_str());
+
+    
+    return cstr;
+}
+
+
+
+
+ const char *Tensor_ToArray_Int(Tensor a, int8_t dtype,  int *result) {
+  try {
+    auto b=a->contiguous();
+  
+  
+    auto data_ptr = b.data_ptr<int>();
+
+  const int64_t num_elements = b.numel();  // 获取Tensor中元素的数量
+    // 创建一个足够大的数组来容纳数据
+
+  // 复制数据
+  std::memcpy(result, data_ptr, num_elements * sizeof(int));
+  
+    return nullptr;
+  } catch (const c10::Error &e) {
+    return strdup(e.what());
+  }
+}
+
+ const char *Tensor_ToArray_Float(Tensor a, int8_t dtype,  float *result) {
+  try {
+    auto b=a->contiguous();
+  
+    auto data_ptr = b.data_ptr<float>();
+
+  const int64_t num_elements = b.numel();  // 获取Tensor中元素的数量
+   // 创建一个足够大的数组来容纳数据
+
+  // 复制数据
+  std::memcpy(result, data_ptr, num_elements * sizeof(float));
+  
+  
+  
+ 
+    return nullptr;
+  } catch (const c10::Error &e) {
+    return strdup(e.what());
+  }
+}
+
+ const char *Tensor_ToArray_Float64(Tensor a, int8_t dtype,  double *result) {
+  try {
+    auto b=a->contiguous();
+  
+  
+    auto data_ptr = b.data_ptr<double>();
+
+  const int64_t num_elements = b.numel();  // 获取Tensor中元素的数量
+  std::memcpy(result, data_ptr, num_elements * sizeof(double));
+  
+
+    return nullptr;
+  } catch (const c10::Error &e) {
+    return strdup(e.what());
+  }
+}
+
+  const char *Tensor_Dim(Tensor tensor, int64_t *dim) {
+  try {
+    *dim = tensor->dim();
+    return nullptr;
+  } catch (const c10::Error &e) {
+    return strdup(e.what());
+  }
+}
+
+  const char *Tensor_Shape(Tensor tensor, int64_t *dims) {
+  try {
+    int i = 0;
+    for (int64_t dim : tensor->sizes()) dims[i++] = dim;
+    return nullptr;
+  } catch (const c10::Error &e) {
+    return strdup(e.what());
+  }
+}

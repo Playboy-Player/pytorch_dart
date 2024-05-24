@@ -213,13 +213,6 @@ final Pointer<Utf8> Function(Pointer<Void>) _print = nativeLib
         'Tensor_Print')
     .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>> result)
-    _detach = nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(Pointer<Void> tensor,
-                    Pointer<Pointer<Void>> result)>>('Tensor_Detach')
-        .asFunction();
 
 final Pointer<Void> Function(Pointer<Void> tensor) 
 Tensor_detach = nativeLib
@@ -247,11 +240,11 @@ final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int64>) _dim = nativeLib
                 Pointer<Void>, Pointer<Int64>)>>('Tensor_Dim')
     .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Void>, Pointer<Int8>) _dtype = nativeLib
+final int Function(Pointer<Void>) Tensor_type = nativeLib
     .lookup<
         NativeFunction<
-            Pointer<Utf8> Function(
-                Pointer<Void>, Pointer<Int8>)>>('Tensor_Dtype')
+            Int8 Function(
+                Pointer<Void>)>>('THSTensor_type')
     .asFunction();
 
 final Pointer<Void> Function(
@@ -336,42 +329,23 @@ Tensor_logspace = nativeLib
     .lookup<NativeFunction<Pointer<Void> Function(Double start, Double end, Int64 steps,Double base, Int8 scalar_type, Int32 device_type, Int32 device_index, Bool requires_grad)>>('THSTensor_logspace')
     .asFunction();
 
-final Pointer<Utf8> Function(
-        Pointer<Void> a, Pointer<Void> b, Pointer<Int64> result) _equal =
-    nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(Pointer<Void> a, Pointer<Void> b,
-                    Pointer<Int64> result)>>('Equal')
-        .asFunction();
-
-final Pointer<Utf8> Function(Pointer<Void> a, Pointer<Pointer<Void>> result)
-    _sum = nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(
-                    Pointer<Void> a, Pointer<Pointer<Void>> result)>>('Sum')
-        .asFunction();
-
-final Pointer<Utf8> Function(
-        Pointer<Void> a, int dim, int keepDim, Pointer<Pointer<Void>> result)
-    _sumByDim = nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Utf8> Function(Pointer<Void> a, Int64 dim, Int8 keepDim,
-                    Pointer<Pointer<Void>> result)>>('SumByDim')
-        .asFunction();
-
-final Pointer<Utf8> Function(
-  Pointer<Void> a,
-  Pointer<Void> other,
-  Pointer<Pointer<Void>> result,
-) _mm = nativeLib
-    .lookup<
-        NativeFunction<
-            Pointer<Utf8> Function(Pointer<Void> a, Pointer<Void> other,
-                Pointer<Pointer<Void>> result)>>('MM')
+final int Function(Pointer<Void> left, Pointer<Void> right) 
+Tensor_equal = nativeLib
+    .lookup<NativeFunction<Int32 Function(Pointer<Void> left, Pointer<Void> right)>>('THSTensor_equal')
     .asFunction();
+
+final Pointer<Void> Function(Pointer<Void> tensor, bool has_type, int dtype) 
+Tensor_sum = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor, Bool has_type, Int8 dtype)>>('THSTensor_sum')
+    .asFunction();
+
+
+
+final Pointer<Void> Function(Pointer<Void> left, Pointer<Void> right) 
+Tensor_mm = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> left, Pointer<Void> right)>>('THSTensor_mm')
+    .asFunction();
+
 
     final Pointer<Void> Function(Pointer<Void> tensor, int dim1, int dim2) 
 Tensor_transpose = nativeLib
@@ -405,12 +379,14 @@ final Pointer<Void> Function(
     .asFunction();
 
 
-final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>> result) _relu = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Pointer<Void>> result)>>('Relu')
+final Pointer<Void> Function(Pointer<Void> tensor) 
+Tensor_relu = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor)>>('THSTensor_relu')
     .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Void>, double, Pointer<Pointer<Void>> result) _leakyRelu = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Double negative_slope, Pointer<Pointer<Void>> result)>>('LeakyRelu')
+final Pointer<Void> Function(Pointer<Void> tensor, Pointer<Void> negative_slope) 
+Tensor_leaky_relu = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor, Pointer<Void> negative_slope)>>('THSTensor_leaky_relu')
     .asFunction();
 
 final Pointer<Void> Function(Pointer<Void> tensor) 
@@ -422,13 +398,14 @@ final Pointer<Void> Function(Pointer<Void>) Tensor_sigmoid = nativeLib
     .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor)>>('THSTensor_sigmoid')
     .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Void>, Pointer<Void>, Pointer<Int64> result) _allClose = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensorA, Pointer<Void> tensorB, Pointer<Int64> result)>>('AllClose')
+final int Function(Pointer<Void> left, Pointer<Void> right, double rtol, double atol, bool equal_nan) 
+Tensor_allclose = nativeLib
+    .lookup<NativeFunction<Int32 Function(Pointer<Void> left, Pointer<Void> right, Double rtol, Double atol, Bool equal_nan)>>('THSTensor_allclose')
     .asFunction();
 
 
-final Pointer<Utf8> Function(Pointer<Void>, int,int, Pointer<Pointer<Void>> result) _flatten = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Int64 startDim, Int64 endDim, Pointer<Pointer<Void>> result)>>('Flatten')
+final Pointer<Void> Function(Pointer<Void>, int,int) Tensor_flatten = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor, Int64 startDim, Int64 endDim)>>('THSTensor_flatten')
     .asFunction();
 
  
@@ -442,20 +419,21 @@ _expandAs = nativeLib
     .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Void> other, Pointer<Pointer<Void>> result)>>('ExpandAs')
     .asFunction();
 
-final Pointer<Utf8> Function(Pointer<Void>, Pointer<Void>, Pointer<Pointer<Void>> result)
-_eq = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Void> other, Pointer<Pointer<Void>> result)>>('Eq')
-    .asFunction();
-
-final Pointer<Utf8> Function(Pointer<Void>, int dim, Pointer<Void> index, Pointer<Pointer<Void>> result)
-_indexSelect = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Int64 dim, Pointer<Void> index, Pointer<Pointer<Void>> result)>>('IndexSelect')
+final Pointer<Void> Function(Pointer<Void> left, Pointer<Void> right) 
+Tensor_eq = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> left, Pointer<Void> right)>>('THSTensor_eq')
     .asFunction();
 
 
-final Pointer<Utf8> Function(Pointer<Void>, Pointer<Pointer<Void>>,Pointer<Int64>, int)
-_view = nativeLib
-    .lookup<NativeFunction<Pointer<Utf8> Function(Pointer<Void> tensor, Pointer<Pointer<Void>> result,Pointer<Int64> sizes, Int64 sizeLen)>>('View')
+final Pointer<Void> Function(Pointer<Void>, int dim, Pointer<Void> index)
+Tensor_index_select = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor, Int64 dim, Pointer<Void> index)>>('THSTensor_index_select')
+    .asFunction();
+
+
+final Pointer<Void> Function(Pointer<Void>,Pointer<Int64>, int)
+Tensor_view = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor,Pointer<Int64> sizes, Int64 sizeLen)>>('THSTensor_view')
     .asFunction();
 
 
@@ -550,9 +528,8 @@ Tensor operator/(dynamic b){
     return dim;
   }
  int dtype() {
-    final dtypePtr = calloc<Int8>();
-
-    final errorMsg = _dtype(_tensorPtr, dtypePtr);
+    final dtype = Tensor_type(_tensorPtr);
+    final errorMsg=_get_and_reset_last_err();
 
     // 释放原生数组内存
 
@@ -563,9 +540,7 @@ Tensor operator/(dynamic b){
       throw Exception(errorString);
     }
 
-    Int8List rawDtype = dtypePtr.asTypedList(1);
-    int dtype = rawDtype[0];
-    calloc.free(dtypePtr); // 释放结果指针
+    
 
     return dtype;
   }
@@ -1328,128 +1303,10 @@ Tensor expand_as(Tensor other) {
 }
 
 
-Tensor eq(Tensor other) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _eq(this._tensorPtr, other._tensorPtr, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-  return tensor;
-}
-
-Tensor index_select(int dim, Tensor index) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _indexSelect(this._tensorPtr, dim, index._tensorPtr, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-  return tensor;
-}
-
-
-Tensor view(List<int> size) {
-  final sizePtr = calloc<Int64>(size.length);
-   final Int64List sizeList = sizePtr.asTypedList(size.length);
-    sizeList.setAll(0, size);
-
- 
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _view(this._tensorPtr, resultTensorPtr,sizePtr, size.length);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(sizePtr);
-  calloc.free(resultTensorPtr);
-  return tensor;
-}
-
-
-
-}
-
-
-
-
-
-
-
-Tensor eq(Tensor a,Tensor other) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _eq(a._tensorPtr, other._tensorPtr, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-  return tensor;
-}
-
-Tensor index_select(Tensor a,int dim, Tensor index) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _indexSelect(a._tensorPtr, dim, index._tensorPtr, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-  return tensor;
-}
-
-
-
-
-
-Tensor relu(Tensor a) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _relu(a._tensorPtr, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-  return tensor;
-}
-Tensor leakyRelu(Tensor a,double negative_slope) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _leakyRelu(a._tensorPtr, negative_slope, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-  return tensor;
-}
-
-Tensor tanh(Tensor a) {
+Tensor eq(Tensor right) {
     
     
-    final resultTensorPtr = Tensor_tanh(a._tensorPtr);
+    final resultTensorPtr = Tensor_eq(_tensorPtr, right._tensorPtr);
     final errorMsg = _get_and_reset_last_err();
     if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1462,9 +1319,111 @@ Tensor tanh(Tensor a) {
     return tensor;
 }
 
-Tensor sigmoid(Tensor a) {
+Tensor index_select(int dim, Tensor index) {
+  final resultTensorPtr=Tensor_index_select(this._tensorPtr, dim, index._tensorPtr);
+
+   final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr);
+    
+    
+    return tensor;
+
+}
+
+
+Tensor view(List<int> size) {
+  final sizePtr = calloc<Int64>(size.length);
+   final Int64List sizeList = sizePtr.asTypedList(size.length);
+    sizeList.setAll(0, size);
+
+ 
+  final resultTensorPtr = Tensor_view(this._tensorPtr,sizePtr, size.length);
+final errorMsg=_get_and_reset_last_err();
+  if (errorMsg != nullptr) {
+    final errorString = errorMsg.cast<Utf8>().toDartString();
+    throw Exception(errorString);
+  }
+
+  final tensor = Tensor._internal(resultTensorPtr);
+  calloc.free(sizePtr);
   
-final resultTensorPtr=Tensor_sigmoid(a._tensorPtr);
+  return tensor;
+}
+
+
+
+Tensor relu() {
+    
+    
+    final resultTensorPtr = Tensor_relu(_tensorPtr);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr);
+    
+    
+    return tensor;
+}
+Tensor leaky_relu( dynamic negative_slope) {
+    
+    if(negative_slope is int){
+final negative_slope_scalar=int32_to_scalar(negative_slope);
+    final resultTensorPtr = Tensor_leaky_relu(_tensorPtr, negative_slope_scalar.scalarPtr);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr);
+    
+    
+    return tensor;
+    }
+     else if(negative_slope is double){
+final negative_slope_scalar=float64_to_scalar(negative_slope);
+    final resultTensorPtr = Tensor_leaky_relu(_tensorPtr, negative_slope_scalar.scalarPtr);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr);
+    
+    
+    return tensor;
+    }
+    else{throw Exception("wrong data type.");}
+}
+
+Tensor tanh() {
+    
+    
+    final resultTensorPtr = Tensor_tanh(_tensorPtr);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr);
+    
+    
+    return tensor;
+}
+
+Tensor sigmoid() {
+  
+final resultTensorPtr=Tensor_sigmoid(_tensorPtr);
 final errorMsg=_get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1476,34 +1435,137 @@ final errorMsg=_get_and_reset_last_err();
   return tensor;
 }
 
-bool allClose(Tensor a,Tensor other) {
-  final resultValue = calloc<Int64>();
-  final errorMsg = _allClose(a._tensorPtr, other._tensorPtr, resultValue);
 
+Tensor flatten(int startDim, int endDim) {
+  final resultTensorPtr = Tensor_flatten(_tensorPtr, startDim, endDim);
+final errorMsg=_get_and_reset_last_err();
   if (errorMsg != nullptr) {
     final errorString = errorMsg.cast<Utf8>().toDartString();
     throw Exception(errorString);
   }
 
-  final bool close = resultValue.value == 1;
-  calloc.free(resultValue);
-  
-  return close;
+  final tensor = Tensor._internal(resultTensorPtr);
+ 
+
+  return tensor;
+}
+
+
+bool equal(Tensor right) {
+    
+    
+    final resultPtr = Tensor_equal(_tensorPtr, right._tensorPtr);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
+
+    final value=resultPtr>0?true:false;
+    
+    
+    return value;
+}
+
+Tensor sum( {bool has_type=false,int Dtype=float32}) {
+    if(has_type==false)
+    {
+      Dtype=dtype();
+    }
+    
+    final resultTensorPtr = Tensor_sum(_tensorPtr, has_type, Dtype);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr);
+    
+    
+    return tensor;
+}
+
+
+bool allclose(Tensor right, {double rtol=1e-08, double atol=1e-05, bool equal_nan=false}) {
+    
+    
+    final result = Tensor_allclose(_tensorPtr, right._tensorPtr, rtol, atol, equal_nan);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
+
+    
+    
+    final value=result>0?true:false;
+    return value;
+}
+
+
+
+
+Tensor mm(Tensor right) {
+    
+    
+    final resultTensorPtr = Tensor_mm(_tensorPtr, right._tensorPtr);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+        throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr);
+    
+    
+    return tensor;
+}
+
+}
+
+
+
+Tensor relu(Tensor a)
+{
+  return a.relu();
+}
+Tensor leaky_relu(Tensor a,dynamic negative_slope)
+{
+  return a.leaky_relu(negative_slope);
+}
+Tensor tanh(Tensor a)
+{
+  return a.tanh();
+}
+Tensor sigmoid(Tensor a)
+{
+  return a.sigmoid();
+}
+
+
+Tensor eq(Tensor a,Tensor other) {
+  return a.eq(other);
+}
+
+Tensor index_select(Tensor a,int dim, Tensor index) {
+  return a.index_select(dim, index);
+}
+
+
+
+
+
+
+
+bool allclose(Tensor left, Tensor right, {double rtol=1e-08, double atol=1e-05, bool equal_nan=false}) {
+    
+    
+    return left.allclose(right,atol: atol,rtol: rtol,equal_nan: equal_nan);
 }
 
 Tensor flatten(Tensor a,int startDim, int endDim) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _flatten(a._tensorPtr, startDim, endDim, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
+  return a.flatten(startDim, endDim);
 }
 
 List<Tensor> topk(Tensor a,int k, {int dim=-1, bool largest = true, bool sorted = true}) {
@@ -1870,36 +1932,15 @@ Tensor logspace(double start, double end, int steps, double base,
   return tensor;
 }
 
-bool equal(Tensor a, Tensor b) {
-  final resultPtr = calloc<Int64>();
-  final errorMsg = _equal(a._tensorPtr, b._tensorPtr, resultPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
+bool equal(Tensor left, Tensor right) {
     
-    throw Exception(errorString);
-  }
-
-  final result = resultPtr.value != 0;
-  calloc.free(resultPtr);
-
-  return result;
+    
+    return left.equal(right);
 }
-
-Tensor mm(Tensor a, Tensor b) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _mm(a._tensorPtr, b._tensorPtr, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
+Tensor mm(Tensor left, Tensor right) {
     
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
+    
+    return left.mm(right);
 }
 
 Tensor transpose(Tensor a,int dim0,int dim1) {
@@ -1926,38 +1967,11 @@ Tensor transpose(Tensor a,int dim0,int dim1) {
 
   }  
 
-Tensor sum(Tensor a) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg = _sum(a._tensorPtr, resultTensorPtr);
-
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
+Tensor sum(Tensor a,{bool has_type=false,int Dtype=float32}) {
+  return a.sum(has_type: has_type,Dtype: Dtype);
 }
 
-Tensor sumByDim(Tensor a, int dim, {bool keepDim = false}) {
-  final resultTensorPtr = calloc<Pointer<Void>>();
-  final errorMsg =
-      _sumByDim(a._tensorPtr, dim, keepDim ? 1 : 0, resultTensorPtr);
 
-  if (errorMsg != nullptr) {
-    final errorString = errorMsg.cast<Utf8>().toDartString();
-    
-    throw Exception(errorString);
-  }
-
-  final tensor = Tensor._internal(resultTensorPtr.value);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
-}
 
 Tensor add(dynamic a, dynamic b, {double alpha = 1}) {
 if(a is num){
