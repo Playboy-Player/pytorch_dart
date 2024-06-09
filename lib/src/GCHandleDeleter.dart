@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 
 // 枚举类型，用于标记内存分配方式
-  enum AllocationType { malloc, calloc }
+  
 
 
 class Deleter{

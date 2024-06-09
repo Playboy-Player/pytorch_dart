@@ -532,7 +532,7 @@ class Tensor {
   Pointer<Void> _tensorPtr;
 
   Tensor._internal(this._tensorPtr);
-
+Tensor(Pointer<Void> tensorPointer) : _tensorPtr = tensorPointer;
   Tensor operator +(dynamic b) {
     add_(b);
     return Tensor._internal(_tensorPtr);
@@ -564,7 +564,7 @@ class Tensor {
       empty([0])
     ]); //In this situation,only indexStarts is useful.See THSTensor_index in src/THSTensor.cpp for more information.
   }
-
+Pointer<Void> get tensorPtr => _tensorPtr;
   @override
   String toString() {
     var stringPtr = _print(_tensorPtr);
