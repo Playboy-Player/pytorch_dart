@@ -54,9 +54,14 @@ class _PrintToTextFieldState extends State<PrintToTextField> {
    var e=torch.from_blob([1,2,3,4,5,6],[2,3],torch.int32,torch.float64);
    print(e.dtype());
     
-   torch.save(e,"e.pt");
-    
-    
+  
+  var f=torch.jit_load("traced_resnet_model.pth");
+    var j=f.forward([torch.ones([1,3,224,224])]);
+
+    if(j is torch.Tensor)
+    {
+      print(j);
+    }
     setState(() {
      
     });

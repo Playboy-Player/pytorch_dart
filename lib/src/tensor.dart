@@ -2362,7 +2362,7 @@ Tensor load(String path) {
     }
 
     final tensor = Tensor._internal(resultTensorPtr);
-    calloc.free(resultTensorPtr);
+    
 
     return tensor;
   } else {

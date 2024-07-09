@@ -13,7 +13,7 @@ class Device {
   // 工厂构造函数，用于创建具有适当索引的新设备实例
   factory Device(int deviceType) {
     int newIndex = 0; // 从0开始搜索未使用的最小索引
-    while (_usedIndices.contains(newIndex)) {
+    while (_usedIndices.contains(newIndex)&&newIndex!=0) {
       newIndex++;  // 如果当前索引已使用，增加索引号
     }
     _usedIndices.add(newIndex);  // 标记为已使用

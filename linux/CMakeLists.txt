@@ -2,36 +2,41 @@
 # installed. You should not increase this version, as doing so will cause
 # the plugin to fail to compile for some customers of the plugin.
 cmake_minimum_required(VERSION 3.10)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+
 # Project-level configuration.
 set(PROJECT_NAME "pytorch_dart")
 project(${PROJECT_NAME} LANGUAGES CXX)
+
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../libtorch-linux/libtorch/share/cmake")
+
 # This value is used when generating builds using this plugin, so it must
 # not be changed.
 set(PLUGIN_NAME "pytorch_dart_plugin")
+
 find_package(Torch REQUIRED)
+
 # Any new source files that you add to the plugin should be added here.
 list(APPEND PLUGIN_SOURCES
-"pytorch_dart_plugin.cpp"
-"../src/torch.cc"
-"../src/tensor.cc"
-"../src/tensor4desktop.cc"
-"../src/Utils.cpp"
-"../src/THSTorch.cpp"
-"../src/THSTensor.cpp"
-"../src/THSTensorMath.cpp"
-"../src/THSTensorFactories.cpp"
+  "pytorch_dart_plugin.cpp"
+  "../src/torch.cc"
+  "../src/Utils.cpp"
+  "../src/THSTorch.cpp"
+  "../src/THSTensor.cpp"
+  "../src/THSTensorMath.cpp"
+  "../src/THSTensorFactories.cpp"
+  "../src/THSJIT.cpp"
 )
 
+# 移除全局的 -Werror
+string(REPLACE "-Werror" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+string(REPLACE "-Werror" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-
+# 添加忽略警告的选项
+add_compile_options(-Wno-unused-variable -Wno-error=unused-variable)
 
 # Define the plugin library target. Its name must not be changed (see comment
 # on PLUGIN_NAME above).
-add_library(${PLUGIN_NAME} SHARED
-  ${PLUGIN_SOURCES}
-)
+add_library(${PLUGIN_NAME} SHARED ${PLUGIN_SOURCES})
 
 # Apply a standard set of build settings that are configured in the
 # application-level CMakeLists.txt. This can be removed for plugins that want
@@ -51,10 +56,9 @@ target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter)
 target_link_libraries(${PLUGIN_NAME} PRIVATE PkgConfig::GTK)
-
-
 target_link_libraries(${PLUGIN_NAME} PRIVATE ${TORCH_LIBRARIES})
 set_property(TARGET ${PLUGIN_NAME} PROPERTY CXX_STANDARD 17)
+
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
 # external build triggered from this build file.
@@ -100,6 +104,8 @@ target_link_libraries(${TEST_RUNNER} PRIVATE flutter)
 target_link_libraries(${TEST_RUNNER} PRIVATE PkgConfig::GTK)
 target_link_libraries(${TEST_RUNNER} PRIVATE gtest_main gmock)
 
+# Ensure tests compile without -Werror
+target_compile_options(${TEST_RUNNER} PRIVATE -Wno-unused-variable -Wno-error=unused-variable)
 
 # Enable automatic test discovery.
 include(GoogleTest)

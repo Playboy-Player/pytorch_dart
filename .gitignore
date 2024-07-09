@@ -31,3 +31,4 @@ linux/native_pytorch.cpp
 .dart_tool/
 .packages
 build/
+example/traced_resnet_model.pth

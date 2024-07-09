@@ -56,7 +56,7 @@ final Pointer<Void> Function(int size) allocateTensorOrScalarArray = nativeLib
   Pointer<Void> get JITmodulePtr=>_JITmodulePtr;
 
 
-List<Tensor> forward(List<dynamic> input){
+dynamic forward(List<dynamic> input){
 var ntosArray =tensorOrScalarAllocator;
 var tRefsHandle = DetermineArgumentTypeRefs(input, allocator: ntosArray);
 
