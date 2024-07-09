@@ -423,13 +423,13 @@ final Pointer<Void> Function(Pointer<Void>, Pointer<Int64>, int dim_size)
 
 final void Function(Pointer<Void> a, Pointer<Utf8> path) Tensor_save = nativeLib
     .lookup<NativeFunction<Void Function(Pointer<Void> a, Pointer<Utf8>)>>(
-        'THSTensor_Save')
+        'THSTensor_save')
     .asFunction();
 final Pointer<Void> Function(
   Pointer<Utf8> path,
 ) Tensor_load = nativeLib
     .lookup<NativeFunction<Pointer<Void> Function(Pointer<Utf8> path)>>(
-        'THSTensor_Load')
+        'THSTensor_load')
     .asFunction();
 
 final Pointer<Void> Function(Pointer<Void> tensor) Tensor_relu = nativeLib

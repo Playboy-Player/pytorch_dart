@@ -16,6 +16,7 @@ final Pointer<Void> Function(Pointer<Utf8>,int device,int index) JIT_load = nati
     .lookup<NativeFunction<Pointer<Void> Function(Pointer<Utf8>,Int64,Int64)>>(
         'THSJIT_load')
     .asFunction();
+
 final void Function(Pointer<Void> module,Pointer<Void> tRefsHandle,int length,Pointer<NativeFunction<AllocateNativeTensorOrScalarIndexedArray>>,Pointer<Int8> typeCode,int index) JIT_Module_forward = nativeLib
     .lookup<NativeFunction<Void Function(Pointer<Void>,Pointer<Void>,Int,Pointer<NativeFunction<AllocateNativeTensorOrScalarIndexedArray>>,Pointer<Int8> typeCode,Int32)>>(
         'THSJIT_Module_forward')
@@ -56,12 +57,12 @@ final Pointer<Void> Function(int size) allocateTensorOrScalarArray = nativeLib
 
 
 List<Tensor> forward(List<dynamic> input){
-var ntosArray =  NativeTensorOrScalarIndexedArray();
-var tRefsHandle = DetermineArgumentTypeRefs(input, ntosArray);
+var ntosArray =tensorOrScalarAllocator;
+var tRefsHandle = DetermineArgumentTypeRefs(input, allocator: ntosArray);
 
                         var allocated = ntosArray.count;
                         Pointer<Int8> typeCodePtr=calloc<Int8>();
-                        JIT_Module_forward(_JITmodulePtr, tRefsHandle,input.length, Pointer.fromFunction<AllocateNativeTensorOrScalarIndexedArray>(ntosArray.createArray),typeCodePtr,allocated);
+                        JIT_Module_forward(_JITmodulePtr, tRefsHandle,input.length, Pointer.fromFunction<AllocateNativeTensorOrScalarIndexedArray>(allocateTensorOrScalarsMemory),typeCodePtr,allocated);
                          
                          final errorMsg = _get_and_reset_last_err();
       if (errorMsg != nullptr) {
@@ -72,13 +73,13 @@ var tRefsHandle = DetermineArgumentTypeRefs(input, ntosArray);
       int typeCode=typeCodePtr.value;
                         List<TensorOrScalar> ptrArray = ntosArray.toTOSArray(allocated);
 
-                        return ProcessReturnValue(ntosArray, ptrArray, typeCode);
+                        return ProcessReturnValue(ptrArray, typeCode,allocator: ntosArray);
 
 
 }
   }
 
-JITModule jit_load(String filename,Device? device_used)
+JITModule jit_load(String filename,{Device? device_used})
 {device_used ??= device("cpu");
    final units = utf8.encode(filename);
       // 在本地分配足够的内存来复制这个 Uint8List
@@ -94,6 +95,7 @@ JITModule jit_load(String filename,Device? device_used)
 
       final filename_Utf8 =
            result.cast<Utf8>();
+           
   final resultModulePtr =
           JIT_load(filename_Utf8,device_used.device_type,device_used.device_index);
       final errorMsg = _get_and_reset_last_err();
@@ -104,6 +106,7 @@ JITModule jit_load(String filename,Device? device_used)
       }
 
       final module=JITModule(resultModulePtr);
+       malloc.free(result);
       return module;
 }
 
@@ -123,8 +126,8 @@ final class TensorOrScalar extends Struct {
 }
 
 
-dynamic ProcessReturnValue( NativeTensorOrScalarIndexedArray allocator, List<TensorOrScalar> ptrArray, int typeCode)
-                {
+dynamic ProcessReturnValue( List<TensorOrScalar> ptrArray, int typeCode,{ NativeTensorOrScalarIndexedArray ?allocator})
+                {allocator??=tensorOrScalarAllocator;
                     switch (typeCode) {
                     
                     case 1:
@@ -223,8 +226,8 @@ dynamic ProcessReturnValue( NativeTensorOrScalarIndexedArray allocator, List<Ten
                     }
                     
                 }
-Pointer<Void> DetermineArgumentTypeRefs(List<dynamic> list, NativeTensorOrScalarIndexedArray allocator){
-
+Pointer<Void> DetermineArgumentTypeRefs(List<dynamic> list, {NativeTensorOrScalarIndexedArray ?allocator}){
+allocator ??=tensorOrScalarAllocator;
 final int count=list.length;
 var tensorRefs = allocator.createArray(allocator.count, list.length);
 for (var idx = 0; idx < list.length; idx++) {
@@ -236,7 +239,7 @@ for (var idx = 0; idx < list.length; idx++) {
                             setTensorOrScalar(tensorRefs, idx, 1, 0, s.scalarPtr);
                             break;
                         case List<Tensor> tensors: {
-                                setTensorOrScalar(tensorRefs, idx, 5, tensors.length, DetermineArgumentTypeRefs(tensors,allocator));
+                                setTensorOrScalar(tensorRefs, idx, 5, tensors.length, DetermineArgumentTypeRefs(tensors,allocator:allocator));
                             }
                             break;
                         default:

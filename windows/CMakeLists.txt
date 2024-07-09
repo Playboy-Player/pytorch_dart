@@ -20,8 +20,6 @@ find_package(Torch REQUIRED)
 list(APPEND PLUGIN_SOURCES
   "pytorch_dart_plugin.cpp"
   "../src/torch.cc"
-  "../src/tensor.cc"
-  "../src/tensor4desktop.cc"
   "../src/Utils.cpp"
   "../src/THSTorch.cpp"
   "../src/THSTensor.cpp"
@@ -38,7 +36,9 @@ if(WIN32)
     add_compile_options(/wd4189)
     add_compile_options(/wd4701)
     add_compile_options(/wd4703)
+    add_compile_options(/wd4244)
 endif()
+
 # Define the plugin library target. Its name must not be changed (see comment
 # on PLUGIN_NAME above).
 add_library(${PLUGIN_NAME} SHARED

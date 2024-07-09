@@ -6,7 +6,7 @@ import 'package:path/path.dart' as path;
 import 'package:collection/collection.dart';
 
 Future<void> setup4Linux() async {
-var url = Uri.parse('https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip');
+var url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-2.2.2%2Bcpu.zip');
   var filename = 'libtorch-shared-with-deps-latest.zip';
  var packageConfig = await findPackageConfig(Directory.current);
   if (packageConfig == null) {
