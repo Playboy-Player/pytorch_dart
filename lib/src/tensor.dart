@@ -34,6 +34,10 @@ final Pointer<Void> Function(double value) _float64_to_scalar = nativeLib
     .lookup<NativeFunction<Pointer<Void> Function(Double value)>>(
         'THSTorch_float64_to_scalar')
     .asFunction();
+final Pointer<Void> Function(Pointer<Void> tensor) Tensor_clone = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> tensor)>>(
+        'THSTensor_clone')
+    .asFunction();
 
 final Pointer<Void> Function(
         Pointer<Void> left, Pointer<Void> right, Pointer<Void> alpha)
@@ -1531,6 +1535,28 @@ Pointer<Void> get tensorPtr => _tensorPtr;
 
     return tensor;
   }
+
+Tensor clone() {
+    final resultTensorPtr = Tensor_clone(_tensorPtr);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+      throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr);
+
+    return tensor;
+  }
+
+
+}
+
+
+
+Tensor clone(Tensor tensor)
+{
+  return tensor.clone();
 }
 
 Tensor relu(Tensor a) {

@@ -12,12 +12,18 @@ class Device {
 
   // 工厂构造函数，用于创建具有适当索引的新设备实例
   factory Device(int deviceType) {
+    if(deviceType==0)
+    {
+      return Device._internal(deviceType, 0);
+    }
+    else{
     int newIndex = 0; // 从0开始搜索未使用的最小索引
-    while (_usedIndices.contains(newIndex)&&newIndex!=0) {
+    while (_usedIndices.contains(newIndex)) {
       newIndex++;  // 如果当前索引已使用，增加索引号
     }
     _usedIndices.add(newIndex);  // 标记为已使用
     return Device._internal(deviceType, newIndex);
+    }
   }
 
   int get device_type => _device_type;
