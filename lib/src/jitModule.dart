@@ -35,8 +35,8 @@ final Pointer<Void> Function(int size) allocateTensorOrScalarArray = nativeLib
         .lookup<NativeFunction<Pointer<Void> Function(Int32)>>(
         'THSJIT_AllocateTensorOrScalarArray')
     .asFunction();
-    final TensorOrScalar Function(Pointer<Void> tensorOrScalar,int size) getTensorOrScalar = nativeLib
-        .lookup<NativeFunction<TensorOrScalar Function(Pointer<Void>,Int32)>>(
+    final Pointer<TensorOrScalar> Function(Pointer<Void> tensorOrScalar,int size) getTensorOrScalar = nativeLib
+        .lookup<NativeFunction<Pointer<TensorOrScalar> Function(Pointer<Void>,Int32)>>(
         'THSJIT_GetTensorOrScalar')
     .asFunction();
     final Pointer<Void> Function(Pointer<Void> handle) freeTensorOrScalarArray = nativeLib
@@ -45,8 +45,8 @@ final Pointer<Void> Function(int size) allocateTensorOrScalarArray = nativeLib
     .asFunction();
 
 
-    final Pointer<Void> Function(Pointer<Void> array,int index,int typeCode,int arrayIndex,Pointer<Void> handle) setTensorOrScalar = nativeLib
-        .lookup<NativeFunction<Pointer<Void> Function(Pointer<Void> array,Int32 index,Int64 typeCode,Int64 arrayIndex,Pointer<Void> handle)>>(
+    final void Function(Pointer<Void> array,int index,int typeCode,int arrayIndex,Pointer<Void> handle) setTensorOrScalar = nativeLib
+        .lookup<NativeFunction<Void Function(Pointer<Void> array,Int32 index,Int64 typeCode,Int64 arrayIndex,Pointer<Void> handle)>>(
         'THSJIT_SetTensorOrScalar')
     .asFunction();
   class JITModule{
@@ -115,14 +115,14 @@ JITModule jit_load(String filename,{Device? device_used})
 
 
 final class TensorOrScalar extends Struct {
-  
-  external Pointer<Void> handle;
-
-  @Int32()
-  external int arrayIndex;
-
-  @Int32()
+ @Int64()
   external int typeCode;
+
+  @Int64()
+  external int arrayIndex;
+  
+   @Int64()
+  external int handle;
 }
 
 
@@ -132,25 +132,43 @@ dynamic ProcessReturnValue( List<TensorOrScalar> ptrArray, int typeCode,{ Native
                     
                     case 1:
                         // Tensor
-                        return Tensor(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[0].handle);
+                        return Tensor(handlePointer);
                     case 2:
                         // Tuple
                         switch (ptrArray.length) {
                         case 1:
-                            return Tensor(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[0].handle);
+                            return Tensor(handlePointer);
                         case 2:
-                            return ( Tensor(ptrArray[0].handle),  Tensor(ptrArray[1].handle));
+                        final Pointer<Void> handlePointer0 = Pointer.fromAddress(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer1 = Pointer.fromAddress(ptrArray[1].handle);
+                            return ( Tensor(handlePointer0),  Tensor(handlePointer1));
                         case 3:
-                            return ( Tensor(ptrArray[0].handle),  Tensor(ptrArray[1].handle),  Tensor(ptrArray[2].handle));
+                        final Pointer<Void> handlePointer0 = Pointer.fromAddress(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer1 = Pointer.fromAddress(ptrArray[1].handle);
+                        final Pointer<Void> handlePointer2 = Pointer.fromAddress(ptrArray[2].handle);
+                            return ( Tensor(handlePointer0),  Tensor(handlePointer1),  Tensor(handlePointer2));
                         case 4:
-                            return ( Tensor(ptrArray[0].handle),  Tensor(ptrArray[1].handle),  Tensor(ptrArray[2].handle),  Tensor(ptrArray[3].handle));
+                        final Pointer<Void> handlePointer0 = Pointer.fromAddress(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer1 = Pointer.fromAddress(ptrArray[1].handle);
+                        final Pointer<Void> handlePointer2 = Pointer.fromAddress(ptrArray[2].handle);
+                        final Pointer<Void> handlePointer3 = Pointer.fromAddress(ptrArray[3].handle);
+                            return ( Tensor(handlePointer0),  Tensor(handlePointer1),  Tensor(handlePointer2),  Tensor(handlePointer3));
                         case 5:
-                            return ( Tensor(ptrArray[0].handle),  Tensor(ptrArray[1].handle),  Tensor(ptrArray[2].handle),  Tensor(ptrArray[3].handle),  Tensor(ptrArray[4].handle));
+                        final Pointer<Void> handlePointer0 = Pointer.fromAddress(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer1 = Pointer.fromAddress(ptrArray[1].handle);
+                        final Pointer<Void> handlePointer2 = Pointer.fromAddress(ptrArray[2].handle);
+                        final Pointer<Void> handlePointer3 = Pointer.fromAddress(ptrArray[3].handle);
+                        final Pointer<Void> handlePointer4 = Pointer.fromAddress(ptrArray[4].handle);
+                            return ( Tensor(handlePointer0),  Tensor(handlePointer1),  Tensor(handlePointer2),  Tensor(handlePointer3),  Tensor(handlePointer4));
                         default: {
                                 // Too long a tuple, return as a list, instead.
                               List<Tensor> result =[];
                                 for (var i = 0; i < ptrArray.length; i++) {
-                                    result.add(Tensor(ptrArray[i].handle));
+                                 Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[i].handle);
+                       
+                                    result.add(Tensor(handlePointer));
                                 }
                                 return result;
                             }
@@ -159,31 +177,49 @@ dynamic ProcessReturnValue( List<TensorOrScalar> ptrArray, int typeCode,{ Native
                             // List of tensors
                             List<Tensor> result =[];
                                 for (var i = 0; i < ptrArray.length; i++) {
-                                    result.add(Tensor(ptrArray[i].handle));
+                                  Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[i].handle);
+                                    result.add(Tensor(handlePointer));
                                 }
                                 return result;
                         }
                     case 4:
                         // Scalar
-                        return  Scalar(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[0].handle);
+                        return  Scalar(handlePointer);
                     case 5:
                         // Scalar tuple
                         switch (ptrArray.length) {
                         case 1:
-                            return  Scalar(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[0].handle);
+                            return Scalar(handlePointer);
                         case 2:
-                            return ( Scalar(ptrArray[0].handle),  Scalar(ptrArray[1].handle));
+                        final Pointer<Void> handlePointer0 = Pointer.fromAddress(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer1 = Pointer.fromAddress(ptrArray[1].handle);
+                            return ( Scalar(handlePointer0),  Scalar(handlePointer1));
                         case 3:
-                            return ( Scalar(ptrArray[0].handle),  Scalar(ptrArray[1].handle),  Scalar(ptrArray[2].handle));
+                        final Pointer<Void> handlePointer0 = Pointer.fromAddress(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer1 = Pointer.fromAddress(ptrArray[1].handle);
+                        final Pointer<Void> handlePointer2 = Pointer.fromAddress(ptrArray[2].handle);
+                            return ( Scalar(handlePointer0),  Scalar(handlePointer1),  Scalar(handlePointer2));
                         case 4:
-                            return ( Scalar(ptrArray[0].handle),  Scalar(ptrArray[1].handle),  Scalar(ptrArray[2].handle),  Scalar(ptrArray[3].handle));
+                        final Pointer<Void> handlePointer0 = Pointer.fromAddress(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer1 = Pointer.fromAddress(ptrArray[1].handle);
+                        final Pointer<Void> handlePointer2 = Pointer.fromAddress(ptrArray[2].handle);
+                        final Pointer<Void> handlePointer3 = Pointer.fromAddress(ptrArray[3].handle);
+                            return ( Scalar(handlePointer0),  Scalar(handlePointer1),  Scalar(handlePointer2),  Scalar(handlePointer3));
                         case 5:
-                            return ( Scalar(ptrArray[0].handle),  Scalar(ptrArray[1].handle),  Scalar(ptrArray[2].handle),  Scalar(ptrArray[3].handle),  Scalar(ptrArray[4].handle));
+                        final Pointer<Void> handlePointer0 = Pointer.fromAddress(ptrArray[0].handle);
+                        final Pointer<Void> handlePointer1 = Pointer.fromAddress(ptrArray[1].handle);
+                        final Pointer<Void> handlePointer2 = Pointer.fromAddress(ptrArray[2].handle);
+                        final Pointer<Void> handlePointer3 = Pointer.fromAddress(ptrArray[3].handle);
+                        final Pointer<Void> handlePointer4 = Pointer.fromAddress(ptrArray[4].handle);
+                            return ( Scalar(handlePointer0),  Scalar(handlePointer1),  Scalar(handlePointer2),  Scalar(handlePointer3),  Scalar(handlePointer4));
                         default: {
                                 // Too long a tuple, return as a list, instead.
                                List<Scalar> result =[];
                                 for (var i = 0; i < ptrArray.length; i++) {
-                                    result.add(Scalar(ptrArray[i].handle));
+                                  Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[i].handle);
+                                    result.add(Scalar(handlePointer));
                                 }
                                 return result;
                             }
@@ -192,7 +228,8 @@ dynamic ProcessReturnValue( List<TensorOrScalar> ptrArray, int typeCode,{ Native
                             // List of scalars
                            List<Scalar> result =[];
                             for (var i = 0; i < ptrArray.length; i++) {
-                                result.add(Scalar(ptrArray[i].handle));
+                              Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[i].handle);
+                                result.add(Scalar(handlePointer));
                             }
                             return result;
                         }
@@ -202,13 +239,15 @@ dynamic ProcessReturnValue( List<TensorOrScalar> ptrArray, int typeCode,{ Native
                             for (var i = 0; i < ptrArray.length; i++) {
                                 switch (ptrArray[i].typeCode) {
                                 case 0:
-                                    result[i] = Tensor(ptrArray[i].handle);
+                                Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[i].handle);
+                                    result[i] = Tensor(handlePointer);
                                     break;
                                 case 8:
                                     result[i] = null;
                                     break;
                                 case 4:
-                                    result[i] =  Scalar(ptrArray[i].handle);
+                                 Pointer<Void> handlePointer = Pointer.fromAddress(ptrArray[i].handle);
+                                    result[i] =  Scalar(handlePointer);
                                     break;
                                 default:
                                     throw Exception("returning something else than a tensor/scalar, a tuple of tensors/scalars, or list of tensors/scalars.");
@@ -288,14 +327,22 @@ class NativeTensorOrScalarIndexedArray {
 
   TensorOrScalar toTOS(Pointer<Void> array, int index) {
     
-    final ptr = getTensorOrScalar(array, index);
+    final Pointer<TensorOrScalar> ptr = getTensorOrScalar(array, index);
+    final ptrRef=ptr.ref;
+    
+   
      final errorMsg = _get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
 
         throw Exception(errorString);
       }
-    return ptr;
+      var resultPtr = calloc<TensorOrScalar>();
+      var result=resultPtr.ref;
+            result.handle = ptrRef.handle;
+            result.arrayIndex = ptrRef.arrayIndex;
+            result.typeCode = ptrRef.typeCode;
+    return result;
   }
 
   List<TensorOrScalar> toTOSArray(int index) {
