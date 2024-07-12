@@ -25,6 +25,7 @@ list(APPEND PLUGIN_SOURCES
   "../src/THSTensor.cpp"
   "../src/THSTensorMath.cpp"
   "../src/THSTensorFactories.cpp"
+  "../src/THSTensorConv.cpp"
   "../src/THSJIT.cpp"
   
 )

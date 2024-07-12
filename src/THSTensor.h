@@ -1739,4 +1739,12 @@ EXPORT_API(Tensor) THSTensor_kaiser_window(const int64_t len, bool periodic, dou
 
 EXPORT_API(Tensor) THSTensor_stft(const Tensor x, int64_t n_fft, int64_t hop_length, int64_t win_length, const Tensor window, bool normalized, int64_t onesided, bool return_complex);
 EXPORT_API(Tensor) THSTensor_istft(const Tensor x, int64_t n_fft, int64_t hop_length, int64_t win_length, const Tensor window, bool center, bool normalized, int64_t onesided, int64_t length, bool return_complex);
+
+//might rewrite later
 EXPORT_API(const char*) Tensor_Print(const Tensor tensor);
+EXPORT_API(const char*) Tensor_Dim(const Tensor tensor, int64_t *dim);
+EXPORT_API(const char*) Tensor_Shape(const Tensor tensor, int64_t *dims);
+EXPORT_API(const char*) Tensor_ToArray_Int(const Tensor a, int8_t dtype,  int *result);
+EXPORT_API(const char*) Tensor_ToArray_Int64(const Tensor a, int8_t dtype,  int64_t *result);
+EXPORT_API(const char*) Tensor_ToArray_Float(const Tensor a, int8_t dtype,  float *result);
+EXPORT_API(const char*) Tensor_ToArray_Float64(const Tensor a, int8_t dtype,  double *result);

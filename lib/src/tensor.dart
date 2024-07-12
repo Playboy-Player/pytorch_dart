@@ -314,6 +314,14 @@ final Pointer<Utf8> Function(Pointer<Void> a, int dtype, Pointer<Int> result)
                     Pointer<Int> result)>>('Tensor_ToArray_Int')
         .asFunction();
 
+        final Pointer<Utf8> Function(Pointer<Void> a, int dtype, Pointer<Int64> result)
+    _toList_Int64 = nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Utf8> Function(Pointer<Void> a, Int8 dtype,
+                    Pointer<Int64> result)>>('Tensor_ToArray_Int64')
+        .asFunction();
+
 final Pointer<Utf8> Function(Pointer<Void> a, int dtype, Pointer<Float> result)
     _toList_Float = nativeLib
         .lookup<
@@ -528,6 +536,14 @@ final Pointer<Void> Function(Pointer<Void>, Pointer<Int64>, int) Tensor_view =
             NativeFunction<
                 Pointer<Void> Function(Pointer<Void> tensor,
                     Pointer<Int64> sizes, Int64 sizeLen)>>('THSTensor_view')
+        .asFunction();
+
+        final Pointer<Void> Function(Pointer<Void>, int) Tensor_unsqueeze =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<Void> Function(Pointer<Void> tensor,
+                    Int64 dim)>>('THSTensor_unsqueeze')
         .asFunction();
 
 // 类定义
@@ -1241,7 +1257,47 @@ Pointer<Void> get tensorPtr => _tensorPtr;
       }
 
       return buildList(0, 0);
-    } else if (Dtype == float32) {
+      
+    } 
+    
+    else if (Dtype == int64) {
+      // 获取该数组的指针
+
+      // 创建 sizes 数组的指针
+
+      final resultListPtr = calloc<Int64>(tensorLength);
+
+      final errorMsg = _toList_Int64(this._tensorPtr, Dtype, resultListPtr);
+
+      if (errorMsg != nullptr) {
+        final errorString = errorMsg.cast<Utf8>().toDartString();
+
+        throw Exception(errorString);
+      }
+      final Pointer<Int64> dataPointer = resultListPtr.cast<Int64>();
+
+      final Int64List flatList = dataPointer.asTypedList(tensorLength);
+
+      List<int> strides = List<int>.filled(tensorShape.length, 1);
+      for (int i = tensorShape.length - 2; i >= 0; i--) {
+        strides[i] = strides[i + 1] * tensorShape[i + 1];
+      }
+
+      List<dynamic> buildList(int dimension, int offset) {
+        if (dimension == tensorShape.length - 1) {
+          return flatList.sublist(offset, offset + tensorShape[dimension]);
+        }
+
+        List<dynamic> result = [];
+        for (int i = 0; i < tensorShape[dimension]; i++) {
+          result.add(buildList(dimension + 1, offset + i * strides[dimension]));
+        }
+        return result;
+      }
+
+      return buildList(0, 0);
+    }
+    else if (Dtype == float32) {
       // 获取该数组的指针
 
       // 创建 sizes 数组的指针
@@ -1351,6 +1407,19 @@ Pointer<Void> get tensorPtr => _tensorPtr;
 
   Tensor eq(Tensor right) {
     final resultTensorPtr = Tensor_eq(_tensorPtr, right._tensorPtr);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+      throw Exception(errorString);
+    }
+
+    final tensor = Tensor._internal(resultTensorPtr);
+
+    return tensor;
+  }
+
+  Tensor unsqueeze(int dim) {
+    final resultTensorPtr = Tensor_unsqueeze(_tensorPtr, dim);
     final errorMsg = _get_and_reset_last_err();
     if (errorMsg != nullptr) {
       final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -1553,6 +1622,11 @@ Tensor clone() {
 }
 
 
+
+Tensor unsqueeze(Tensor tensor,int dim)
+{
+  return tensor.unsqueeze(dim);
+}
 
 Tensor clone(Tensor tensor)
 {
@@ -2445,7 +2519,7 @@ Tensor FloatTensor(dynamic list) {
   flatten(list, 0);
 
   Tensor outputTensor =
-      from_blob(flatList.cast<double>(), sizes, float32, float32);
+      from_blob(flatList.cast<double>(), sizes, float64, float32);
   return outputTensor;
 }
 

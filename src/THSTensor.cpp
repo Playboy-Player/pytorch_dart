@@ -2251,6 +2251,26 @@ Tensor THSTensor_unflatten_names(Tensor tensor, const char** names, const int64_
   }
 }
 
+
+ const char *Tensor_ToArray_Int64(Tensor a, int8_t dtype,  int64_t *result) {
+  try {
+    auto b=a->contiguous();
+  
+  
+    auto data_ptr = b.data_ptr<int64_t>();
+
+  const int64_t num_elements = b.numel();  // 获取Tensor中元素的数量
+    // 创建一个足够大的数组来容纳数据
+
+  // 复制数据
+  std::memcpy(result, data_ptr, num_elements * sizeof(int64_t));
+  
+    return nullptr;
+  } catch (const c10::Error &e) {
+    return strdup(e.what());
+  }
+}
+
  const char *Tensor_ToArray_Float(Tensor a, int8_t dtype,  float *result) {
   try {
     auto b=a->contiguous();
