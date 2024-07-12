@@ -13,18 +13,14 @@ import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
-
-
 const title = 'Image Classification Example';
-var module=torch.jit_load("traced_resnet_model.pt");
-late Directory tempDir;
-var mean=torch.FloatTensor([0.485, 0.456, 0.406]);
-var std=torch.FloatTensor([0.229, 0.224, 0.225]);
-
-
+var module = torch.jit_load("traced_resnet_model.pt");
+var mean = torch.FloatTensor([0.485, 0.456, 0.406]);
+var std = torch.FloatTensor([0.229, 0.224, 0.225]);
+Uint8List? imageData;
+String? label;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
 
   runApp(MyApp());
 }
@@ -50,29 +46,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _picker = ImagePicker();
 
-  bool _isProcessed = false;
-  bool _isWorking = false;
-
- 
-Future<List<String>> decodeJson(String filepath)
-async{
-final file = File(filepath);
- final jsonString = await file.readAsString();
-
-  // 解析JSON内容为List<String>
-  final List<dynamic> jsonList = jsonDecode(jsonString);
   
-  // 创建一个长度为1000的列表
-  List<String> labels = List<String>.filled(1000, '');
+  Future<List<String>> decodeJson(String filepath) async {
+    final file = File(filepath);
+    final jsonString = await file.readAsString();
 
-  // 填充列表，最多填充1000个标签
-  for (int i = 0; i < jsonList.length && i < 1000; i++) {
-    labels[i] = jsonList[i];
+    // 解析JSON内容为List<String>
+    final List<dynamic> jsonList = jsonDecode(jsonString);
+
+    // 创建一个长度为1000的列表
+    List<String> labels = List<String>.filled(1000, '');
+
+    // 填充列表，最多填充1000个标签
+    for (int i = 0; i < jsonList.length && i < 1000; i++) {
+      labels[i] = jsonList[i];
+    }
+
+    return labels;
   }
 
-  
-return labels;
-}
   Future<String?> pickAnImage() async {
     if (Platform.isIOS || Platform.isAndroid) {
       return _picker
@@ -93,73 +85,63 @@ return labels;
   }
 
   Future<void> takeImageAndProcess() async {
-    
     final imagePath = await pickAnImage();
-    final List<String> labelList=await decodeJson("imagenet_labels.json");
+    final List<String> labelList = await decodeJson("imagenet_labels.json");
     if (imagePath == null) {
       return;
-    }
-    else{
- final imageData=await loadImageAsUint8List(imagePath);
-  final image = img.decodeImage(imageData);
-    final int height=image!.height;
-    final int width=image!.width;
-    // Resizing image fpr model, [300, 300]
-    final imageInput = img.copyResize(
-      image,
-      width: 224,
-      height: 224,
-    );
+    } else {
+      imageData = await loadImageAsUint8List(imagePath);
+      final image = img.decodeImage(imageData!);
+      // Resizing image fpr model, [300, 300]
+      final imageInput = img.copyResize(
+        image!,
+        width: 224,
+        height: 224,
+      );
 
-    // Creating matrix representation, [300, 300, 3]
-    final imageMatrix = List.generate(
-  imageInput.height,
-  (y) => List.generate(
-    imageInput.width,
-    (x) {
-      final pixel = imageInput.getPixel(x, y);
-      return [pixel.b.toDouble(), pixel.g.toDouble(), pixel.r.toDouble()];
-    },
-  ),
-);
+      // Creating matrix representation, [300, 300, 3]
+      final imageMatrix = List.generate(
+        imageInput.height,
+        (y) => List.generate(
+          imageInput.width,
+          (x) {
+            final pixel = imageInput.getPixel(x, y);
+            return [pixel.b.toDouble(), pixel.g.toDouble(), pixel.r.toDouble()];
+          },
+        ),
+      );
 //pytorch-like operations
-var RawTensor=torch.DoubleTensor(imageMatrix);
-RawTensor=RawTensor/256;
-RawTensor=(RawTensor-mean)/std;
-var inputTensor=RawTensor.permute([2,0,1]).unsqueeze(0);
-var outputTensor=module.forward([inputTensor]);
+      var RawTensor = torch.DoubleTensor(imageMatrix);
+      RawTensor = RawTensor / 256;
+      RawTensor = (RawTensor - mean) / std;
+      var inputTensor = RawTensor.permute([2, 0, 1]).unsqueeze(0);
+      var outputTensor = module.forward([inputTensor]);
 //
-if(outputTensor is torch.Tensor)
-{
-  final prTensor=RawTensor.toList();
-  print(prTensor);
-  var predRes=outputTensor.topk(1);
-  print(predRes);
-  final predResult=predRes[1].toList();
-  final intList=List<int>.from(predResult);
-  print(labelList[intList[0]]);
-}
-
-
-
+      if (outputTensor is torch.Tensor) {
+        var predRes = outputTensor.topk(1);
+        final predResult = predRes[1].toList();
+        final intList = List<int>.from(predResult);
+        dev.log(labelList[intList[0]]);
+        label=labelList[intList[0]];
+        setState(() {
+    
+  });
+      }
     }
-   
-
   }
 
   Future<Uint8List> loadImageAsUint8List(String imagePath) async {
- 
-  File imageFile = File(imagePath);
+    File imageFile = File(imagePath);
 
-  if (!imageFile.existsSync()) {
-    throw Exception('指定路径的图片文件不存在');
+    if (!imageFile.existsSync()) {
+      throw Exception('指定路径的图片文件不存在');
+    }
+
+    List<int> imageBytes = await imageFile.readAsBytes();
+    Uint8List uint8List = Uint8List.fromList(imageBytes);
+
+    return uint8List;
   }
-
-  List<int> imageBytes = await imageFile.readAsBytes();
-  Uint8List uint8List = Uint8List.fromList(imageBytes);
-
-  return uint8List;
-}
 
   @override
   Widget build(BuildContext context) {
@@ -168,35 +150,35 @@ if(outputTensor is torch.Tensor)
       body: Stack(
         children: <Widget>[
           Center(
-            child: ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                if (_isProcessed && !_isWorking)
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 3000, maxHeight: 300),
-                    
-                  ),
-                Column(
+            
+                
+                child:Column(
                   children: [
-                    
+                    Expanded(
+                      child: Center(
+                        child: (imageData != null)
+                            ? Image.memory(imageData!)
+                            : Container(),
+                      ),
+                    ),
                     ElevatedButton(
                       child: Text('Process photo'),
                       onPressed: takeImageAndProcess,
                     ),
+                 Expanded(
+                      child: Center(
+                        child: (label != null)
+                            ? Text("Predicted result:$label")
+                            : Container(),
+                      ),
+                    ),
+                  
                   ],
-                )
-              ],
-            ),
-          ),
-          if (_isWorking)
-            Positioned.fill(
-              child: Container(
-                color: Colors.black.withOpacity(.7),
-                child: Center(
-                  child: CircularProgressIndicator(),
                 ),
-              ),
-            ),
+             
+          ),
+          
+            
         ],
       ),
     );

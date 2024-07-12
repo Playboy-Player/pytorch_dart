@@ -314,7 +314,7 @@ final Pointer<Utf8> Function(Pointer<Void> a, int dtype, Pointer<Int> result)
                     Pointer<Int> result)>>('Tensor_ToArray_Int')
         .asFunction();
 
-        final Pointer<Utf8> Function(Pointer<Void> a, int dtype, Pointer<Int64> result)
+final Pointer<Utf8> Function(Pointer<Void> a, int dtype, Pointer<Int64> result)
     _toList_Int64 = nativeLib
         .lookup<
             NativeFunction<
@@ -538,13 +538,12 @@ final Pointer<Void> Function(Pointer<Void>, Pointer<Int64>, int) Tensor_view =
                     Pointer<Int64> sizes, Int64 sizeLen)>>('THSTensor_view')
         .asFunction();
 
-        final Pointer<Void> Function(Pointer<Void>, int) Tensor_unsqueeze =
-    nativeLib
-        .lookup<
-            NativeFunction<
-                Pointer<Void> Function(Pointer<Void> tensor,
-                    Int64 dim)>>('THSTensor_unsqueeze')
-        .asFunction();
+final Pointer<Void> Function(Pointer<Void>, int) Tensor_unsqueeze = nativeLib
+    .lookup<
+        NativeFunction<
+            Pointer<Void> Function(
+                Pointer<Void> tensor, Int64 dim)>>('THSTensor_unsqueeze')
+    .asFunction();
 
 // 类定义
 
@@ -552,7 +551,7 @@ class Tensor {
   Pointer<Void> _tensorPtr;
 
   Tensor._internal(this._tensorPtr);
-Tensor(Pointer<Void> tensorPointer) : _tensorPtr = tensorPointer;
+  Tensor(Pointer<Void> tensorPointer) : _tensorPtr = tensorPointer;
   Tensor operator +(dynamic b) {
     add_(b);
     return Tensor._internal(_tensorPtr);
@@ -584,7 +583,8 @@ Tensor(Pointer<Void> tensorPointer) : _tensorPtr = tensorPointer;
       empty([0])
     ]); //In this situation,only indexStarts is useful.See THSTensor_index in src/THSTensor.cpp for more information.
   }
-Pointer<Void> get tensorPtr => _tensorPtr;
+
+  Pointer<Void> get tensorPtr => _tensorPtr;
   @override
   String toString() {
     var stringPtr = _print(_tensorPtr);
@@ -1251,16 +1251,19 @@ Pointer<Void> get tensorPtr => _tensorPtr;
 
         List<dynamic> result = [];
         for (int i = 0; i < tensorShape[dimension]; i++) {
-          result.add(buildList(dimension + 1, offset + i * strides[dimension]));
+          var sublist =
+              buildList(dimension + 1, offset + i * strides[dimension]);
+          if (dimension == 0) {
+            result.addAll(sublist);
+          } else {
+            result.add(sublist);
+          }
         }
         return result;
       }
 
       return buildList(0, 0);
-      
-    } 
-    
-    else if (Dtype == int64) {
+    } else if (Dtype == int64) {
       // 获取该数组的指针
 
       // 创建 sizes 数组的指针
@@ -1290,14 +1293,19 @@ Pointer<Void> get tensorPtr => _tensorPtr;
 
         List<dynamic> result = [];
         for (int i = 0; i < tensorShape[dimension]; i++) {
-          result.add(buildList(dimension + 1, offset + i * strides[dimension]));
+          var sublist =
+              buildList(dimension + 1, offset + i * strides[dimension]);
+          if (dimension == 0) {
+            result.addAll(sublist);
+          } else {
+            result.add(sublist);
+          }
         }
         return result;
       }
 
       return buildList(0, 0);
-    }
-    else if (Dtype == float32) {
+    } else if (Dtype == float32) {
       // 获取该数组的指针
 
       // 创建 sizes 数组的指针
@@ -1326,7 +1334,13 @@ Pointer<Void> get tensorPtr => _tensorPtr;
 
         List<dynamic> result = [];
         for (int i = 0; i < tensorShape[dimension]; i++) {
-          result.add(buildList(dimension + 1, offset + i * strides[dimension]));
+          var sublist =
+              buildList(dimension + 1, offset + i * strides[dimension]);
+          if (dimension == 0) {
+            result.addAll(sublist);
+          } else {
+            result.add(sublist);
+          }
         }
         return result;
       }
@@ -1361,7 +1375,13 @@ Pointer<Void> get tensorPtr => _tensorPtr;
 
         List<dynamic> result = [];
         for (int i = 0; i < tensorShape[dimension]; i++) {
-          result.add(buildList(dimension + 1, offset + i * strides[dimension]));
+          var sublist =
+              buildList(dimension + 1, offset + i * strides[dimension]);
+          if (dimension == 0) {
+            result.addAll(sublist);
+          } else {
+            result.add(sublist);
+          }
         }
         return result;
       }
@@ -1605,7 +1625,7 @@ Pointer<Void> get tensorPtr => _tensorPtr;
     return tensor;
   }
 
-Tensor clone() {
+  Tensor clone() {
     final resultTensorPtr = Tensor_clone(_tensorPtr);
     final errorMsg = _get_and_reset_last_err();
     if (errorMsg != nullptr) {
@@ -1617,19 +1637,13 @@ Tensor clone() {
 
     return tensor;
   }
-
-
 }
 
-
-
-Tensor unsqueeze(Tensor tensor,int dim)
-{
+Tensor unsqueeze(Tensor tensor, int dim) {
   return tensor.unsqueeze(dim);
 }
 
-Tensor clone(Tensor tensor)
-{
+Tensor clone(Tensor tensor) {
   return tensor.clone();
 }
 
@@ -2462,7 +2476,6 @@ Tensor load(String path) {
     }
 
     final tensor = Tensor._internal(resultTensorPtr);
-    
 
     return tensor;
   } else {
