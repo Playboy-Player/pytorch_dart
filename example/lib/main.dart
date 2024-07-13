@@ -111,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
 //pytorch-like operations
-      var RawTensor = torch.DoubleTensor(imageMatrix);
+      var RawTensor = torch.FloatTensor(imageMatrix);
       RawTensor = RawTensor / 256;
       RawTensor = (RawTensor - mean) / std;
       var inputTensor = RawTensor.permute([2, 0, 1]).unsqueeze(0);

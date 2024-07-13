@@ -1690,7 +1690,14 @@ Tensor from_blob(
     {bool requiresGrad = false, Device? device_used}) {
   device_used ??= device("cpu");
   if (scalar_type == int32) {
-    var intList = Int32List.fromList(list.cast<int>());
+    Int32List intList;
+    if(list is Int32List)
+    {
+        intList=list;
+    }
+    else{
+    intList = Int32List.fromList(list.cast<int>());
+    }
     // 获取该数组的指针
     final Pointer<Int32> dataPointer = malloc<Int32>(intList.length);
     dataPointer
@@ -1720,7 +1727,93 @@ Tensor from_blob(
     }
     final tensor = Tensor._internal(resultTensorPtr);
     return tensor;
-  } else if (scalar_type == float32) {
+  } 
+  else if (scalar_type == int64) {
+    Int64List intList;
+    if(list is Int64List)
+    {
+      intList=list;
+    }
+    else{
+    intList = Int64List.fromList(list.cast<int>());
+    }
+    // 获取该数组的指针
+    final Pointer<Int64> dataPointer = malloc<Int64>(intList.length);
+    dataPointer
+        .asTypedList(intList.length)
+        .setRange(0, intList.length, intList);
+
+    // 创建 sizes 数组的指针
+    final Pointer<Int64> sizesPointer = malloc<Int64>(sizes_data.length);
+    final Int64List sizesList = sizesPointer.asTypedList(sizes_data.length);
+    sizesList.setAll(0, sizes_data);
+
+    // 调用 FFI 函数
+
+    // 调用 FFI 函数
+    final resultTensorPtr = Tensor_new(
+        dataPointer.cast(),
+        Pointer.fromFunction<DeleterNative>(deleteMemory),
+        sizesPointer,
+        sizesList.length,
+        scalar_type,
+        dtype,
+        device_used.device_type,
+        device_used.device_index,
+        requiresGrad);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+
+      throw Exception(errorString);
+    }
+    final tensor = Tensor._internal(resultTensorPtr);
+    return tensor;
+  }
+  
+  else if (scalar_type == float32) {
+    Float32List floatList;
+    if(list is Float32List)
+    {
+      floatList=list;
+    }
+    else{
+     floatList = Float32List.fromList(list.cast<double>());
+    }
+    // 获取该数组的指针
+    final Pointer<Float> dataPointer = malloc<Float>(floatList.length);
+    dataPointer
+        .asTypedList(floatList.length)
+        .setRange(0, floatList.length, floatList);
+
+    // 创建 sizes 数组的指针
+    final Pointer<Int64> sizesPointer = malloc<Int64>(sizes_data.length);
+    final Int64List sizesList = sizesPointer.asTypedList(sizes_data.length);
+    sizesList.setAll(0, sizes_data);
+    print(sizesList);
+    // 调用 FFI 函数
+
+    // 调用 FFI 函数
+    final resultTensorPtr = Tensor_new(
+        dataPointer.cast(),
+        Pointer.fromFunction<DeleterNative>(deleteMemory),
+        sizesPointer,
+        sizesList.length,
+        scalar_type,
+        dtype,
+        device_used.device_type,
+        device_used.device_index,
+        requiresGrad);
+    final errorMsg = _get_and_reset_last_err();
+    if (errorMsg != nullptr) {
+      final errorString = errorMsg.cast<Utf8>().toDartString();
+
+      throw Exception(errorString);
+    }
+    final tensor = Tensor._internal(resultTensorPtr);
+    return tensor;
+  } 
+  else if (scalar_type == float32) {
     var floatList = Float32List.fromList(list.cast<double>());
     // 获取该数组的指针
     final Pointer<Float> dataPointer = malloc<Float>(floatList.length);
@@ -1754,8 +1847,16 @@ Tensor from_blob(
     }
     final tensor = Tensor._internal(resultTensorPtr);
     return tensor;
-  } else if (scalar_type == float64) {
-    var floatList = Float64List.fromList(list.cast<double>());
+  }
+  else if (scalar_type == float64) {
+    Float64List floatList;
+    if(list is Float64List)
+    {
+      floatList=list;
+    }
+    else{
+    floatList = Float64List.fromList(list.cast<double>());
+    }
     // 获取该数组的指针
     final Pointer<Double> dataPointer = malloc<Double>(floatList.length);
     dataPointer
@@ -2486,54 +2587,100 @@ Tensor load(String path) {
 Tensor IntTensor(dynamic list) {
   List<num> flatList = [];
   List<int> sizes = [];
-  bool isFirstElement = true;
+  List<bool> isFirstElementAtDepth = [];
 
   void flatten(dynamic element, int depth) {
     if (element is List) {
-      if (isFirstElement) {
-        sizes.add(element.length);
-        isFirstElement = false;
+      if (isFirstElementAtDepth.length <= depth ||
+          isFirstElementAtDepth[depth]) {
+        // 如果是首次进入此深度的列表
+        if (sizes.length <= depth) {
+          sizes.add(element.length); // 添加新尺寸
+        } else {
+          sizes[depth] = element.length; // 更新此深度的尺寸
+        }
+        // 扩展或更新首元素标记列表
+        if (isFirstElementAtDepth.length <= depth) {
+          isFirstElementAtDepth.add(false); // 添加新的深度标记
+        } else {
+          isFirstElementAtDepth[depth] = false; // 更新此深度的首元素标记
+        }
       }
+
       for (var subElement in element) {
         flatten(subElement, depth + 1);
       }
-    } else if (element is num) {
-      flatList.add(element);
-      isFirstElement = true;
-    }
-  }
 
-  flatten(list, 0);
-
-  Tensor outputTensor = from_blob(flatList.cast<int>(), sizes, int32, int32);
-  return outputTensor;
-}
-
-Tensor FloatTensor(dynamic list) {
-  List<num> flatList = [];
-  List<int> sizes = [];
-  bool isFirstElement = true;
-
-  void flatten(dynamic element, int depth) {
-    if (element is List) {
-      if (isFirstElement) {
-        sizes.add(element.length);
-        isFirstElement = false;
-      }
-      for (var subElement in element) {
-        flatten(subElement, depth + 1);
+      // 退出当前列表深度时，重置此深度的首元素标记
+      if (isFirstElementAtDepth.length > depth) {
+        isFirstElementAtDepth[depth] = true;
       }
     } else if (element is num) {
       flatList.add(element);
-      isFirstElement = true;
     }
   }
 
   flatten(list, 0);
 
   Tensor outputTensor =
-      from_blob(flatList.cast<double>(), sizes, float64, float32);
+      from_blob(flatList.cast<double>(), sizes, int32, int32);
   return outputTensor;
+}
+
+Tensor FloatTensor(dynamic list) {
+  List<num> flatList = [];
+  List<int> sizes = [];
+  List<bool> isFirstElementAtDepth = [];
+
+  void flatten(dynamic element, int depth) {
+    if (element is List) {
+      if (isFirstElementAtDepth.length <= depth ||
+          isFirstElementAtDepth[depth]) {
+        // 如果是首次进入此深度的列表
+        if (sizes.length <= depth) {
+          sizes.add(element.length); // 添加新尺寸
+        } else {
+          sizes[depth] = element.length; // 更新此深度的尺寸
+        }
+        // 扩展或更新首元素标记列表
+        if (isFirstElementAtDepth.length <= depth) {
+          isFirstElementAtDepth.add(false); // 添加新的深度标记
+        } else {
+          isFirstElementAtDepth[depth] = false; // 更新此深度的首元素标记
+        }
+      }
+
+      for (var subElement in element) {
+        flatten(subElement, depth + 1);
+      }
+
+      // 退出当前列表深度时，重置此深度的首元素标记
+      if (isFirstElementAtDepth.length > depth) {
+        isFirstElementAtDepth[depth] = true;
+      }
+    } else if (element is num) {
+      flatList.add(element);
+    }
+  }
+
+  flatten(list, 0);
+if(flatList is Float32List){
+  Tensor outputTensor =
+      from_blob(flatList.cast<double>(), sizes, float32, float32);
+      return outputTensor;
+}
+else if(flatList is Float64List)
+{
+   Tensor outputTensor =
+      from_blob(flatList.cast<double>(), sizes, float64, float32);
+      return outputTensor;
+}
+else{
+   Tensor outputTensor =
+      from_blob(flatList.cast<double>(), sizes, float32, float32);
+      return outputTensor;
+}
+  
 }
 
 Tensor DoubleTensor(dynamic list) {
