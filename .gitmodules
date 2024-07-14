@@ -1,0 +1,3 @@
+[submodule "example/assets"]
+	path = example/assets
+	url = https://github.com/KernelInterrupt/pytorch_dart_example_models
