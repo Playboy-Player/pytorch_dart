@@ -10,7 +10,13 @@ SHARED
 
 # Provides a relative path to your source file(s).
 ../src/torch.cc
-../src/tensor.cc)
+  ../src/Utils.cpp
+  ../src/THSTorch.cpp
+  ../src/THSTensor.cpp
+  ../src/THSTensorMath.cpp
+  ../src/THSTensorFactories.cpp
+  ../src/THSTensorConv.cpp
+  ../src/THSJIT.cpp)
 
 
 set(LIBTORCH_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../libtorch-android")

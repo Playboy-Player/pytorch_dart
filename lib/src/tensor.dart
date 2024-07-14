@@ -600,9 +600,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+    
   }
 
   int dim() {
@@ -697,9 +697,9 @@ class Tensor {
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr);
+      if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-      return tensor;
+      
     } else if (b is num) {
       if (b is int) {
         final alphaScalar = float64_to_scalar(alpha);
@@ -713,8 +713,8 @@ class Tensor {
           throw Exception(errorString);
         }
 
-        final tensor = Tensor._internal(resultTensorPtr);
-        return tensor;
+        if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+        
       } else if (b is double) {
         final alphaScalar = float64_to_scalar(alpha);
         final rightScalar = float64_to_scalar(b);
@@ -727,8 +727,8 @@ class Tensor {
           throw Exception(errorString);
         }
 
-        final tensor = Tensor._internal(resultTensorPtr);
-        return tensor;
+        if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+        
       } else {
         throw Exception("wrong data type");
       }
@@ -750,8 +750,8 @@ class Tensor {
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
+      if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+      
     } else if (b is num) {
       if (b is int) {
         final alphaScalar = float64_to_scalar(alpha);
@@ -765,8 +765,8 @@ class Tensor {
           throw Exception(errorString);
         }
 
-        final tensor = Tensor._internal(resultTensorPtr);
-        return tensor;
+        if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+        
       } else if (b is double) {
         final alphaScalar = float64_to_scalar(alpha);
         final rightScalar = float64_to_scalar(b);
@@ -779,8 +779,8 @@ class Tensor {
           throw Exception(errorString);
         }
 
-        final tensor = Tensor._internal(resultTensorPtr);
-        return tensor;
+        if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+        
       } else {
         throw Exception("wrong data type");
       }
@@ -799,8 +799,8 @@ class Tensor {
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
+      if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+      
     } else if (b is num) {
       if (b is int) {
         final rightScalar = int32_to_scalar(b);
@@ -813,8 +813,8 @@ class Tensor {
           throw Exception(errorString);
         }
 
-        final tensor = Tensor._internal(resultTensorPtr);
-        return tensor;
+        if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+        
       } else if (b is double) {
         final rightScalar = float64_to_scalar(b);
         final resultTensorPtr =
@@ -826,8 +826,8 @@ class Tensor {
           throw Exception(errorString);
         }
 
-        final tensor = Tensor._internal(resultTensorPtr);
-        return tensor;
+        if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+        
       } else {
         throw Exception("wrong data type");
       }
@@ -861,8 +861,8 @@ class Tensor {
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr);
-      return tensor;
+      if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+      
     } else if (b is num) {
       if (b is int) {
         final rightScalar = int32_to_scalar(b);
@@ -889,8 +889,8 @@ class Tensor {
           throw Exception(errorString);
         }
 
-        final tensor = Tensor._internal(resultTensorPtr);
-        return tensor;
+        if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+        
       } else if (b is double) {
         final rightScalar = float64_to_scalar(b);
         final units = utf8.encode(rounding_mode);
@@ -915,8 +915,8 @@ class Tensor {
           throw Exception(errorString);
         }
 
-        final tensor = Tensor._internal(resultTensorPtr);
-        return tensor;
+        if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+        
       } else {
         throw Exception("wrong data type");
       }
@@ -1179,9 +1179,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+    
   }
 
   Tensor transpose(int dim1, int dim2) {
@@ -1192,9 +1192,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+    
   }
 
   Tensor permute(List<int> permute_list) {
@@ -1212,9 +1212,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+   
   }
 
   List<dynamic> toList() {
@@ -1420,9 +1420,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+   
   }
 
   Tensor eq(Tensor right) {
@@ -1433,9 +1433,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+   
   }
 
   Tensor unsqueeze(int dim) {
@@ -1446,9 +1446,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+   
   }
 
   Tensor index_select(int dim, Tensor index) {
@@ -1461,9 +1461,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+    
   }
 
   Tensor view(List<int> size) {
@@ -1478,10 +1478,10 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
     calloc.free(sizePtr);
 
-    return tensor;
+ 
   }
 
   Tensor relu() {
@@ -1492,9 +1492,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+    
   }
 
   Tensor leaky_relu(dynamic negative_slope) {
@@ -1508,9 +1508,9 @@ class Tensor {
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr);
+      if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-      return tensor;
+    
     } else if (negative_slope is double) {
       final negative_slope_scalar = float64_to_scalar(negative_slope);
       final resultTensorPtr =
@@ -1521,9 +1521,9 @@ class Tensor {
         throw Exception(errorString);
       }
 
-      final tensor = Tensor._internal(resultTensorPtr);
+      if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-      return tensor;
+      
     } else {
       throw Exception("wrong data type.");
     }
@@ -1537,9 +1537,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+    
   }
 
   Tensor sigmoid() {
@@ -1550,9 +1550,9 @@ class Tensor {
 
       throw Exception(errorString);
     }
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+
   }
 
   Tensor flatten(int startDim, int endDim) {
@@ -1563,9 +1563,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+   
   }
 
   bool equal(Tensor right) {
@@ -1593,9 +1593,8 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
   }
 
   bool allclose(Tensor right,
@@ -1620,9 +1619,8 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
   }
 
   Tensor clone() {
@@ -1633,9 +1631,9 @@ class Tensor {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+
   }
 }
 
@@ -1725,8 +1723,8 @@ Tensor from_blob(
 
       throw Exception(errorString);
     }
-    final tensor = Tensor._internal(resultTensorPtr);
-    return tensor;
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+    
   } 
   else if (scalar_type == int64) {
     Int64List intList;
@@ -1767,8 +1765,8 @@ Tensor from_blob(
 
       throw Exception(errorString);
     }
-    final tensor = Tensor._internal(resultTensorPtr);
-    return tensor;
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+    
   }
   
   else if (scalar_type == float32) {
@@ -1810,44 +1808,10 @@ Tensor from_blob(
 
       throw Exception(errorString);
     }
-    final tensor = Tensor._internal(resultTensorPtr);
-    return tensor;
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+   
   } 
-  else if (scalar_type == float32) {
-    var floatList = Float32List.fromList(list.cast<double>());
-    // 获取该数组的指针
-    final Pointer<Float> dataPointer = malloc<Float>(floatList.length);
-    dataPointer
-        .asTypedList(floatList.length)
-        .setRange(0, floatList.length, floatList);
-
-    // 创建 sizes 数组的指针
-    final Pointer<Int64> sizesPointer = malloc<Int64>(sizes_data.length);
-    final Int64List sizesList = sizesPointer.asTypedList(sizes_data.length);
-    sizesList.setAll(0, sizes_data);
-
-    // 调用 FFI 函数
-
-    // 调用 FFI 函数
-    final resultTensorPtr = Tensor_new(
-        dataPointer.cast(),
-        Pointer.fromFunction<DeleterNative>(deleteMemory),
-        sizesPointer,
-        sizesList.length,
-        scalar_type,
-        dtype,
-        device_used.device_type,
-        device_used.device_index,
-        requiresGrad);
-    final errorMsg = _get_and_reset_last_err();
-    if (errorMsg != nullptr) {
-      final errorString = errorMsg.cast<Utf8>().toDartString();
-
-      throw Exception(errorString);
-    }
-    final tensor = Tensor._internal(resultTensorPtr);
-    return tensor;
-  }
+  
   else if (scalar_type == float64) {
     Float64List floatList;
     if(list is Float64List)
@@ -1887,8 +1851,8 @@ Tensor from_blob(
 
       throw Exception(errorString);
     }
-    final tensor = Tensor._internal(resultTensorPtr);
-    return tensor;
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+ 
   } else {
     throw Exception("wrong type");
   }
@@ -1920,9 +1884,8 @@ Tensor empty(List<int> size,
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr);
+  if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-  return tensor;
 }
 
 Tensor ones(List<int> size,
@@ -1949,9 +1912,8 @@ Tensor ones(List<int> size,
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr);
+  if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-  return tensor;
 }
 
 Tensor full(List<int> size, num values,
@@ -1985,9 +1947,9 @@ Tensor full(List<int> size, num values,
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+   
   } else if (dtype == float64) {
     Scalar scalar = float64_to_scalar(values.toDouble());
     final resultTensorPtr = Tensor_full(
@@ -2010,9 +1972,9 @@ Tensor full(List<int> size, num values,
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+    
   } else if (dtype == int32) {
     Scalar scalar = int32_to_scalar(values.toInt());
     final resultTensorPtr = Tensor_full(
@@ -2035,9 +1997,9 @@ Tensor full(List<int> size, num values,
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+   
   } else {
     throw Exception("wrong type");
   }
@@ -2059,9 +2021,9 @@ Tensor eye(int n, int m,
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr);
+  if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-  return tensor;
+
 }
 
 Tensor arange(num start, num end, num step,
@@ -2089,9 +2051,9 @@ Tensor arange(num start, num end, num step,
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+    
   } else if (dtype == float64) {
     Scalar startScalar = float64_to_scalar(start.toDouble());
     Scalar endScalar = float64_to_scalar(start.toDouble());
@@ -2113,9 +2075,9 @@ Tensor arange(num start, num end, num step,
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+   
   } else if (dtype == int32) {
     Scalar startScalar = int32_to_scalar(start.toInt());
     Scalar endScalar = int32_to_scalar(start.toInt());
@@ -2137,9 +2099,9 @@ Tensor arange(num start, num end, num step,
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+   
   } else {
     throw Exception("wrong type");
   }
@@ -2157,10 +2119,8 @@ Tensor linspace(double start, double end, int steps,
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr);
-  calloc.free(resultTensorPtr);
-
-  return tensor;
+  if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
+  
 }
 
 Tensor logspace(double start, double end, int steps, double base,
@@ -2175,10 +2135,8 @@ Tensor logspace(double start, double end, int steps, double base,
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr);
-  calloc.free(resultTensorPtr);
+  if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-  return tensor;
 }
 
 bool equal(Tensor left, Tensor right) {
@@ -2207,9 +2165,9 @@ Tensor permute(Tensor a, List<int> permute_list) {
     throw Exception(errorString);
   }
 
-  final tensor = Tensor._internal(resultTensorPtr);
+  if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-  return tensor;
+
 }
 
 Tensor sum(Tensor a, {bool has_type = false, int Dtype = float32}) {
@@ -2576,9 +2534,9 @@ Tensor load(String path) {
       throw Exception(errorString);
     }
 
-    final tensor = Tensor._internal(resultTensorPtr);
+    if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
 
-    return tensor;
+    
   } else {
     throw Exception("only support desktop platform");
   }
@@ -2622,9 +2580,40 @@ Tensor IntTensor(dynamic list) {
 
   flatten(list, 0);
 
+  if(flatList is Float32List){
   Tensor outputTensor =
-      from_blob(flatList.cast<double>(), sizes, int32, int32);
-  return outputTensor;
+      from_blob(flatList, sizes, float32, int32);
+      return outputTensor;
+}
+else if(flatList is Float64List)
+{
+   Tensor outputTensor =
+      from_blob(flatList, sizes, float64, int32);
+      return outputTensor;
+}
+else if(flatList is Int32List)
+{
+   Tensor outputTensor =
+      from_blob(flatList, sizes, int32, int32);
+      return outputTensor;
+}
+else if(flatList is Int64List)
+{
+   Tensor outputTensor =
+      from_blob(flatList, sizes, int64, int32);
+      return outputTensor;
+}
+else if(flatList is List<int>)
+{
+  Tensor outputTensor =
+      from_blob(flatList, sizes, int32, int32);
+      return outputTensor;
+}
+else{
+   Tensor outputTensor =
+      from_blob(flatList.cast<double>(), sizes, float32, int32);
+      return outputTensor;
+}
 }
 
 Tensor FloatTensor(dynamic list) {
@@ -2666,13 +2655,31 @@ Tensor FloatTensor(dynamic list) {
   flatten(list, 0);
 if(flatList is Float32List){
   Tensor outputTensor =
-      from_blob(flatList.cast<double>(), sizes, float32, float32);
+      from_blob(flatList, sizes, float32, float32);
       return outputTensor;
 }
 else if(flatList is Float64List)
 {
    Tensor outputTensor =
-      from_blob(flatList.cast<double>(), sizes, float64, float32);
+      from_blob(flatList, sizes, float64, float32);
+      return outputTensor;
+}
+else if(flatList is Int32List)
+{
+   Tensor outputTensor =
+      from_blob(flatList, sizes, int32, float32);
+      return outputTensor;
+}
+else if(flatList is Int64List)
+{
+   Tensor outputTensor =
+      from_blob(flatList, sizes, int64, float32);
+      return outputTensor;
+}
+else if(flatList is List<int>)
+{
+  Tensor outputTensor =
+      from_blob(flatList, sizes, int32, float32);
       return outputTensor;
 }
 else{
@@ -2720,10 +2727,40 @@ Tensor DoubleTensor(dynamic list) {
   }
 
   flatten(list, 0);
-
+if(flatList is Float32List){
   Tensor outputTensor =
-      from_blob(flatList.cast<double>(), sizes, float64, float64);
-  return outputTensor;
+      from_blob(flatList, sizes, float32, float64);
+      return outputTensor;
+}
+else if(flatList is Float64List)
+{
+   Tensor outputTensor =
+      from_blob(flatList, sizes, float64, float64);
+      return outputTensor;
+}
+else if(flatList is Int32List)
+{
+   Tensor outputTensor =
+      from_blob(flatList, sizes, int32, float64);
+      return outputTensor;
+}
+else if(flatList is Int64List)
+{
+   Tensor outputTensor =
+      from_blob(flatList, sizes, int64, float64);
+      return outputTensor;
+}
+else if(flatList is List<int>)
+{
+  Tensor outputTensor =
+      from_blob(flatList, sizes, int32, float64);
+      return outputTensor;
+}
+else{
+   Tensor outputTensor =
+      from_blob(flatList.cast<double>(), sizes, float32, float32);
+      return outputTensor;
+}
 }
 
 Scalar int32_to_scalar(int value) {

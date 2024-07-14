@@ -87,6 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> takeImageAndProcess() async {
     final imagePath = await pickAnImage();
     final List<String> labelList = await decodeJson("imagenet_labels.json");
+    DateTime startTime;
+    startTime = DateTime.now();
     if (imagePath == null) {
       return;
     } else {
@@ -123,6 +125,9 @@ class _MyHomePageState extends State<MyHomePage> {
         final intList = List<int>.from(predResult);
         dev.log(labelList[intList[0]]);
         label=labelList[intList[0]];
+           DateTime endTime = DateTime.now();
+  Duration elapsedTime = endTime.difference(startTime);
+  dev.log('Function took ${elapsedTime.inMilliseconds} milliseconds to execute.');
         setState(() {
     
   });
