@@ -32,3 +32,4 @@ linux/native_pytorch.cpp
 .packages
 build/
 example/traced_resnet_model.pt
+example/assets/traced_resnet_model.pt

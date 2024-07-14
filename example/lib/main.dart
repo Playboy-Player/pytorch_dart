@@ -14,7 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 const title = 'Image Classification Example';
-var module = torch.jit_load("traced_resnet_model.pt");
+var module = torch.jit_load("assets/traced_resnet_model.pt");
 var mean = torch.FloatTensor([0.485, 0.456, 0.406]);
 var std = torch.FloatTensor([0.229, 0.224, 0.225]);
 Uint8List? imageData;
@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> takeImageAndProcess() async {
     final imagePath = await pickAnImage();
-    final List<String> labelList = await decodeJson("imagenet_labels.json");
+    final List<String> labelList = await decodeJson("assets/imagenet_labels.json");
     DateTime startTime;
     startTime = DateTime.now();
     if (imagePath == null) {
