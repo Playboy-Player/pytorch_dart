@@ -48,7 +48,7 @@ flutter:
         package: com.example.pytorch_dart
         pluginClass: PytorchDartPlugin
       ios:
-        pluginClass: NativePytorchPlugin
+        pluginClass: PytorchDartPlugin
       linux:
         pluginClass: PytorchDartPlugin
       windows:
