@@ -167,7 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     ElevatedButton(
-                      child: Text('Process photo'),
+                      child: Text('Select photo'),
                       onPressed: takeImageAndProcess,
                     ),
                  Expanded(

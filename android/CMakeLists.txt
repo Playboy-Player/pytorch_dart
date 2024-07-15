@@ -9,7 +9,7 @@ add_library( pytorch_dart
 SHARED
 
 # Provides a relative path to your source file(s).
-../src/torch.cc
+
   ../src/Utils.cpp
   ../src/THSTorch.cpp
   ../src/THSTensor.cpp
