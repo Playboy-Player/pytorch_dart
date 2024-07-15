@@ -1,6 +1,6 @@
 #
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint native_pytorch.podspec` to validate before publishing.
+# Run `pod lib lint pytorch_dart.podspec` to validate before publishing.
 #
 Pod::Spec.new do |s|
   s.name             = 'pytorch_dart'
@@ -21,7 +21,7 @@ A new Flutter plugin project.
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',
     'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386',
-    'HEADER_SEARCH_PATHS' => '$(inherited) "${PODS_ROOT}/LibTorch/install/include" '
+    'HEADER_SEARCH_PATHS' => '$(inherited) "${PODS_ROOT}/LibTorch/install/include" "${PODS_ROOT}/LibTorch/install/include/torch/csrc/api/include"'
   }
   s.swift_version = '5.0'
 
