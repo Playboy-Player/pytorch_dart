@@ -152,34 +152,87 @@ flutter: 1
 [ CPUDoubleType{} ]
 ```
 
+### Model Inferencing
+
+About how to get a TorchScript Model,see [here](https://h-huang.github.io/tutorials/recipes/torchscript_inference.html).
+
+In Pytorch,we use `torch.jit.load()` to load TorchScript Models and `module.forward()` to inference,in Pytorch_Dart,we have equivalent functions:`torch.jit_load()` and `module.forward()`.They have some small differnece with their Pytorch version.
+
+`torch.jit_load()` is just like `torch.jit.load()`.For example:
+
+```
+var module = torch.jit_load("assets/traced_resnet_model.pt"); //load a model
+```
+
+Howeve,`forward()` has some differences.In Dart,it receives `List` `<Dynamic>`
+
+If the input of your model is a single tensor:
+
+In Python,you write:
+
+```
+outputTensor = module.forward(inputTensor);
+```
+
+But in Dart,you have to write:
+
+```
+var outputTensor = module.forward([inputTensor]);
+```
+
+#### Example
+
+We provide an image classigfication example in [/example](https://github.com/Playboy-Player/pytorch_dart/tree/main/example).
+
+![1721127375812](image/README/1721127375812.png)
+
+Run code below to run it:
+
+```shell
+git clone https://github.com/Playboy-Player/pytorch_dart
+cd pytorch_dart
+git submodule init
+git submodule update --remote
+dart run pytorch_dart:setup --platform <your_platform>
+cd example
+flutter run --debug/--release
+#If you want to run in Windows,see "For Windows Developers" to copy library to the correct place.
+
+```
+
+
 ### torch
 
-1. `torch.tensor()` is not supported in pytorch_dart,use `torch.IntTensor()`,`torch.FloatTensor` or `torch.DoubleTensor` to create tensors.
+1. `torch.tensor()` is not supported in pytorch_dart,use `torch.IntTensor()`,`torch.FloatTensor()` or `torch.DoubleTensor()` to create tensors.
 2. Functions avaliable now:
-   `torch.empty()`
-   `torch.eye()`
-   `torch.ones()`
-   `torch.IntTensor(List<int> list)`
-   `torch.FloatTensor(List<double> list)`
-   `torch.DoubleTensor(List<double> list)`
-   `torch.arange(double start, double end, double step,{bool requiresGrad = false})`
-   `torch.linspace(double start, double end, int steps,{bool requiresGrad = false})`
-   `torch.logspace(double start, double end, int steps, double base,{bool requiresGrad = false})`
-   `torch.equal(Tensor a,Tensor b)`
-   `torch.add(Tensor a, tensor b,{double alpha=1})`
-   `torch.sub(Tensor a, tensor b,{double alpha=1})`
-   `torch.mul(Tensor a, tensor b)`
-   `torch.div(Tensor a, tensor b)`
-   `torch.add_(Tensor a, tensor b,{double alpha=1})`
-   `torch.sub_(Tensor a, tensor b,{double alpha=1})`
-   `torch.mul_(Tensor a, tensor b)`
-   `torch.div_(Tensor a, tensor b)`
-   `torch.sum(Tensor a)`
-   `torch.mm(Tensor a, Tensor b)`
-   `torch.transpose(Tensor a,int dim0,int dim1)`
-   `torch.permute(Tensor a,List <int> permute_list)`
-   `torch.save(Tensor a,String path)`
-   `torch.load(String path)`
+
+   ```
+   torch.empty()
+   torch.eye()
+   torch.ones()
+   torch.IntTensor(List<int> list)
+   torch.FloatTensor(List<double> list)
+   torch.DoubleTensor(List<double> list)
+   torch.arange(double start, double end, double step,{bool requiresGrad = false})
+   torch.linspace(double start, double end, int steps,{bool requiresGrad = false})
+   torch.logspace(double start, double end, int steps, double base,{bool requiresGrad = false})
+   torch.equal(Tensor a,Tensor b)
+   torch.add(Tensor a, tensor b,{double alpha=1})
+   torch.sub(Tensor a, tensor b,{double alpha=1})
+   torch.mul(Tensor a, tensor b)
+   torch.div(Tensor a, tensor b)
+   torch.add_(Tensor a, tensor b,{double alpha=1})
+   torch.sub_(Tensor a, tensor b,{double alpha=1})
+   torch.mul_(Tensor a, tensor b)
+   torch.div_(Tensor a, tensor b)
+   torch.sum(Tensor a)
+   torch.mm(Tensor a, Tensor b)
+   torch.transpose(Tensor a,int dim0,int dim1)
+   torch.permute(Tensor a,List <int> permute_list)
+   torch.save(Tensor a,String path)
+   torch.load(String path)
+   torch.relu()
+   ```
 3. Almost all function usages remain consistent with PyTorch.
 4. Some in-place operation are supported,such as `torch.add_()`
 5. Example
