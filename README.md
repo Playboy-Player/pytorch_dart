@@ -16,16 +16,12 @@ You can use it as an alternative to Numpy in your Dart/Flutter projects.
 
 Theoretically you can run pytorch_dart on MacOS by simply replace `/libtorch-linux/libtorch` with libtorch for MacOS.
 
-## Attention
-
-Pytorch_dart will be refactored based on the C wrapper of TorchSharp since v0.1.1,the last version using the C wrapper of gotorch is 0.1.0
-
 ## Getting Started
 
 ### Add pytorch_dart to your pubspec.yaml
 
 ```dart
-    pytorch_dart:^0.1.0
+    pytorch_dart:^0.2.0
 ```
 
 ### Setup
@@ -34,7 +30,17 @@ Pytorch_dart will be refactored based on the C wrapper of TorchSharp since v0.1.
 dart run pytorch_dart:setup --platform <your_platform>
 ```
 
-`<your_platform>` only support `linux` , `android` and `windows` now.
+`<your_platform>` only support `linux` , `android` and `windows` now.(iOS coming soon)
+
+For windows,if you use debug version of libtorch,the program throw some exceptions when you build in release mode.
+
+In this situation,you have to install the release version of libtorch.
+
+Here we install the debug version by default.If you want to get release version of libtorch,run:
+
+```
+dart run pytorch_dart:setup --platform windows release
+```
 
 ### Enjoy it!
 
@@ -62,15 +68,7 @@ flutter.buildMode=debug
 ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
 ```
 
-Also,'torch.load()' and 'torch.save()' are not available on Android.In fact,they only work well on Linux
-
-Some exceptions they threw in Windows are like this:
-
-```
-[ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: Exception: [enforce fail at inline_container.cc:633] . invalid file name: 
-00007FFAA49D3F08 <unknown symbol address> c10.dll!<unknown symbol> [<unknown file> @ <unknown line number>]
-00007FFAA49D4823 <unknown symbol address> c10.dll!<unknown symbol> [<unknown file> @ <unknown line number>]
-```
+Also,'torch.load()' and 'torch.save()' are not available on Android.
 
 ### For windows developers
 
@@ -85,19 +83,21 @@ Error launching application on Windows.
 
 #### Solutions:
 
-1. Download libtorch from [here](https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-2.2.2%2Bcpu.zip)
+1. Download libtorch from [here](https://download.pytorch.org/libtorch/cpu/)(Download `libtorch-win-shared-with-deps-2.2.2+cpu.zip` if you want to run in release mode,and download `libtorch-win-shared-with-deps-debug-2.2.2+cpu.zip` if you want to run in debug mode.)
 2. Unzip it
-3. copy all the files from `libtorch\lib\` to `build\windows\x64\runner\Debug\`
+3. copy all the files from `libtorch\lib\` to `build\windows\x64\runner\Debug\` (debug mode) or `build\windows\x64\runner\Release`(release mode)
+4. This problem is about copying library to the correct place, maybe I'll find a better solution later.
 
 ## Usage
 
 ### Brief Introduction
 
 1. It include some basic functions in [torch](https://pytorch.org/docs/stable/torch.html) now.
-2. Support for [torch.nn](https://pytorch.org/docs/stable/nn.html) is coming soon.
+2. Support for inferencing TorchScript models.
 3. **Almost all function usages remain consistent with PyTorch.**
 4. **Broadcasting also works for pytorch_dart.**
-5. Example
+5. Support for [torch.nn](https://pytorch.org/docs/stable/nn.html) is coming soon.
+6. Example
 
 ```dart
 var d=torch.eye(3,2);

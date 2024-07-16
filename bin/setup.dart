@@ -64,9 +64,19 @@ var url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shar
   }
 }
 
-Future<void> setup4Windows() async {
-var url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-2.2.2%2Bcpu.zip');
-  var filename = 'libtorch-win-shared-with-deps-2.2.2+cpu.zip';
+Future<void> setup4Windows({String mode="debug"}) async {
+  Uri url=Uri.parse("");
+  String filename="";
+  if(mode=="debug"){
+url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-debug-2.2.2%2Bcpu.zip');
+filename = 'libtorch-win-shared-with-deps-debug-2.2.2+cpu.zip';
+  }
+  else if(mode=="release")
+  {
+    url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-2.2.2%2Bcpu.zip');
+    filename = 'libtorch-win-shared-with-deps-2.2.2+cpu.zip';
+  }
+  
   var packageConfig = await findPackageConfig(Directory.current);
   if (packageConfig == null) {
     print("Package config not found.");
@@ -190,8 +200,16 @@ void main(List<String> arguments) async {
     if (arguments[1] == 'linux') {
       await setup4Linux();
     } else if (arguments[1] == 'windows') {
-      await setup4Windows();
+      if(arguments[2]=="debug"){
+      await setup4Windows(mode:arguments[2]);
+      }
+      else if(arguments[2]=="release"){
+        await setup4Windows(mode:arguments[2]);
+
     }
+    else{await setup4Windows(mode:"debug");}
+    }
+
     if (arguments[1] == 'android') {
       await setup4Android();
     }
