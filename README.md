@@ -1,8 +1,8 @@
 # Pytorch_Dart
 
-Pytorch_Dart is a dart wrapper for Libtorch,striving to provide an experience identical to [PyTorch](https://github.com/pytorch/pytorch).
+Pytorch_Dart is a Dart wrapper for Libtorch, designed to provide a seamless experience akin to [PyTorch](https://github.com/pytorch/pytorch).
 
-You can use it as an alternative to Numpy in your Dart/Flutter projects.
+It serves as an alternative to NumPy for Dart/Flutter projects.
 
 **This package is experimental and APIs may change in the future**.
 
@@ -14,11 +14,13 @@ You can use it as an alternative to Numpy in your Dart/Flutter projects.
 | iOS      | ❌     | coming soon                                     |
 | MacOS    | ❌     | coming soon                                     |
 
-Theoretically you can run pytorch_dart on MacOS by simply replace `/libtorch-linux/libtorch` with libtorch for MacOS.
+Note: To run Pytorch_Dart on MacOS, replace `/libtorch-linux/libtorch` with libtorch for MacOS.
 
 ## Getting Started
 
 ### Add pytorch_dart to your pubspec.yaml
+
+To include Pytorch_Dart in your Dart/Flutter project, add the following to your `pubspec.yaml`:
 
 ```dart
     pytorch_dart:^0.2.0
@@ -32,9 +34,9 @@ dart run pytorch_dart:setup --platform <your_platform>
 
 `<your_platform>` only support `linux` , `android` and `windows` now.(iOS coming soon)
 
-For windows,if you use debug version of libtorch,the program throw some exceptions when you build in release mode.
+For windows developers,if you use debug version of libtorch,the program works well in debug mode but throw some exceptions when you build in release mode and vice versa.
 
-In this situation,you have to install the release version of libtorch.
+If you need to build in release mode,you have to install the release version of libtorch.
 
 Here we install the debug version by default.If you want to get release version of libtorch,run:
 
@@ -44,6 +46,8 @@ dart run pytorch_dart:setup --platform windows release
 
 ### Enjoy it!
 
+Now you can import Pytorch_Dart in your Dart/Flutter project:
+
 ```dart
     import 'package:pytorch_dart/pytorch_dart.dart' as torch;
 
@@ -51,15 +55,15 @@ dart run pytorch_dart:setup --platform windows release
 
 ### For Android developers
 
-libtorch for android needs a specific version of NDK,so [install NDK](https://developer.android.com/studio/projects/install-ndk?hl=zh-cn) and choose version 21.4.7075529
+Libtorch for Android requires a specific version of the NDK. Install NDK version 21.4.7075529 as instructed [here](https://developer.android.com/studio/projects/install-ndk?hl=zh-cn).
 
-Then add a row in `android/local.properties` in your project
+Add the NDK path to your project's `android/local.properties`:
 
 ```dart
 ndk.dir=<path_to_your_ndk>/21.4.7075529
 ```
 
-After adding a row,your `local.properties` should look like this:
+Ensure that your `local.properties` file looks similar to:
 
 ```gradle
 flutter.sdk=/home/pc/flutter
@@ -200,8 +204,9 @@ flutter run --debug/--release
 
 ```
 
-
 ### torch
+
+#### Supported Functions
 
 1. `torch.tensor()` is not supported in pytorch_dart,use `torch.IntTensor()`,`torch.FloatTensor()` or `torch.DoubleTensor()` to create tensors.
 2. Functions avaliable now:
@@ -235,7 +240,7 @@ flutter run --debug/--release
    ```
 3. Almost all function usages remain consistent with PyTorch.
 4. Some in-place operation are supported,such as `torch.add_()`
-5. Example
+5. Example Usage
 
    ```dart
    import 'package:pytorch_dart/pytorch_dart.dart' as torch;
@@ -257,24 +262,22 @@ flutter run --debug/--release
 
 ### torch.tensor
 
-1. Functions avaliable now:
-   `.dim()`
-   `.dtype()`
-   `.shape()`
-   `.size()`
-   `.detach()`
-   `.add_()`
-   `.sub_()`
-   `.mul_()`
-   `.div_()`
-   `.toList()`
-2. `.dtype()` is different from its implementation in Pytorch.
+1. ##### `torch.tensor` Methods
 
-   In Pytorch,`.dtype` returns an object represents the data type of a tensor
 
-   But in pytorch_dart,`.dtype()` returns a number represents the data type of a tensor.(maybe I will rewrite it later)
+   * `.dim()`
+   * `.dtype()`
+   * `.shape()`
+   * `.size()`
+   * `.detach()`
+   * `.add_()`
+   * `.sub_()`
+   * `.mul_()`
+   * `.div_()`
+   * `.toList()`
 
-   Example
+   **Note:** The `.dtype()` method in Pytorch_Dart differs from PyTorch. In PyTorch, `.dtype` returns an object representing the tensor's data type. In Pytorch_Dart, `.dtype()` returns a numerical representation of the data type. This may be updated in future versions.
+2. Example
 
    ```dart
    import 'package:pytorch_dart/pytorch_dart.dart' as torch;
@@ -302,4 +305,4 @@ flutter run --debug/--release
 
 ## Acknowledgement
 
-This project uses [pytorch-flutter-FFI-example](https://github.com/dvagala/pytorch-flutter-FFI-example) and [gotorch](https://github.com/wangkuiyi/gotorch)
+This project leverages contributions from [pytorch-flutter-FFI-example](https://github.com/dvagala/pytorch-flutter-FFI-example) ,[gotorch](https://github.com/wangkuiyi/gotorch) and [TorchSharp](https://github.com/dotnet/TorchSharp)
