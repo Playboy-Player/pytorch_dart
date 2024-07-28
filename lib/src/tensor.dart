@@ -1334,11 +1334,9 @@ class Tensor {
         for (int i = 0; i < tensorShape[dimension]; i++) {
           var sublist =
               buildList(dimension + 1, offset + i * strides[dimension]);
-          if (dimension == 0) {
-            result.addAll(sublist);
-          } else {
+         
             result.add(sublist);
-          }
+          
         }
         return result;
       }
@@ -1375,11 +1373,9 @@ class Tensor {
         for (int i = 0; i < tensorShape[dimension]; i++) {
           var sublist =
               buildList(dimension + 1, offset + i * strides[dimension]);
-          if (dimension == 0) {
-            result.addAll(sublist);
-          } else {
+        
             result.add(sublist);
-          }
+         
         }
         return result;
       }
