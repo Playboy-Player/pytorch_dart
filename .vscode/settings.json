@@ -1,5 +1,5 @@
 {
-    "cmake.sourceDirectory": "/home/pc/pyt_dart/pytorch_dart/android",
+    "cmake.sourceDirectory": "C:/Users/pc/pytorch_dart/android",
     "files.associations": {
         "atomic": "cpp",
         "memory_resource": "cpp"
