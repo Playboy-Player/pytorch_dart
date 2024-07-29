@@ -12,16 +12,22 @@ import 'dart:developer' as dev;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
+
 
 const title = 'Image Classification Example';
-var module = torch.jit_load("assets/traced_resnet_model.pt");
+torch.JITModule? module;
 var mean = torch.FloatTensor([0.485, 0.456, 0.406]);
 var std = torch.FloatTensor([0.229, 0.224, 0.225]);
 Uint8List? imageData;
 String? label;
+
+void _loadModel() async{
+  module=await torch.jit_load('assets/traced_resnet_model.pt');
+}
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
+_loadModel();
   runApp(MyApp());
 }
 
@@ -48,8 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   
   Future<List<String>> decodeJson(String filepath) async {
-    final file = File(filepath);
-    final jsonString = await file.readAsString();
+    String jsonString=await rootBundle.loadString(filepath);
 
     // 解析JSON内容为List<String>
     final List<dynamic> jsonList = jsonDecode(jsonString);
@@ -86,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> takeImageAndProcess() async {
     final imagePath = await pickAnImage();
-    final List<String> labelList = await decodeJson("assets/imagenet_labels.json");
+    final List<String> labelList = await decodeJson('assets/imagenet_labels.json');
     DateTime startTime;
     startTime = DateTime.now();
     if (imagePath == null) {
@@ -117,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
       RawTensor = RawTensor / 256;
       RawTensor = (RawTensor - mean) / std;
       var inputTensor = RawTensor.permute([2, 0, 1]).unsqueeze(0);
-      var outputTensor = module.forward([inputTensor]);
+      var outputTensor = module!.forward([inputTensor]);
 //
       if (outputTensor is torch.Tensor) {
         var predRes = outputTensor.topk(1);

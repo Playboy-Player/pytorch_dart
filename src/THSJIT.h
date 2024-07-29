@@ -25,7 +25,7 @@ struct TensorOrScalar
 
 
 EXPORT_API_ANDROID_OR_IOS(JITModule) THSJIT_load(const char* filename, int64_t device, int64_t index);
-EXPORT_API(JITModule) THSJIT_load_byte_array(char* bytes, int64_t size, int64_t device, int64_t index);
+EXPORT_API_ANDROID_OR_IOS(JITModule) THSJIT_load_byte_array(char* bytes, int64_t size, int64_t device, int64_t index);
 
 EXPORT_API(void) THSJIT_save(JITModule module, const char* filename);
 EXPORT_API(void) THSJIT_save_byte_array(JITModule module, char* bytes, int64_t size);

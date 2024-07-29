@@ -6,6 +6,7 @@ import 'dart:io';
 import 'tensor.dart';
 import 'dart:convert';
 import 'device.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 final Pointer<Utf8> Function() _get_and_reset_last_err = nativeLib
     .lookup<NativeFunction<Pointer<Utf8> Function()>>(
@@ -15,6 +16,10 @@ final Pointer<Utf8> Function() _get_and_reset_last_err = nativeLib
 final Pointer<Void> Function(Pointer<Utf8>,int device,int index) JIT_load = nativeLib
     .lookup<NativeFunction<Pointer<Void> Function(Pointer<Utf8>,Int64,Int64)>>(
         'THSJIT_load')
+    .asFunction();
+final Pointer<Void> Function(Pointer<Utf8>,int size,int device,int index) JIT_load_byte_array = nativeLib
+    .lookup<NativeFunction<Pointer<Void> Function(Pointer<Utf8>,Int64,Int64,Int64)>>(
+        'THSJIT_load_byte_array')
     .asFunction();
 
 final void Function(Pointer<Void> module,Pointer<Void> tRefsHandle,int length,Pointer<NativeFunction<AllocateNativeTensorOrScalarIndexedArray>>,Pointer<Int8> typeCode,int index) JIT_Module_forward = nativeLib
@@ -79,25 +84,19 @@ var tRefsHandle = DetermineArgumentTypeRefs(input, allocator: ntosArray);
 }
   }
 
-JITModule jit_load(String filename,{Device? device_used})
-{device_used ??= device("cpu");
-   final units = utf8.encode(filename);
-      // 在本地分配足够的内存来复制这个 Uint8List
-      final Pointer<Uint8> result =
-          malloc.allocate<Uint8>(units.length + 1); // 注意加 1，为了 null 结尾
-      // 获取 Uint8List 的指针
-      final Uint8List nativeString = result.asTypedList(units.length + 1);
-      // 将 Uint8List 复制到分配的内存中
-      nativeString.setRange(0, units.length, units);
-      // 确保以 null 字节结尾，满足 C 语言对字符串的要求
-      nativeString[units.length] = 0;
-      // 返回指向已编码字符串的指针
+Future<JITModule> jit_load(String filename,{Device? device_used})
+async{device_used ??= device("cpu");
 
-      final filename_Utf8 =
-           result.cast<Utf8>();
-           
+
+  ByteData data = await rootBundle.load(filename);
+  final Uint8List uint8list = data.buffer.asUint8List();
+  final Pointer<Utf8> pointer = malloc.allocate<Utf8>(uint8list.length + 1);
+  final Uint8List nativeData = pointer.cast<Uint8>().asTypedList(uint8list.length + 1);
+  nativeData.setAll(0, uint8list);
+  nativeData[uint8list.length] = 0;
+  final bytedataPointer=pointer.cast<Utf8>();
   final resultModulePtr =
-          JIT_load(filename_Utf8,device_used.device_type,device_used.device_index);
+          JIT_load_byte_array(bytedataPointer,nativeData.length,device_used.device_type,device_used.device_index);
       final errorMsg = _get_and_reset_last_err();
       if (errorMsg != nullptr) {
         final errorString = errorMsg.cast<Utf8>().toDartString();
@@ -106,8 +105,11 @@ JITModule jit_load(String filename,{Device? device_used})
       }
 
       final module=JITModule(resultModulePtr);
-       malloc.free(result);
+       
       return module;
+
+
+
 }
 
 

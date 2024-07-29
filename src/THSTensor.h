@@ -1333,13 +1333,13 @@ EXPORT_API(Tensor) THSTensor_to_type(const Tensor tensor, int8_t scalar_type, co
 
 EXPORT_API(Tensor) THSTensor_to_type_and_device(const Tensor tensor, int8_t scalar_type, const int device_type, const int device_index, const bool copy);
 
-EXPORT_API(void) THSTensor_topk(const Tensor tensor, Tensor* (*allocator)(size_t length), const int k, const int64_t dim, const bool largest, const bool sorted);
+EXPORT_API_ANDROID_OR_IOS(void) THSTensor_topk(const Tensor tensor, Tensor* (*allocator)(size_t length), const int k, const int64_t dim, const bool largest, const bool sorted);
 
 EXPORT_API(Tensor) THSTensor_trunc(const Tensor tensor);
 
 EXPORT_API(void) THSTensor_trunc_(const Tensor tensor);
 
-EXPORT_API(int8_t) THSTensor_type(const Tensor tensor);
+EXPORT_API_ANDROID_OR_IOS(int8_t) THSTensor_type(const Tensor tensor);
 
 EXPORT_API(void) THSTensor_unbind(const Tensor tensor, Tensor* (*allocator)(size_t length), const int64_t dim);
 
@@ -1352,8 +1352,8 @@ EXPORT_API(Tensor) THSTensor_unflatten(const Tensor tensor, const int64_t dimens
 
 EXPORT_API(Tensor) THSTensor_unfold(const Tensor tensor, const int64_t dimension, const int64_t size, const int64_t step);
 
-EXPORT_API(Tensor) THSTensor_unsqueeze(Tensor tensor, int64_t dim);
-EXPORT_API(void) THSTensor_unsqueeze_(Tensor tensor, int64_t dim);
+EXPORT_API_ANDROID_OR_IOS(Tensor) THSTensor_unsqueeze(Tensor tensor, int64_t dim);
+EXPORT_API_ANDROID_OR_IOS(void) THSTensor_unsqueeze_(Tensor tensor, int64_t dim);
 
 EXPORT_API(Tensor) THSTensor_upsample_nearest1d(
     const Tensor tensor,
