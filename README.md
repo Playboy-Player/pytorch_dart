@@ -20,7 +20,7 @@ Note: To run Pytorch_Dart on MacOS, replace `/libtorch-linux/libtorch` with libt
 
 ### Add pytorch_dart to your pubspec.yaml
 
-To include Pytorch_Dart in your Dart/Flutter project, add the following to your `pubspec.yaml`:
+To include Pytorch_Dart in your Dart/Flutter project, add the following to your `pubspec.yaml` and then save `pubspec.yaml` :
 
 ```dart
     pytorch_dart:^0.2.2
@@ -28,7 +28,10 @@ To include Pytorch_Dart in your Dart/Flutter project, add the following to your 
 
 ### Setup
 
-```dart
+Run the setup command below:
+
+```powershell
+flutter pub get
 dart run pytorch_dart:setup --platform <your_platform>
 ```
 
@@ -38,7 +41,7 @@ For windows developers,if you use debug version of libtorch,the program works we
 
 If you need to build in release mode,you have to install the release version of libtorch.
 
-Here we install the debug version by default.If you want to get release version of libtorch,run:
+The setup process will install the debug version by default.If you want to get release version of libtorch,run:
 
 ```
 dart run pytorch_dart:setup --platform windows release
@@ -159,7 +162,9 @@ flutter: 1
 
 About how to get a TorchScript Model,see [here](https://h-huang.github.io/tutorials/recipes/torchscript_inference.html).
 
-In Pytorch,we use `torch.jit.load()` to load TorchScript Models and `module.forward()` to inference,in Pytorch_Dart,we have equivalent functions:`torch.jit_load()` and `module.forward()`.They have some small differnece with their Pytorch version.
+In Pytorch,we use `torch.jit.load()` to load TorchScript Models and `module.forward()` to inference.
+
+In Pytorch_Dart,we have equivalent functions:`torch.jit_load()` and `module.forward()`.They have some small differnece with their Pytorch version.
 
 `torch.jit_load()` is just like `torch.jit.load()` in Pytorch,but it is an asynchronous function because we use `rootBundle`.
 
@@ -173,17 +178,19 @@ void _loadModel() async{
 }
 ```
 
-However,`forward()` has some differences.In Dart,it receives ` List <Dynamic>`
+However,`forward()` has some differences with the original Pytorch version.
+
+In Dart,it receives  `List <Dynamic>`  which means the input of the function `forward()` can be `List<Tensor>`,`List<Scalar>` or etc.
 
 If the input of your model is a single tensor:
 
-In Python,you write:
+In Python, the following code is written:
 
 ```
 outputTensor = module.forward(inputTensor)
 ```
 
-But in Dart,you have to write:
+But in Dart,you have to put `inputTensor` into a list:
 
 ```
 var outputTensor = module!.forward([inputTensor]);   //! is a null-check opeator
@@ -214,9 +221,9 @@ Just like Pytorch,functions in Pytorch_Dart are divided into multiple parts.
 
 In current version,APIs are dividied into 3 parts:
 
-* torch
-* torch.tensor
-* torch.jit
+* **torch**
+* **torch.tensor**
+* **torch.jit**
 
 ### torch
 
