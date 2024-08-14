@@ -23,7 +23,7 @@ Note: To run Pytorch_Dart on MacOS, replace `/libtorch-linux/libtorch` with libt
 To include Pytorch_Dart in your Dart/Flutter project, add the following to your `pubspec.yaml`:
 
 ```dart
-    pytorch_dart:^0.2.1
+    pytorch_dart:^0.2.2
 ```
 
 ### Setup
@@ -74,9 +74,9 @@ ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
 
 Also,'torch.load()' and 'torch.save()' are not available on Android.
 
-### For windows developers
+### Troubleshooting
 
-#### Troubleshooting
+#### Windows
 
 ```
 Launching lib\main.dart on Windows in debug mode...
@@ -85,12 +85,11 @@ Error waiting for a debug connection: The log reader stopped unexpectedly, or ne
 Error launching application on Windows.
 ```
 
-#### Solutions:
+##### Solutions:
 
 1. Download libtorch from [here](https://download.pytorch.org/libtorch/cpu/)(Download `libtorch-win-shared-with-deps-2.2.2+cpu.zip` if you want to run in release mode,and download `libtorch-win-shared-with-deps-debug-2.2.2+cpu.zip` if you want to run in debug mode.)
 2. Unzip it
 3. copy all the files from `libtorch\lib\` to `build\windows\x64\runner\Debug\` (debug mode) or `build\windows\x64\runner\Release`(release mode)
-4. This problem is about copying library to the correct place, maybe I'll find a better solution later.
 
 ## Usage
 
@@ -162,7 +161,9 @@ About how to get a TorchScript Model,see [here](https://h-huang.github.io/tutori
 
 In Pytorch,we use `torch.jit.load()` to load TorchScript Models and `module.forward()` to inference,in Pytorch_Dart,we have equivalent functions:`torch.jit_load()` and `module.forward()`.They have some small differnece with their Pytorch version.
 
-`torch.jit_load()` is just like `torch.jit.load()` in Pytorch,but it is an asynchronous function because we use `rootBundle`.To load a model,see example below:
+`torch.jit_load()` is just like `torch.jit.load()` in Pytorch,but it is an asynchronous function because we use `rootBundle`.
+
+To load a model,see example below:
 
 ```
 
@@ -172,20 +173,20 @@ void _loadModel() async{
 }
 ```
 
-Howeve,`forward()` has some differences.In Dart,it receives `List` `<Dynamic>`
+However,`forward()` has some differences.In Dart,it receives ` List <Dynamic>`
 
 If the input of your model is a single tensor:
 
 In Python,you write:
 
 ```
-outputTensor = module.forward(inputTensor);
+outputTensor = module.forward(inputTensor)
 ```
 
 But in Dart,you have to write:
 
 ```
-var outputTensor = module!.forward([inputTensor]);//! is a null-check opeator
+var outputTensor = module!.forward([inputTensor]);   //! is a null-check opeator
 ```
 
 #### Example
@@ -203,10 +204,19 @@ git submodule init
 git submodule update --remote
 dart run pytorch_dart:setup --platform <your_platform>
 cd example
-flutter run --debug/--release
-#If you want to run in Windows,see "For Windows Developers" to copy library to the correct place.
+flutter run --debug //or "flutter run --release"
 
 ```
+
+## Functions/APIs
+
+Just like Pytorch,functions in Pytorch_Dart are divided into multiple parts.
+
+In current version,APIs are dividied into 3 parts:
+
+* torch
+* torch.tensor
+* torch.jit
 
 ### torch
 
@@ -214,11 +224,13 @@ flutter run --debug/--release
 
 1. `torch.tensor()` is not supported in pytorch_dart,use `torch.IntTensor()`,`torch.FloatTensor()` or `torch.DoubleTensor()` to create tensors.
 2. Functions avaliable now:
+   Attention: parameters wrapped by `{}` are optional parameters.
 
    ```
-   torch.empty()
-   torch.eye()
-   torch.ones()
+
+   torch.ones(List<int> size,{bool requiresGrad = false, int dtype = float32, Device? device_used})
+   torch.full(List<int> size, num values,{int dtype = float32, bool requiresGrad = false, Device? device_used}))
+   torch.eye(int n, int m,{bool requiresGrad = false, int dtype = float32, Device? device_used})
    torch.IntTensor(List<int> list)
    torch.FloatTensor(List<double> list)
    torch.DoubleTensor(List<double> list)
@@ -241,6 +253,18 @@ flutter run --debug/--release
    torch.save(Tensor a,String path)
    torch.load(String path)
    torch.relu()
+   torch.leaky_relu()
+   torch.tanh()
+   torch.sigmoid()
+   torch.flatten(Tensor a, int startDim, int endDim)
+   torch.unsqueeze(Tensor tensor, int dim)
+   torch.clone(Tensor tensor)
+   torch.topk(Tensor a, int k,{int dim = -1, bool largest = true, bool sorted = true})
+   torch.allClose(Tensor left, Tensor right,{double rtol = 1e-08, double atol = 1e-05, bool equal_nan = false})
+   torch.empty(List<int> size,{bool requiresGrad = false, int dtype = float32, Device? device_used})
+   torch.ones(List<int> size,{bool requiresGrad = false, int dtype = float32, Device? device_used})
+   torch.full(List<int> size, num values,{int dtype = float32, bool requiresGrad = false, Device? device_used}))
+   torch.eye(int n, int m,{bool requiresGrad = false, int dtype = float32, Device? device_used})
    ```
 3. Almost all function usages remain consistent with PyTorch.
 4. Some in-place operation are supported,such as `torch.add_()`
@@ -279,6 +303,17 @@ flutter run --debug/--release
    * `.mul_()`
    * `.div_()`
    * `.toList()`
+   * `.unsqueeze(int dim)`
+   * `.clone()`
+   * `.relu()`
+   * `.leaky_relu()`
+   * `.sigmoid()`
+   * `.tanh()`
+   * `.flatten()`
+   * `.equal(Tensor other)`
+   * `.sum()`
+   * `.mm(Tensor other)`
+   * `.view(List <int> size)`
 
    **Note:** The `.dtype()` method in Pytorch_Dart differs from PyTorch. In PyTorch, `.dtype` returns an object representing the tensor's data type. In Pytorch_Dart, `.dtype()` returns a numerical representation of the data type. This may be updated in future versions.
 2. Example
@@ -301,6 +336,10 @@ flutter run --debug/--release
 
    All the corresponding relations are in `lib/src/constants.dart`
 3. Other function usages remain consistent with PyTorch.
+
+### torch.jit
+
+See [Model Inferencing](#Model-Inferencing).
 
 ## Roadmap
 

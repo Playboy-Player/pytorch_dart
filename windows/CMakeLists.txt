@@ -47,19 +47,28 @@ add_library(${PLUGIN_NAME} SHARED
   "pytorch_dart_plugin_c_api.cpp"
   ${PLUGIN_SOURCES}
 )
+# Set compile definitions based on the build configuration
 
 # Apply a standard set of build settings that are configured in the
 # application-level CMakeLists.txt. This can be removed for plugins that want
 # full control over build settings.
 apply_standard_settings(${PLUGIN_NAME})
+
+# Check the compile definitions and set the target directory accordingly
 if (WIN32)
+
   file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
+  # Add custom command to copy DLLs after building the plugin
   add_custom_command(TARGET ${PLUGIN_NAME}
-                     POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                     ${TORCH_DLLS}
-                     $<TARGET_FILE_DIR:${PLUGIN_NAME}>)
-endif (WIN32)
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        ${CMAKE_BINARY_DIR}/runner/$<CONFIG>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${TORCH_DLLS}
+        ${CMAKE_BINARY_DIR}/runner/$<CONFIG>
+    COMMENT "Creating directory and copying DLLs to ${CMAKE_BINARY_DIR}/runner/$<CONFIG>"
+)
+endif()
 # Symbols are hidden by default to reduce the chance of accidental conflicts
 # between plugins. This should not be removed; any symbols that should be
 # exported should be explicitly exported with the FLUTTER_PLUGIN_EXPORT macro.

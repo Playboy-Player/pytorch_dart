@@ -1473,7 +1473,7 @@ class Tensor {
     }
 
     if(resultTensorPtr!=nullptr){final tensor = Tensor._internal(resultTensorPtr);return tensor;}else{throw Exception("null pointer");}
-    calloc.free(sizePtr);
+    
 
  
   }

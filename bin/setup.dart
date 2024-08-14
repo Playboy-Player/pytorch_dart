@@ -64,19 +64,17 @@ var url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shar
   }
 }
 
-Future<void> setup4Windows({String mode="debug"}) async {
-  Uri url=Uri.parse("");
-  String filename="";
-  if(mode=="debug"){
-url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-debug-2.2.2%2Bcpu.zip');
-filename = 'libtorch-win-shared-with-deps-debug-2.2.2+cpu.zip';
-  }
-  else if(mode=="release")
-  {
+Future<void> setup4Windows({String mode = "debug"}) async {
+  Uri url = Uri.parse("");
+  String filename = "";
+  if (mode == "debug") {
+    url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-debug-2.2.2%2Bcpu.zip');
+    filename = 'libtorch-win-shared-with-deps-debug-2.2.2+cpu.zip';
+  } else if (mode == "release") {
     url = Uri.parse('https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-2.2.2%2Bcpu.zip');
     filename = 'libtorch-win-shared-with-deps-2.2.2+cpu.zip';
   }
-  
+
   var packageConfig = await findPackageConfig(Directory.current);
   if (packageConfig == null) {
     print("Package config not found.");
@@ -86,6 +84,18 @@ filename = 'libtorch-win-shared-with-deps-debug-2.2.2+cpu.zip';
   var pluginPackage = packageConfig.packages.firstWhere((pkg) => pkg.name == 'pytorch_dart');
   // 使用这个信息得到插件根目录
   var pluginRootPath = pluginPackage.packageUriRoot.toFilePath(windows: Platform.isWindows);
+  // 新的目录路径
+  var newFolder = 'libtorch-windows';
+  var newPath = path.join(path.dirname(pluginRootPath), newFolder);
+
+  // 检查并删除已有的“libtorch-windows”文件夹
+  var existingDir = Directory(newPath);
+  if (existingDir.existsSync()) {
+    print('Deleting existing $newFolder folder...');
+    await existingDir.delete(recursive: true);
+    print('$newFolder folder deleted.');
+  }
+
   // 下载文件
   var response = await http.get(url);
   if (response.statusCode == 200) {
@@ -98,8 +108,6 @@ filename = 'libtorch-win-shared-with-deps-debug-2.2.2+cpu.zip';
     var archive = ZipDecoder().decodeBytes(bytes);
 
     // 创建新的目录来解压缩文件
-    var newFolder = 'libtorch-windows';
-    var newPath = path.join(path.dirname(pluginRootPath), newFolder);
     Directory(newPath).createSync(recursive: true);
 
     // 从压缩包中提取文件
@@ -115,7 +123,7 @@ filename = 'libtorch-win-shared-with-deps-debug-2.2.2+cpu.zip';
         Directory(path.dirname(outputPath)).createSync(recursive: true);
 
         if (file.isFile) {
-          File(outputPath)..writeAsBytesSync(data);
+          File(outputPath).writeAsBytesSync(data);
         } else {
           // 如果项是文件夹，则创建文件夹
           Directory(outputPath).createSync(recursive: true);
