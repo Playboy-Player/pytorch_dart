@@ -202,7 +202,7 @@ We provide an image classigfication example in [/example](https://github.com/Pla
 
 ![1721127375812](image/README/1721127375812.png)
 
-Run code below to run it:
+To run the example,see [pytorch_dart_standalone_examples](https://github.com/KernelInterrupt/pytorch_dart_standalone_examples) or run the code below:
 
 ```shell
 git clone https://github.com/Playboy-Player/pytorch_dart
