@@ -1,4 +1,4 @@
-# Pytorch_Dart{ignore=true}
+# Pytorch_Dart
 
 Pytorch_Dart is a Dart wrapper for Libtorch, designed to provide a seamless experience akin to [PyTorch](https://github.com/pytorch/pytorch).
 
@@ -16,7 +16,26 @@ It serves as an alternative to NumPy for Dart/Flutter projects.
 
 Note: To run Pytorch_Dart on MacOS, replace `/libtorch-linux/libtorch` with libtorch for MacOS.
 
-[toc]
+- [Pytorch_Dart](#pytorch_dart)
+  - [Getting Started](#getting-started)
+    - [Add pytorch_dart to your pubspec.yaml](#add-pytorch_dart-to-your-pubspec.yaml)
+    - [Setup](#setup)
+    - [Enjoy it!](#enjoy-it!)
+      - [For Android developers](#for-android-developers)
+      - [Troubleshooting](#troubleshooting)
+         - [Windows](#windows)
+  - [Usage](#usage)
+    - [Brief Introduction](#brief-introduction)
+    - [Operator overloading](#operator-overloading)
+    - [Model Inferencing](#model-inferencing)
+      - [Example](#example)
+  - [Functions/APIs](#functions/apis)
+    - [torch](#torch)
+      - [Supported Functions](#supported-functions)
+    - [torch.tensor](#torch.tensor)
+    - [torch.jit](#torch.jit)
+  - [Roadmap](#roadmap)
+  - [Acknowledgement](#acknowledgement)
 
 ## Getting Started
 
@@ -58,7 +77,7 @@ Now you can import Pytorch_Dart in your Dart/Flutter project:
 
 ```
 
-### For Android developers
+#### For Android developers
 
 Libtorch for Android requires a specific version of the NDK. Install NDK version 21.4.7075529 as instructed [here](https://developer.android.com/studio/projects/install-ndk?hl=zh-cn).
 
@@ -79,9 +98,9 @@ ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
 
 Also,`torch.load()` and `torch.save()` are not available on Android.
 
-### Troubleshooting
+#### Troubleshooting
 
-#### Windows
+##### Windows
 
 ```
 Launching lib\main.dart on Windows in debug mode...
@@ -90,7 +109,7 @@ Error waiting for a debug connection: The log reader stopped unexpectedly, or ne
 Error launching application on Windows.
 ```
 
-##### Solutions:
+Solutions:
 
 1. Download libtorch from [here](https://download.pytorch.org/libtorch/cpu/)(Download `libtorch-win-shared-with-deps-2.2.2+cpu.zip` if you want to run in release mode,and download `libtorch-win-shared-with-deps-debug-2.2.2+cpu.zip` if you want to run in debug mode.)
 2. Unzip it
