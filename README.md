@@ -1,4 +1,4 @@
-# Pytorch_Dart
+# Pytorch_Dart{ignore=true}
 
 Pytorch_Dart is a Dart wrapper for Libtorch, designed to provide a seamless experience akin to [PyTorch](https://github.com/pytorch/pytorch).
 
@@ -15,6 +15,8 @@ It serves as an alternative to NumPy for Dart/Flutter projects.
 | MacOS    | ❌     | coming soon                                     |
 
 Note: To run Pytorch_Dart on MacOS, replace `/libtorch-linux/libtorch` with libtorch for MacOS.
+
+[toc]
 
 ## Getting Started
 
@@ -75,7 +77,7 @@ flutter.buildMode=debug
 ndk.dir=/home/pc/Android/Sdk/ndk/21.4.7075529
 ```
 
-Also,'torch.load()' and 'torch.save()' are not available on Android.
+Also,`torch.load()` and `torch.save()` are not available on Android.
 
 ### Troubleshooting
 
@@ -131,8 +133,8 @@ import 'package:pytorch_dart/pytorch_dart.dart' as torch;
 ...
 
 var c=torch.DoubleTensor([[1.0,2.0,3.0],[4.0,5.0,6.0]]);
-var d=c+10;// no errors
-var e=10+c;//cause errors
+var d=c+10;// no exception
+var e=10+c;//throw exception
 ```
 
 Other binary operators (`-`,`*`,`/`)are just like `+`
@@ -195,6 +197,8 @@ But in Dart,you have to put `inputTensor` into a list:
 ```
 var outputTensor = module!.forward([inputTensor]);   //! is a null-check opeator
 ```
+
+Attention:Half tensors are not supported yet.
 
 #### Example
 
