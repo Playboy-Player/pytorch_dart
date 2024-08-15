@@ -23,7 +23,7 @@ Note: To run Pytorch_Dart on MacOS, replace `/libtorch-linux/libtorch` with libt
 To include Pytorch_Dart in your Dart/Flutter project, add the following to your `pubspec.yaml` and then save `pubspec.yaml` :
 
 ```dart
-    pytorch_dart:^0.2.2
+    pytorch_dart:^0.2.3
 ```
 
 ### Setup
