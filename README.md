@@ -2,7 +2,7 @@
 
 Pytorch_Dart is a Dart wrapper for Libtorch, designed to provide a seamless experience akin to [PyTorch](https://github.com/pytorch/pytorch).
 
-It serves as an alternative to NumPy for Dart/Flutter projects.
+It serves as an alternative to Pytorch for Dart/Flutter projects.
 
 **This package is experimental and APIs may change in the future**.
 
