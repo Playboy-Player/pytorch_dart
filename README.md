@@ -143,7 +143,7 @@ flutter:
 
 ### Operator overloading
 
-Attention:Dart has no magic functions(like `_radd_` in python).Therefore, in binary operators, tensor can only be on the left side.
+Attention:Dart has no magic functions(like `_radd_` in python).Therefore, among all binary operators that involve a Tensor and another data type, the Tensor must be the left operand.And there is no such restriction when both operands are Tensors.
 
 Example
 
